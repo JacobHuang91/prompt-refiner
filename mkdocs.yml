@@ -1,0 +1,94 @@
+site_name: Prompt Groomer
+site_description: A lightweight Python library for optimizing and cleaning LLM inputs
+site_author: Jacob Huang
+site_url: https://jacobhuang91.github.io/prompt-groomer/
+repo_name: JacobHuang91/prompt-groomer
+repo_url: https://github.com/JacobHuang91/prompt-groomer
+
+theme:
+  name: material
+  palette:
+    # Light mode
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.instant
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+extra:
+  version:
+    provider: mike
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_category_heading: true
+            members_order: source
+            separate_signature: true
+            merge_init_into_class: true
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - User Guide:
+      - Overview: user-guide/overview.md
+      - Pipeline Basics: user-guide/pipelines.md
+      - Custom Operations: user-guide/custom-operations.md
+  - Modules:
+      - Overview: modules/overview.md
+      - Cleaner: modules/cleaner.md
+      - Compressor: modules/compressor.md
+      - Scrubber: modules/scrubber.md
+      - Analyzer: modules/analyzer.md
+  - API Reference:
+      - Overview: api-reference/index.md
+      - Groomer: api-reference/groomer.md
+      - Cleaner: api-reference/cleaner.md
+      - Compressor: api-reference/compressor.md
+      - Scrubber: api-reference/scrubber.md
+      - Analyzer: api-reference/analyzer.md
+  - Examples:
+      - Overview: examples/index.md
+      - HTML Cleaning: examples/html-cleaning.md
+      - Deduplication: examples/deduplication.md
+      - PII Redaction: examples/pii-redaction.md
+      - Token Analysis: examples/token-analysis.md
+      - Complete Pipeline: examples/complete-pipeline.md
+  - Contributing: contributing.md

@@ -1,4 +1,4 @@
-.PHONY: install test lint format clean build help
+.PHONY: install test lint format clean build help docs-serve docs-build docs-deploy docs-deploy-version
 
 help:
 	@echo "Available commands:"
@@ -8,6 +8,12 @@ help:
 	@echo "  make format     - Format code with ruff"
 	@echo "  make clean      - Remove build artifacts and cache"
 	@echo "  make build      - Build the package"
+	@echo ""
+	@echo "Documentation:"
+	@echo "  make docs-serve         - Start local documentation server"
+	@echo "  make docs-build         - Build documentation site"
+	@echo "  make docs-deploy        - Deploy latest docs to GitHub Pages"
+	@echo "  make docs-deploy-version VERSION=x.y.z - Deploy specific version"
 
 install:
 	uv pip install -e ".[dev]"
@@ -34,3 +40,25 @@ clean:
 
 build:
 	uv build
+
+# Documentation commands
+docs-serve:
+	@echo "Starting MkDocs dev server..."
+	uv run mkdocs serve
+
+docs-build:
+	@echo "Building documentation..."
+	uv run mkdocs build
+
+docs-deploy:
+	@echo "Deploying latest docs to GitHub Pages..."
+	uv run mike deploy --push --update-aliases latest
+
+docs-deploy-version:
+	@echo "Usage: make docs-deploy-version VERSION=0.1.0"
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION not specified. Use: make docs-deploy-version VERSION=0.1.0"; \
+		exit 1; \
+	fi
+	@echo "Deploying version $(VERSION)..."
+	uv run mike deploy --push --update-aliases $(VERSION)
