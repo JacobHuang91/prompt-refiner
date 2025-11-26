@@ -1,8 +1,7 @@
 """Example: Creating a custom operation."""
 
-from prompt_groomer import Groomer
+from prompt_groomer import Groomer, NormalizeWhitespace
 from prompt_groomer.operation import Operation
-from prompt_groomer.ops import NormalizeWhitespace
 
 
 class RemoveEmojis(Operation):

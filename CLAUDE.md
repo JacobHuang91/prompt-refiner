@@ -12,11 +12,14 @@ Prompt Groomer is a Python library designed to optimize LLM prompts by cleaning 
 
 ## Architecture
 
-The library uses a simple, modular design:
+The library is organized into 4 core modules:
 
-- **Core module**: Contains the main cleaning functions
-- **Utilities**: Helper functions for text processing
-- **Strategies**: Different cleaning approaches users can apply
+- **Cleaner**: Operations for cleaning dirty data (HTML, whitespace, Unicode)
+- **Compressor**: Operations for reducing prompt size (truncation, deduplication)
+- **Scrubber**: Operations for security and privacy (PII redaction)
+- **Analyzer**: Operations for analyzing and reporting on optimization (token counting)
+
+Each module contains specialized operations that can be composed into pipelines using the `Groomer` class.
 
 ## Development Philosophy
 
@@ -34,7 +37,7 @@ The library uses a simple, modular design:
 
 ## Technology Stack
 
-- Python 3.8+
+- Python 3.9+
 - uv for package management
 - pytest for testing
 - ruff for linting and formatting
@@ -46,11 +49,46 @@ The library uses a simple, modular design:
 - Keep functions small and focused
 - Write clear docstrings
 
+## Project Structure
+
+```
+src/prompt_groomer/
+├── __init__.py          # Main exports
+├── groomer.py           # Pipeline builder
+├── operation.py         # Base operation class
+├── cleaner/             # Cleaner module
+│   ├── html.py
+│   ├── whitespace.py
+│   └── unicode.py
+├── compressor/          # Compressor module
+│   ├── truncate.py
+│   └── deduplicate.py
+├── scrubber/            # Scrubber module
+│   └── pii.py
+└── analyzer/            # Analyzer module
+    └── counter.py
+
+tests/
+├── test_groomer.py      # Pipeline tests
+├── test_cleaner.py      # Cleaner module tests
+├── test_compressor.py   # Compressor module tests
+├── test_scrubber.py     # Scrubber module tests
+└── test_analyzer.py     # Analyzer module tests
+
+examples/
+├── cleaner/             # Cleaner examples
+├── compressor/          # Compressor examples
+├── scrubber/            # Scrubber examples
+├── analyzer/            # Analyzer examples
+└── all_modules_demo.py  # Complete demo
+```
+
 ## Testing
 
-- Unit tests for all cleaning functions
+- Unit tests for all operations organized by module
 - Edge case testing (empty strings, Unicode, very long inputs)
 - Performance benchmarks for large inputs
+- Tests are separated by module for better organization
 
 ## Future Vision
 

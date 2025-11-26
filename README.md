@@ -29,15 +29,14 @@ pip install prompt-groomer
 Build custom cleaning pipelines with a fluent API:
 
 ```python
-from prompt_groomer import Groomer
-from prompt_groomer.ops import StripHTML, NormalizeWhitespace, TruncateTokens
+from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, TruncateTokens
 
 # Define a cleaning pipeline
 groomer = (
     Groomer()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
-    .pipe(TruncateTokens(max_tokens=1000, strategy="middle"))
+    .pipe(TruncateTokens(max_tokens=1000, strategy="middle_out"))
 )
 
 raw_input = "<div>  User input with <b>lots</b> of   spaces... </div>"
@@ -45,28 +44,72 @@ clean_prompt = groomer.run(raw_input)
 # Output: "User input with lots of spaces..."
 ```
 
-**Available Operations:**
-- `StripHTML()` - Remove HTML tags
-- `NormalizeWhitespace()` - Collapse multiple spaces
-- `TruncateTokens(max_tokens, strategy)` - Truncate to token limit
-  - Strategies: `"start"`, `"end"`, `"middle"` (keeps both ends)
+## 4 Core Modules
+
+Prompt Groomer is organized into 4 specialized modules:
+
+### 1. **Cleaner** - Clean Dirty Data
+- `StripHTML()` - Remove HTML tags, convert to Markdown
+- `NormalizeWhitespace()` - Collapse excessive whitespace
+- `FixUnicode()` - Remove zero-width spaces and problematic Unicode
+
+### 2. **Compressor** - Reduce Size
+- `TruncateTokens()` - Smart truncation with sentence boundaries
+  - Strategies: `"head"`, `"tail"`, `"middle_out"`
+- `Deduplicate()` - Remove similar content (great for RAG)
+
+### 3. **Scrubber** - Security & Privacy
+- `RedactPII()` - Automatically redact emails, phones, IPs, credit cards, URLs, SSNs
+
+### 4. **Analyzer** - Show Value
+- `CountTokens()` - Track token savings and optimization impact
+
+## Complete Example
+
+```python
+from prompt_groomer import (
+    Groomer,
+    # Cleaner
+    StripHTML, NormalizeWhitespace, FixUnicode,
+    # Compressor
+    Deduplicate, TruncateTokens,
+    # Scrubber
+    RedactPII,
+    # Analyzer
+    CountTokens
+)
+
+original_text = """Your messy input here..."""
+
+counter = CountTokens(original_text=original_text)
+
+groomer = (
+    Groomer()
+    # Clean
+    .pipe(StripHTML(to_markdown=True))
+    .pipe(NormalizeWhitespace())
+    .pipe(FixUnicode())
+    # Compress
+    .pipe(Deduplicate(similarity_threshold=0.85))
+    .pipe(TruncateTokens(max_tokens=500, strategy="head"))
+    # Secure
+    .pipe(RedactPII(redact_types={"email", "phone"}))
+    # Analyze
+    .pipe(counter)
+)
+
+result = groomer.run(original_text)
+print(counter.format_stats())  # Shows token savings
+```
 
 ## Examples
 
-Check out the [`examples/`](examples/) folder for more usage examples:
-- Basic pipeline usage
-- HTML cleaning
-- Truncation strategies
-- Creating custom operations
-
-## Planned Features
-
-- Remove excessive whitespace
-- Normalize line breaks
-- Remove duplicate characters
-- Strip invalid Unicode characters
-- Configurable cleaning strategies
-- Token counting and optimization suggestions
+Check out the [`examples/`](examples/) folder for detailed examples organized by module:
+- `cleaner/` - HTML cleaning, whitespace normalization, Unicode fixing
+- `compressor/` - Smart truncation, deduplication
+- `scrubber/` - PII redaction
+- `analyzer/` - Token counting and cost savings
+- `all_modules_demo.py` - Complete demonstration
 
 ## Development
 

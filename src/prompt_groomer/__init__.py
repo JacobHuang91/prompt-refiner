@@ -2,6 +2,25 @@
 
 __version__ = "0.1.0"
 
-from .groomer import Groomer
+from .analyzer import CountTokens
 
-__all__ = ["Groomer"]
+# Import all operations for convenience
+from .cleaner import FixUnicode, NormalizeWhitespace, StripHTML
+from .compressor import Deduplicate, TruncateTokens
+from .groomer import Groomer
+from .scrubber import RedactPII
+
+__all__ = [
+    "Groomer",
+    # Cleaner operations
+    "StripHTML",
+    "NormalizeWhitespace",
+    "FixUnicode",
+    # Compressor operations
+    "TruncateTokens",
+    "Deduplicate",
+    # Scrubber operations
+    "RedactPII",
+    # Analyzer operations
+    "CountTokens",
+]

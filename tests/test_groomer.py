@@ -1,7 +1,6 @@
 """Tests for Groomer pipeline."""
 
-from prompt_groomer import Groomer
-from prompt_groomer.ops import NormalizeWhitespace, StripHTML, TruncateTokens
+from prompt_groomer import Groomer, NormalizeWhitespace, StripHTML, TruncateTokens
 
 
 def test_groomer_single_operation():
@@ -26,7 +25,7 @@ def test_groomer_full_pipeline():
         Groomer()
         .pipe(StripHTML())
         .pipe(NormalizeWhitespace())
-        .pipe(TruncateTokens(max_tokens=10, strategy="end"))
+        .pipe(TruncateTokens(max_tokens=10, strategy="head"))
     )
 
     raw_input = "<div>  User input with <b>lots</b> of   spaces... </div>"
