@@ -1,4 +1,4 @@
-.PHONY: install test lint format clean build help docs-serve docs-build docs-deploy docs-deploy-version
+.PHONY: install test lint format clean build help docs-serve docs-build docs-deploy docs-deploy-version version
 
 help:
 	@echo "Available commands:"
@@ -14,6 +14,9 @@ help:
 	@echo "  make docs-build         - Build documentation site"
 	@echo "  make docs-deploy        - Deploy latest docs to GitHub Pages"
 	@echo "  make docs-deploy-version VERSION=x.y.z - Deploy specific version"
+	@echo ""
+	@echo "Release:"
+	@echo "  make version            - Show current version"
 
 install:
 	uv pip install -e ".[dev]"
@@ -62,3 +65,8 @@ docs-deploy-version:
 	fi
 	@echo "Deploying version $(VERSION)..."
 	uv run mike deploy --push --update-aliases $(VERSION)
+
+# Release commands
+version:
+	@echo "Current version:"
+	@grep '^version = ' pyproject.toml | cut -d'"' -f2

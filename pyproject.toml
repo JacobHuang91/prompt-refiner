@@ -36,9 +36,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/prompt-groomer"
-Repository = "https://github.com/yourusername/prompt-groomer"
-Issues = "https://github.com/yourusername/prompt-groomer/issues"
+Homepage = "https://github.com/JacobHuang91/prompt-groomer"
+Repository = "https://github.com/JacobHuang91/prompt-groomer"
+Issues = "https://github.com/JacobHuang91/prompt-groomer/issues"
+Documentation = "https://jacobhuang91.github.io/prompt-groomer/"
 
 [build-system]
 requires = ["hatchling"]
