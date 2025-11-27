@@ -360,137 +360,152 @@ with st.sidebar:
     st.caption("📦 [PyPI](https://pypi.org/project/prompt-groomer/)")
 
 # --- Main Content ---
-col1, col2 = st.columns(2)
 
-with col1:
-    st.subheader("🔴 Dirty Input")
+# Preset example selection (moved to top)
+selected_example = st.selectbox(
+    "Choose a preset example or enter custom text:",
+    ["Custom"] + list(PRESET_EXAMPLES.keys()),
+    help="Select a pre-configured example to see prompt-groomer in action",
+)
 
-    # Preset example selection
-    selected_example = st.selectbox(
-        "Choose a preset example or enter custom text:",
-        ["Custom"] + list(PRESET_EXAMPLES.keys()),
-    )
-
-    if selected_example != "Custom":
-        example_data = PRESET_EXAMPLES[selected_example]
-        default_text = example_data["text"]
-        st.info(
-            f"**{example_data['description']}**\n\nRecommended: {example_data['recommended']}"
-        )
-    else:
-        default_text = """<div>
+if selected_example != "Custom":
+    example_data = PRESET_EXAMPLES[selected_example]
+    default_text = example_data["text"]
+    with st.expander("ℹ️ About this example", expanded=False):
+        st.write(f"**{example_data['description']}**")
+        st.write(f"**Recommended:** {example_data['recommended']}")
+else:
+    default_text = """<div>
     <p>Enter your text here...</p>
     <p>Try adding HTML, excessive    spaces, or PII like test@example.com</p>
 </div>"""
 
+# Input/Output columns
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("🔴 Dirty Input")
     raw_text = st.text_area(
         "Input Text:",
         value=default_text,
-        height=300,
+        height=200,
         help="Paste your messy prompt here",
+        label_visibility="collapsed",
     )
-
     raw_tokens = count_tokens(raw_text)
-    st.caption(f"**Token Count:** {raw_tokens:,}")
+    st.caption(f"📝 Token Count: {raw_tokens:,}")
 
+# Process the text (before displaying in columns)
+result = None
+cleaned_tokens = 0
+processing_time = 0
+processing_error = None
+
+if raw_text.strip():
+    start_time = time.time()
+    try:
+        result = raw_text
+
+        # Apply operations in sequence
+        if use_html:
+            result = StripHTML().process(result)
+
+        if use_whitespace:
+            result = NormalizeWhitespace().process(result)
+
+        if use_unicode:
+            result = FixUnicode().process(result)
+
+        if use_deduplicate:
+            result = Deduplicate(
+                similarity_threshold=dedup_threshold,
+                method=dedup_method,
+                granularity=dedup_granularity,
+            ).process(result)
+
+        if use_truncate:
+            result = TruncateTokens(
+                max_tokens=max_tokens,
+                strategy=truncate_strategy,
+                respect_sentence_boundary=respect_boundary,
+            ).process(result)
+
+        if use_pii:
+            result = RedactPII(redact_types=set(pii_types)).process(result)
+
+        processing_time = (time.time() - start_time) * 1000  # Convert to ms
+        cleaned_tokens = count_tokens(result)
+
+    except Exception as e:
+        processing_error = str(e)
+        result = None
+
+# Display output in col2
 with col2:
     st.subheader("🟢 Cleaned Output")
 
-    if raw_text.strip():
-        # Build the pipeline
-        start_time = time.time()
-
-        try:
-            result = raw_text
-
-            # Apply operations in sequence
-            if use_html:
-                result = StripHTML().process(result)
-
-            if use_whitespace:
-                result = NormalizeWhitespace().process(result)
-
-            if use_unicode:
-                result = FixUnicode().process(result)
-
-            if use_deduplicate:
-                result = Deduplicate(
-                    similarity_threshold=dedup_threshold,
-                    method=dedup_method,
-                    granularity=dedup_granularity,
-                ).process(result)
-
-            if use_truncate:
-                result = TruncateTokens(
-                    max_tokens=max_tokens,
-                    strategy=truncate_strategy,
-                    respect_sentence_boundary=respect_boundary,
-                ).process(result)
-
-            if use_pii:
-                result = RedactPII(redact_types=set(pii_types)).process(result)
-
-            processing_time = (time.time() - start_time) * 1000  # Convert to ms
-
-            # Display result
-            st.text_area("Result:", value=result, height=300)
-
-            cleaned_tokens = count_tokens(result)
-            st.caption(f"**Token Count:** {cleaned_tokens:,}")
-
-            # Calculate savings
-            savings = calculate_cost_savings(raw_tokens, cleaned_tokens)
-
-            # Metrics Dashboard
-            st.divider()
-            st.subheader("📊 Metrics Dashboard")
-
-            m1, m2, m3 = st.columns(3)
-            with m1:
-                st.metric("Original Tokens", f"{raw_tokens:,}")
-            with m2:
-                st.metric(
-                    "Final Tokens",
-                    f"{cleaned_tokens:,}",
-                    delta=f"-{savings['saved_tokens']:,}",
-                    delta_color="normal",
-                )
-            with m3:
-                st.metric(
-                    "Reduction",
-                    f"{savings['saved_percentage']:.1f}%",
-                    help="Percentage of tokens saved",
-                )
-
-            if savings["saved_percentage"] > 0:
-                st.success(
-                    f"🚀 **You saved {savings['saved_percentage']:.1f}% tokens!** "
-                    f"That's \${savings['cost_per_1k']:.3f} per 1,000 calls or "
-                    f"\${savings['monthly_savings']:.2f}/month at 1M calls/month (GPT-4 pricing)."
-                )
-            else:
-                st.info(
-                    "💡 No tokens saved. Try enabling more operations or choose a different example."
-                )
-
-            # Processing time
-            st.caption(f"⚡ Processing time: {processing_time:.1f}ms")
-
-            # Download button
-            st.download_button(
-                label="📥 Download Cleaned Text",
-                data=result,
-                file_name="cleaned_prompt.txt",
-                mime="text/plain",
-            )
-
-        except Exception as e:
-            st.error(f"⚠️ Error processing text: {str(e)}")
-            st.info(
-                "Make sure you have the latest version: `pip install --upgrade prompt-groomer`"
-            )
-    else:
+    if result is not None:
+        st.text_area("Result:", value=result, height=200, label_visibility="collapsed")
+        st.caption(f"📝 Token Count: {cleaned_tokens:,}")
+    elif processing_error:
+        st.error(f"⚠️ Error processing text: {processing_error}")
+        st.info(
+            "Make sure you have the latest version: `pip install --upgrade prompt-groomer`"
+        )
+    elif not raw_text.strip():
         st.info("👈 Enter text in the left panel to see the magic happen!")
+    else:
+        st.info("Processing...")
+
+# Metrics Dashboard (moved outside columns, always visible when processing succeeds)
+if result is not None and raw_text.strip():
+    st.divider()
+    st.subheader("📊 Metrics Dashboard")
+
+    # Calculate savings
+    savings = calculate_cost_savings(raw_tokens, cleaned_tokens)
+
+    # Metrics in 3 columns
+    m1, m2, m3 = st.columns(3)
+    with m1:
+        st.metric("Original Tokens", f"{raw_tokens:,}")
+    with m2:
+        st.metric(
+            "Final Tokens",
+            f"{cleaned_tokens:,}",
+            delta=f"-{savings['saved_tokens']:,}",
+            delta_color="normal",
+        )
+    with m3:
+        st.metric(
+            "Reduction",
+            f"{savings['saved_percentage']:.1f}%",
+            help="Percentage of tokens saved",
+        )
+
+    # Savings message
+    if savings["saved_percentage"] > 0:
+        st.success(
+            f"🚀 **You saved {savings['saved_percentage']:.1f}% tokens!** "
+            f"That's \${savings['cost_per_1k']:.3f} per 1,000 calls or "
+            f"\${savings['monthly_savings']:.2f}/month at 1M calls/month (GPT-4 pricing)."
+        )
+    else:
+        st.info(
+            "💡 No tokens saved. Try enabling more operations or choose a different example."
+        )
+
+    # Processing time and download button in columns
+    action_col1, action_col2 = st.columns([1, 3])
+    with action_col1:
+        st.caption(f"⚡ Processing time: {processing_time:.1f}ms")
+    with action_col2:
+        st.download_button(
+            label="📥 Download Cleaned Text",
+            data=result,
+            file_name="cleaned_prompt.txt",
+            mime="text/plain",
+        )
 
 # --- Bottom Section ---
 st.divider()
