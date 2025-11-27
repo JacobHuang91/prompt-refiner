@@ -465,8 +465,8 @@ with col2:
             if savings["saved_percentage"] > 0:
                 st.success(
                     f"🚀 **You saved {savings['saved_percentage']:.1f}% tokens!** "
-                    f"That's **${savings['cost_per_1k']:.3f} per 1,000 calls** or "
-                    f"**${savings['monthly_savings']:.2f}/month** at 1M calls/month (GPT-4 pricing)."
+                    f"That's \${savings['cost_per_1k']:.3f} per 1,000 calls or "
+                    f"\${savings['monthly_savings']:.2f}/month at 1M calls/month (GPT-4 pricing)."
                 )
             else:
                 st.info(
