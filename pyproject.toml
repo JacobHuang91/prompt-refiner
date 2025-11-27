@@ -1,6 +1,6 @@
 [project]
 name = "prompt-groomer"
-version = "0.2.1"
+version = "0.2.2"
 description = "A lightweight Python library for optimizing and cleaning LLM inputs"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -54,11 +54,8 @@ Documentation = "https://jacobhuang91.github.io/prompt-groomer/"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.build]
-packages = ["src/prompt_groomer"]
-
 [tool.hatch.build.targets.wheel]
-packages = ["src/prompt_groomer"]
+sources = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
