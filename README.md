@@ -162,9 +162,9 @@ Try prompt-groomer in your browser - no installation required!
 
 <div align="center">
 
-[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/JacobHuang91/prompt-groomer)
+[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/Xinghao91/prompt-groomer)
 
-**[🚀 Launch Interactive Demo →](https://huggingface.co/spaces/JacobHuang91/prompt-groomer)**
+**[🚀 Launch Interactive Demo →](https://huggingface.co/spaces/Xinghao91/prompt-groomer)**
 
 </div>
 
