@@ -156,6 +156,26 @@ We benchmarked Prompt Groomer on 30 real-world test cases (SQuAD + RAG scenarios
 >
 > 📖 **See full benchmark:** [benchmark/custom/README.md](benchmark/custom/README.md)
 
+## 🎮 Interactive Demo
+
+Try prompt-groomer in your browser - no installation required!
+
+<div align="center">
+
+[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/JacobHuang91/prompt-groomer)
+
+**[🚀 Launch Interactive Demo →](https://huggingface.co/spaces/JacobHuang91/prompt-groomer)**
+
+</div>
+
+Play with different strategies, see real-time token savings, and find the perfect configuration for your use case. Features:
+
+- 🎯 6 preset examples (e-commerce, support tickets, docs, RAG, etc.)
+- ⚡ Quick strategy presets (Minimal, Standard, Aggressive)
+- 💰 Real-time cost savings calculator
+- 🔧 All 7 operations configurable
+- 📊 Visual metrics dashboard
+
 ## 4 Core Modules
 
 Prompt Groomer is organized into 4 specialized modules:
