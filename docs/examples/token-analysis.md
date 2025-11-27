@@ -9,21 +9,20 @@ You want to demonstrate the value of prompt optimization.
 ## Example Code
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, CountTokens
+from prompt_groomer import StripHTML, NormalizeWhitespace, CountTokens
 
 original_text = "<p>Hello    World   from   HTML  </p>"
 
 # Initialize counter with original text
 counter = CountTokens(original_text=original_text)
 
-groomer = (
-    Groomer()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
-    .pipe(counter)
+pipeline = (
+    StripHTML()
+    | NormalizeWhitespace()
+    | counter
 )
 
-result = groomer.run(original_text)
+result = pipeline.run(original_text)
 
 # Show statistics
 print(counter.format_stats())

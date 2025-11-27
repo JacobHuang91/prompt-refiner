@@ -14,7 +14,7 @@ Prompt Groomer helps you clean and optimize prompts before sending them to LLM A
 !!! success "Proven Effectiveness"
     Benchmarked on 30 real-world test cases, Prompt Groomer achieves **4-15% token reduction** while maintaining 96-99% quality. Aggressive optimization can save up to **~$54/month** on GPT-4 at scale (1M tokens/month).
 
-    [See benchmark results →](https://github.com/JacobHuang91/prompt-groomer/tree/main/benchmark/custom#real-benchmark-results)
+    [See benchmark results →](benchmark.md)
 
 ## Status
 
@@ -23,23 +23,30 @@ Prompt Groomer helps you clean and optimize prompts before sending them to LLM A
 
 ## Quick Start
 
-Build custom cleaning pipelines with a fluent API:
+Build custom cleaning pipelines with the pipe operator:
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, TruncateTokens
+from prompt_groomer import StripHTML, NormalizeWhitespace, TruncateTokens
 
 # Define a cleaning pipeline
-groomer = (
-    Groomer()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
-    .pipe(TruncateTokens(max_tokens=1000, strategy="middle_out"))
+pipeline = (
+    StripHTML()
+    | NormalizeWhitespace()
+    | TruncateTokens(max_tokens=1000, strategy="middle_out")
 )
 
 raw_input = "<div>  User input with <b>lots</b> of   spaces... </div>"
-clean_prompt = groomer.run(raw_input)
+clean_prompt = pipeline.run(raw_input)
 # Output: "User input with lots of spaces..."
 ```
+
+!!! tip "Alternative: Fluent API"
+    Prefer method chaining? Use `Groomer().pipe()`:
+    ```python
+    from prompt_groomer import Groomer
+
+    pipeline = Groomer().pipe(StripHTML()).pipe(NormalizeWhitespace())
+    ```
 
 ## 4 Core Modules
 
@@ -73,7 +80,6 @@ Prompt Groomer is organized into 4 specialized modules:
 
 ```python
 from prompt_groomer import (
-    Groomer,
     # Cleaner
     StripHTML, NormalizeWhitespace, FixUnicode,
     # Compressor
@@ -88,22 +94,21 @@ original_text = """Your messy input here..."""
 
 counter = CountTokens(original_text=original_text)
 
-groomer = (
-    Groomer()
+pipeline = (
     # Clean
-    .pipe(StripHTML(to_markdown=True))
-    .pipe(NormalizeWhitespace())
-    .pipe(FixUnicode())
+    StripHTML(to_markdown=True)
+    | NormalizeWhitespace()
+    | FixUnicode()
     # Compress
-    .pipe(Deduplicate(similarity_threshold=0.85))
-    .pipe(TruncateTokens(max_tokens=500, strategy="head"))
+    | Deduplicate(similarity_threshold=0.85)
+    | TruncateTokens(max_tokens=500, strategy="head")
     # Secure
-    .pipe(RedactPII(redact_types={"email", "phone"}))
+    | RedactPII(redact_types={"email", "phone"})
     # Analyze
-    .pipe(counter)
+    | counter
 )
 
-result = groomer.run(original_text)
+result = pipeline.run(original_text)
 print(counter.format_stats())  # Shows token savings
 ```
 
@@ -111,7 +116,7 @@ print(counter.format_stats())  # Shows token savings
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Get Started__
+-   __Get Started__
 
     ---
 
@@ -119,7 +124,7 @@ print(counter.format_stats())  # Shows token savings
 
     [:octicons-arrow-right-24: Getting Started](getting-started.md)
 
--   :material-file-document:{ .lg .middle } __API Reference__
+-   __API Reference__
 
     ---
 
@@ -127,7 +132,7 @@ print(counter.format_stats())  # Shows token savings
 
     [:octicons-arrow-right-24: API Reference](api-reference/index.md)
 
--   :material-code-braces:{ .lg .middle } __Examples__
+-   __Examples__
 
     ---
 
@@ -135,7 +140,7 @@ print(counter.format_stats())  # Shows token savings
 
     [:octicons-arrow-right-24: Examples](examples/index.md)
 
--   :material-account-group:{ .lg .middle } __Contributing__
+-   __Contributing__
 
     ---
 

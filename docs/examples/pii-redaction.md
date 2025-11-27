@@ -9,15 +9,15 @@ User input contains personal information that should not be sent to external LLM
 ## Example Code
 
 ```python
-from prompt_groomer import Groomer, RedactPII
+from prompt_groomer import RedactPII
 
 user_input = """
 Please contact me at john.doe@example.com or call 555-123-4567.
 My account number is EMP-12345.
 """
 
-groomer = Groomer().pipe(RedactPII())
-secure = groomer.run(user_input)
+pipeline = RedactPII()
+secure = pipeline.run(user_input)
 
 print(secure)
 # Output:
@@ -28,12 +28,12 @@ print(secure)
 ## Custom Patterns
 
 ```python
-groomer = Groomer().pipe(RedactPII(
+pipeline = RedactPII(
     redact_types={"email", "phone"},
     custom_patterns={"employee_id": r"EMP-\d{5}"}
-))
+)
 
-secure = groomer.run(user_input)
+secure = pipeline.run(user_input)
 # Now EMP-12345 is also redacted as [EMPLOYEE_ID]
 ```
 

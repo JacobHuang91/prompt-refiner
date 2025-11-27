@@ -32,16 +32,23 @@ All operations implement the same interface: `process(text: str) -> str`
 A **Pipeline** chains multiple operations together:
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace
+from prompt_groomer import StripHTML, NormalizeWhitespace
 
+# Using the pipe operator (recommended)
 pipeline = (
-    Groomer()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
+    StripHTML()
+    | NormalizeWhitespace()
 )
 
 result = pipeline.run("<p>Hello    World</p>")
 # Output: "Hello World"
+```
+
+Alternatively, use the fluent API:
+```python
+from prompt_groomer import Groomer
+
+pipeline = Groomer().pipe(StripHTML()).pipe(NormalizeWhitespace())
 ```
 
 ### The 4 Modules

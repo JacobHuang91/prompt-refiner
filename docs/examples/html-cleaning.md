@@ -9,7 +9,7 @@ You've scraped content from a website and need to clean it before sending to an 
 ## Example Code
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace
+from prompt_groomer import StripHTML, NormalizeWhitespace
 
 html_content = """
 <div class="article">
@@ -19,13 +19,12 @@ html_content = """
 """
 
 # Remove all HTML and normalize whitespace
-groomer = (
-    Groomer()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
+pipeline = (
+    StripHTML()
+    | NormalizeWhitespace()
 )
 
-cleaned = groomer.run(html_content)
+cleaned = pipeline.run(html_content)
 print(cleaned)
 # Output: "Understanding LLMs Large Language Models are powerful AI systems."
 ```
@@ -34,13 +33,12 @@ print(cleaned)
 
 ```python
 # Convert HTML to Markdown instead of removing
-groomer = (
-    Groomer()
-    .pipe(StripHTML(to_markdown=True))
-    .pipe(NormalizeWhitespace())
+pipeline = (
+    StripHTML(to_markdown=True)
+    | NormalizeWhitespace()
 )
 
-markdown = groomer.run(html_content)
+markdown = pipeline.run(html_content)
 print(markdown)
 # Output:
 # # Understanding **LLMs**

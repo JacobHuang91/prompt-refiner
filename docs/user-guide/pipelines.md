@@ -108,14 +108,11 @@ pipeline = (
 ### 3. Analyze Last
 
 ```python
-from prompt_groomer import Groomer  # Groomer needed for CountTokens pattern
-
 counter = CountTokens(original_text=text)
 pipeline = (
-    Groomer()
-    .pipe(StripHTML())
-    .pipe(TruncateTokens())
-    .pipe(counter)  # Analyze at the end
+    StripHTML()
+    | TruncateTokens()
+    | counter  # Analyze at the end
 )
 ```
 

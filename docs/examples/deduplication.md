@@ -9,7 +9,7 @@ Your RAG system retrieved multiple similar chunks that contain overlapping infor
 ## Example Code
 
 ```python
-from prompt_groomer import Groomer, Deduplicate
+from prompt_groomer import Deduplicate
 
 # RAG results with duplicates
 rag_results = """
@@ -20,8 +20,8 @@ Python is a high level programming language.
 Python supports multiple programming paradigms.
 """
 
-groomer = Groomer().pipe(Deduplicate(similarity_threshold=0.85))
-deduplicated = groomer.run(rag_results)
+pipeline = Deduplicate(similarity_threshold=0.85)
+deduplicated = pipeline.run(rag_results)
 
 print(deduplicated)
 # Output: Only unique paragraphs remain
@@ -31,10 +31,10 @@ print(deduplicated)
 
 ```python
 # More aggressive (70% similarity)
-groomer = Groomer().pipe(Deduplicate(similarity_threshold=0.70))
+pipeline = Deduplicate(similarity_threshold=0.70)
 
 # Sentence-level deduplication
-groomer = Groomer().pipe(Deduplicate(granularity="sentence"))
+pipeline = Deduplicate(granularity="sentence")
 ```
 
 ## Performance Considerations
@@ -45,11 +45,11 @@ When working with large RAG contexts, keep these performance tips in mind:
 
 ```python
 # Fast: Jaccard (word-based) - recommended for most use cases
-groomer = Groomer().pipe(Deduplicate(method="jaccard"))
+pipeline = Deduplicate(method="jaccard")
 
 # Precise but slower: Levenshtein (character-based)
 # Only use when you need character-level accuracy
-groomer = Groomer().pipe(Deduplicate(method="levenshtein"))
+pipeline = Deduplicate(method="levenshtein")
 ```
 
 ### Scaling with Input Size
@@ -62,12 +62,10 @@ The deduplication algorithm compares each chunk against all previous chunks (O(n
 
 ```python
 # For large documents: use paragraph granularity
-groomer = Groomer().pipe(
-    Deduplicate(
-        similarity_threshold=0.85,
-        method="jaccard",
-        granularity="paragraph"  # Fewer chunks = faster
-    )
+pipeline = Deduplicate(
+    similarity_threshold=0.85,
+    method="jaccard",
+    granularity="paragraph"  # Fewer chunks = faster
 )
 ```
 

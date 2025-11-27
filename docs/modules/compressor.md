@@ -52,12 +52,11 @@ deduper = Deduplicate(granularity="sentence")
 ### RAG Context Optimization
 
 ```python
-from prompt_groomer import Groomer, Deduplicate, TruncateTokens
+from prompt_groomer import Deduplicate, TruncateTokens
 
 rag_optimizer = (
-    Groomer()
-    .pipe(Deduplicate())
-    .pipe(TruncateTokens(max_tokens=2000))
+    Deduplicate()
+    | TruncateTokens(max_tokens=2000)
 )
 ```
 

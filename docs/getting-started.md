@@ -21,13 +21,12 @@ Get up and running with Prompt Groomer in minutes.
 Let's create a simple pipeline to clean HTML and normalize whitespace:
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace
+from prompt_groomer import StripHTML, NormalizeWhitespace
 
-# Create a pipeline
-groomer = (
-    Groomer()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
+# Create a pipeline using the pipe operator
+pipeline = (
+    StripHTML()
+    | NormalizeWhitespace()
 )
 
 # Process some text
@@ -40,7 +39,7 @@ raw_input = """
 </html>
 """
 
-clean_output = groomer.run(raw_input)
+clean_output = pipeline.run(raw_input)
 print(clean_output)
 # Output: "Welcome This has excessive spaces."
 ```
@@ -49,20 +48,32 @@ print(clean_output)
 
 Prompt Groomer uses a **pipeline pattern** where you chain operations together:
 
-1. **Create a Groomer** - Initialize an empty pipeline
-2. **Add operations with `.pipe()`** - Chain operations in order
+1. **Create operations** - Initialize the operations you need
+2. **Chain with `|` operator** - Combine operations in order
 3. **Run with `.run()`** - Execute the pipeline on your text
 
 ```python
-groomer = (
-    Groomer()               # 1. Create
-    .pipe(Operation1())     # 2. Add operations
-    .pipe(Operation2())
-    .pipe(Operation3())
+pipeline = (
+    Operation1()            # 1. Create operations
+    | Operation2()          # 2. Chain with | operator
+    | Operation3()
 )
 
-result = groomer.run(text)  # 3. Run
+result = pipeline.run(text)  # 3. Run
 ```
+
+!!! tip "Alternative: Fluent API"
+    Prefer method chaining? Use the traditional fluent API with `Groomer().pipe()`:
+    ```python
+    from prompt_groomer import Groomer
+
+    pipeline = (
+        Groomer()
+        .pipe(Operation1())
+        .pipe(Operation2())
+        .pipe(Operation3())
+    )
+    ```
 
 !!! tip "Order Matters"
     Operations run in the order you add them. For example, you should typically clean HTML before normalizing whitespace.
@@ -74,13 +85,12 @@ result = groomer.run(text)  # 3. Run
 Clean content scraped from the web:
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, FixUnicode
+from prompt_groomer import StripHTML, NormalizeWhitespace, FixUnicode
 
 web_cleaner = (
-    Groomer()
-    .pipe(StripHTML(to_markdown=True))  # Convert to Markdown
-    .pipe(FixUnicode())                 # Fix Unicode issues
-    .pipe(NormalizeWhitespace())        # Normalize spaces
+    StripHTML(to_markdown=True)  # Convert to Markdown
+    | FixUnicode()               # Fix Unicode issues
+    | NormalizeWhitespace()      # Normalize spaces
 )
 ```
 
@@ -89,12 +99,11 @@ web_cleaner = (
 Optimize retrieved context for RAG applications:
 
 ```python
-from prompt_groomer import Groomer, Deduplicate, TruncateTokens
+from prompt_groomer import Deduplicate, TruncateTokens
 
 rag_optimizer = (
-    Groomer()
-    .pipe(Deduplicate(similarity_threshold=0.85))  # Remove duplicates
-    .pipe(TruncateTokens(max_tokens=2000))        # Fit in context window
+    Deduplicate(similarity_threshold=0.85)  # Remove duplicates
+    | TruncateTokens(max_tokens=2000)       # Fit in context window
 )
 ```
 
@@ -103,12 +112,9 @@ rag_optimizer = (
 Redact sensitive information before sending to APIs:
 
 ```python
-from prompt_groomer import Groomer, RedactPII
+from prompt_groomer import RedactPII
 
-secure_groomer = (
-    Groomer()
-    .pipe(RedactPII(redact_types={"email", "phone", "ssn"}))
-)
+secure_pipeline = RedactPII(redact_types={"email", "phone", "ssn"})
 ```
 
 ### Pattern 4: Full Optimization with Tracking
@@ -117,7 +123,7 @@ Complete optimization with metrics:
 
 ```python
 from prompt_groomer import (
-    Groomer, StripHTML, NormalizeWhitespace,
+    StripHTML, NormalizeWhitespace,
     TruncateTokens, RedactPII, CountTokens
 )
 
@@ -125,17 +131,27 @@ original_text = "Your text here..."
 counter = CountTokens(original_text=original_text)
 
 full_pipeline = (
-    Groomer()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
-    .pipe(TruncateTokens(max_tokens=1000))
-    .pipe(RedactPII())
-    .pipe(counter)
+    StripHTML()
+    | NormalizeWhitespace()
+    | TruncateTokens(max_tokens=1000)
+    | RedactPII()
+    | counter
 )
 
 result = full_pipeline.run(original_text)
 print(counter.format_stats())
 ```
+
+## Proven Results
+
+Curious about the real-world effectiveness? Check out our comprehensive benchmark results:
+
+!!! success "Benchmark Highlights"
+    - **4-15% token reduction** across 30 test cases
+    - **96-99% quality preservation** (cosine similarity + LLM judge)
+    - **Real cost savings**: $48-$150/month per 1M tokens
+
+[View Full Benchmark →](benchmark.md){ .md-button .md-button--primary }
 
 ## Exploring Modules
 
@@ -150,7 +166,7 @@ Prompt Groomer has 4 specialized modules:
 
 <div class="grid cards" markdown>
 
--   :material-book-open-variant:{ .lg .middle } __Learn the Modules__
+-   __Learn the Modules__
 
     ---
 
@@ -158,7 +174,7 @@ Prompt Groomer has 4 specialized modules:
 
     [:octicons-arrow-right-24: Modules Overview](modules/overview.md)
 
--   :material-code-braces:{ .lg .middle } __Browse Examples__
+-   __Browse Examples__
 
     ---
 
@@ -166,7 +182,7 @@ Prompt Groomer has 4 specialized modules:
 
     [:octicons-arrow-right-24: Examples](examples/index.md)
 
--   :material-file-document:{ .lg .middle } __API Reference__
+-   __API Reference__
 
     ---
 

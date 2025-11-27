@@ -6,7 +6,6 @@ A comprehensive example using all 4 modules together.
 
 ```python
 from prompt_groomer import (
-    Groomer,
     # Cleaner
     StripHTML, NormalizeWhitespace, FixUnicode,
     # Compressor
@@ -30,30 +29,43 @@ messy_input = """
 # Initialize counter
 counter = CountTokens(original_text=messy_input)
 
-# Build complete pipeline
-groomer = (
-    Groomer()
+# Build complete pipeline using pipe operator (recommended)
+pipeline = (
     # Clean dirty data
-    .pipe(StripHTML())
-    .pipe(FixUnicode())
-    .pipe(NormalizeWhitespace())
+    StripHTML()
+    | FixUnicode()
+    | NormalizeWhitespace()
     # Compress
-    .pipe(Deduplicate(similarity_threshold=0.85))
-    .pipe(TruncateTokens(max_tokens=50, strategy="head"))
+    | Deduplicate(similarity_threshold=0.85)
+    | TruncateTokens(max_tokens=50, strategy="head")
     # Secure
-    .pipe(RedactPII(redact_types={"email", "phone", "ip"}))
+    | RedactPII(redact_types={"email", "phone", "ip"})
     # Analyze
-    .pipe(counter)
+    | counter
 )
 
 # Run pipeline
-result = groomer.run(messy_input)
+result = pipeline.run(messy_input)
 
 print("Optimized result:")
 print(result)
 print("\nStatistics:")
 print(counter.format_stats())
 ```
+
+!!! tip "Alternative: Fluent API"
+    You can also use `.pipe()` method chaining:
+    ```python
+    from prompt_groomer import Groomer
+
+    pipeline = (
+        Groomer()
+        .pipe(StripHTML())
+        .pipe(FixUnicode())
+        .pipe(NormalizeWhitespace())
+        # ... continue with other operations
+    )
+    ```
 
 ## Full Example
 

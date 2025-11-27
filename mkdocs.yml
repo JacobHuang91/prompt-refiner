@@ -67,6 +67,7 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
+  - Benchmark: benchmark.md
   - User Guide:
       - Overview: user-guide/overview.md
       - Pipeline Basics: user-guide/pipelines.md

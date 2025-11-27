@@ -8,44 +8,44 @@ The `Groomer` class is the core pipeline builder that allows you to chain multip
       members_order: source
       heading_level: 2
 
-## Usage Example
+## Usage Examples
+
+### Pipe Operator (Recommended)
+
+```python
+from prompt_groomer import StripHTML, NormalizeWhitespace
+
+# Create a pipeline using the pipe operator
+pipeline = (
+    StripHTML()
+    | NormalizeWhitespace()
+)
+
+# Execute the pipeline
+result = pipeline.run("<p>Hello   World!</p>")
+print(result)  # "Hello World!"
+```
+
+### Fluent API with .pipe()
+
+The `Groomer` class supports method chaining with `.pipe()`:
 
 ```python
 from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace
 
-# Create and configure a pipeline
-groomer = (
+# Create a pipeline using the fluent API
+pipeline = (
     Groomer()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
 )
 
 # Execute the pipeline
-result = groomer.run("<p>Hello   World!</p>")
+result = pipeline.run("<p>Hello   World!</p>")
 print(result)  # "Hello World!"
 ```
 
-## Method Chaining
-
-The `Groomer` class supports method chaining, allowing you to build readable pipelines:
-
-```python
-groomer = (
-    Groomer()
-    .pipe(Operation1())
-    .pipe(Operation2())
-    .pipe(Operation3())
-)
-```
-
-This is equivalent to:
-
-```python
-groomer = Groomer()
-groomer.pipe(Operation1())
-groomer.pipe(Operation2())
-groomer.pipe(Operation3())
-```
+Both approaches work identically - choose the one that fits your style.
 
 ## Pipeline Execution
 

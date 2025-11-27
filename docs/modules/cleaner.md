@@ -27,15 +27,15 @@ Remove HTML tags or convert them to Markdown.
 **Example:**
 
 ```python
-from prompt_groomer import Groomer, StripHTML
+from prompt_groomer import StripHTML
 
 # Remove all HTML
-cleaner = Groomer().pipe(StripHTML())
+cleaner = StripHTML()
 result = cleaner.run("<p>Hello <b>World</b>!</p>")
 # Output: "Hello World!"
 
 # Convert to Markdown
-cleaner = Groomer().pipe(StripHTML(to_markdown=True))
+cleaner = StripHTML(to_markdown=True)
 result = cleaner.run("<p>Hello <b>World</b>!</p>")
 # Output: "Hello **World**!\n\n"
 ```
@@ -55,9 +55,9 @@ Collapse excessive whitespace, tabs, and newlines.
 **Example:**
 
 ```python
-from prompt_groomer import Groomer, NormalizeWhitespace
+from prompt_groomer import NormalizeWhitespace
 
-cleaner = Groomer().pipe(NormalizeWhitespace())
+cleaner = NormalizeWhitespace()
 result = cleaner.run("Hello    World  \t\n  Foo")
 # Output: "Hello World Foo"
 ```
@@ -77,9 +77,9 @@ Remove problematic Unicode characters.
 **Example:**
 
 ```python
-from prompt_groomer import Groomer, FixUnicode
+from prompt_groomer import FixUnicode
 
-cleaner = Groomer().pipe(FixUnicode())
+cleaner = FixUnicode()
 result = cleaner.run("Hello\u200bWorld")
 # Output: "HelloWorld"
 ```
@@ -91,25 +91,23 @@ result = cleaner.run("Hello\u200bWorld")
 ### Web Content Pipeline
 
 ```python
-from prompt_groomer import Groomer, StripHTML, FixUnicode, NormalizeWhitespace
+from prompt_groomer import StripHTML, FixUnicode, NormalizeWhitespace
 
 web_cleaner = (
-    Groomer()
-    .pipe(StripHTML(to_markdown=True))
-    .pipe(FixUnicode())
-    .pipe(NormalizeWhitespace())
+    StripHTML(to_markdown=True)
+    | FixUnicode()
+    | NormalizeWhitespace()
 )
 ```
 
 ### Text Normalization
 
 ```python
-from prompt_groomer import Groomer, FixUnicode, NormalizeWhitespace
+from prompt_groomer import FixUnicode, NormalizeWhitespace
 
 normalizer = (
-    Groomer()
-    .pipe(FixUnicode())
-    .pipe(NormalizeWhitespace())
+    FixUnicode()
+    | NormalizeWhitespace()
 )
 ```
 
