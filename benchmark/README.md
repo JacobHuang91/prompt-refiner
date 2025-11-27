@@ -4,6 +4,20 @@ This directory contains different benchmarking approaches to validate the cost-e
 
 ## 📊 Available Benchmarks
 
+### [`latency/`](latency/) - Latency & Performance
+
+Measures the processing overhead of prompt grooming operations:
+- Tests individual operations and complete strategies
+- Measures latency at 1k, 10k, and 50k token scales
+- Reports average, median, and P95 latency
+- Zero cost - no API calls needed
+
+**Cost**: $0 (runs locally)
+
+**When to use**: Performance validation, answering "what's the overhead?", optimizing for latency-critical applications
+
+[→ See latency benchmark documentation](latency/README.md)
+
 ### [`custom/`](custom/) - Custom A/B Testing
 
 A custom A/B testing approach that compares raw vs groomed prompts:
@@ -14,7 +28,7 @@ A custom A/B testing approach that compares raw vs groomed prompts:
 
 **Cost**: ~$2-5 per full run (using gpt-4o-mini)
 
-**When to use**: Quick validation, proving concept, establishing baseline metrics
+**When to use**: Quality validation, proving cost savings, establishing baseline metrics
 
 [→ See custom benchmark documentation](custom/README.md)
 
@@ -36,15 +50,21 @@ A custom A/B testing approach that compares raw vs groomed prompts:
 
 3. **Run a benchmark**:
    ```bash
+   # Latency benchmark (no API key needed)
+   cd latency
+   python benchmark.py
+
+   # Quality/cost benchmark (requires OpenAI API key)
    cd custom
    python benchmark.py
    ```
 
 ## 📈 Choosing a Benchmark
 
-| Benchmark | Speed | Cost | Accuracy | Best For |
-|-----------|-------|------|----------|----------|
-| **custom** | Fast | Low | Good | Quick validation, CI/CD |
+| Benchmark | Speed | Cost | What It Measures | Best For |
+|-----------|-------|------|------------------|----------|
+| **latency** | Very Fast | $0 | Processing overhead, execution time | Performance validation, latency analysis |
+| **custom** | Fast | ~$3 | Token reduction, response quality | Quality & cost savings validation |
 | **promptfoo** | - | - | - | *(coming soon)* |
 | **ragas** | - | - | - | *(coming soon)* |
 

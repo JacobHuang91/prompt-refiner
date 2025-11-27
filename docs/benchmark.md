@@ -1,8 +1,22 @@
 # Benchmark Results
 
-Prompt Groomer's effectiveness has been validated through comprehensive A/B testing on 30 real-world test cases.
+Prompt Groomer's effectiveness has been validated through comprehensive testing covering both **quality & cost savings** and **performance & latency**.
 
-## Overview
+## Available Benchmarks
+
+### 🎯 Quality & Cost Benchmark
+Comprehensive A/B testing on 30 real-world test cases measuring token reduction and response quality.
+
+[Jump to Quality Benchmark →](#results-summary)
+
+### ⚡ Latency Benchmark
+Performance testing measuring processing overhead of grooming operations.
+
+[Jump to Latency Benchmark →](#latency-performance)
+
+---
+
+## Quality & Cost Results
 
 The benchmark measures two critical factors:
 
@@ -193,9 +207,62 @@ Use **Minimal strategy** for maximum quality preservation
 pipeline = StripHTML() | NormalizeWhitespace()
 ```
 
+---
+
+## Latency & Performance
+
+**"What's the latency overhead?"** - Negligible. Prompt Groomer adds **< 0.5ms per 1k tokens** of overhead.
+
+### Performance Results
+
+| Strategy | @ 1k tokens | @ 10k tokens | @ 50k tokens | Overhead per 1k tokens |
+|----------|------------|--------------|--------------|------------------------|
+| **Minimal** (HTML + Whitespace) | 0.05ms | 0.48ms | 2.39ms | **0.05ms** |
+| **Standard** (+ Deduplicate) | 0.26ms | 2.47ms | 12.27ms | **0.25ms** |
+| **Aggressive** (+ Truncate) | 0.26ms | 2.46ms | 12.38ms | **0.25ms** |
+
+### Key Performance Insights
+
+- ⚡ **Minimal strategy**: Only 0.05ms per 1k tokens (faster than a network packet)
+- 🎯 **Standard strategy**: 0.25ms per 1k tokens - adds ~2.5ms to a 10k token prompt
+- 📊 **Context**: Network + LLM TTFT is typically 600ms+, grooming adds < 0.5% overhead
+- 🚀 **Individual operations** (HTML, whitespace) are < 0.5ms per 1k tokens
+
+### Real-World Impact
+
+```
+10k token RAG context grooming: ~2.5ms overhead
+Network latency: ~100ms
+LLM Processing (TTFT): ~500ms+
+Total overhead: < 0.5% of request time
+```
+
+!!! success "Performance Takeaway"
+    Grooming overhead is negligible compared to network + LLM latency (600ms+). Standard grooming adds ~2.5ms overhead - less than 0.5% of total request time.
+
+### Running the Latency Benchmark
+
+The latency benchmark requires **no API keys** and runs completely offline:
+
+```bash
+cd benchmark/latency
+python benchmark.py
+```
+
+This will:
+1. Test individual operations at multiple scales (1k, 10k, 50k tokens)
+2. Test complete strategies (Minimal, Standard, Aggressive)
+3. Report average, median, and P95 latency metrics
+4. Show per-1k-token normalized overhead
+
+**Cost:** $0 (runs locally, no API calls)
+
+**Duration:** ~30-60 seconds
+
 ## Learn More
 
-- [View Full Benchmark Documentation](https://github.com/JacobHuang91/prompt-groomer/tree/main/benchmark/custom)
+- [View Quality Benchmark Documentation](https://github.com/JacobHuang91/prompt-groomer/tree/main/benchmark/custom)
+- [View Latency Benchmark Documentation](https://github.com/JacobHuang91/prompt-groomer/tree/main/benchmark/latency)
 - [Browse Test Cases](https://github.com/JacobHuang91/prompt-groomer/tree/main/benchmark/custom/data)
 - [Examine Raw Results](https://github.com/JacobHuang91/prompt-groomer/blob/main/benchmark/custom/results/BENCHMARK_RESULTS.md)
 

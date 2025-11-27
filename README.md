@@ -55,8 +55,9 @@ cleaned = (StripHTML() | NormalizeWhitespace()).run(dirty_input)
 ### ✨ Key Features
 
 - **🪶 Zero Dependencies** - Lightweight core with no external dependencies
+- **⚡ Blazing Fast** - < 0.5ms per 1k tokens overhead, negligible impact on API latency
 - **🔧 Modular Design** - 4 focused modules: Cleaner, Compressor, Scrubber, Analyzer
-- **⚡ Production Ready** - Battle-tested operations with comprehensive test coverage
+- **🚀 Production Ready** - Battle-tested operations with comprehensive test coverage
 - **🎯 Type Safe** - Full type hints for better IDE support and fewer bugs
 - **📦 Easy to Use** - Modern pipe operator syntax (`|`), compose operations like LEGO blocks
 
@@ -156,6 +157,36 @@ We benchmarked Prompt Groomer on 30 real-world test cases (SQuAD + RAG scenarios
 > 💰 **Cost Savings:** At scale (1M tokens/month), 15% reduction saves **~$54/month** on GPT-4 input tokens.
 >
 > 📖 **See full benchmark:** [benchmark/custom/README.md](benchmark/custom/README.md)
+
+## ⚡ Performance & Latency
+
+**"What's the latency overhead?"** - Negligible. Prompt Groomer adds **< 0.5ms per 1k tokens** of overhead.
+
+<div align="center">
+
+| Strategy | @ 1k tokens | @ 10k tokens | @ 50k tokens | Overhead per 1k tokens |
+|----------|------------|--------------|--------------|------------------------|
+| **Minimal** (HTML + Whitespace) | 0.05ms | 0.48ms | 2.39ms | **0.05ms** |
+| **Standard** (+ Deduplicate) | 0.26ms | 2.47ms | 12.27ms | **0.25ms** |
+| **Aggressive** (+ Truncate) | 0.26ms | 2.46ms | 12.38ms | **0.25ms** |
+
+</div>
+
+**Key Insights:**
+- ⚡ **Minimal strategy**: Only 0.05ms per 1k tokens (faster than a network packet)
+- 🎯 **Standard strategy**: 0.25ms per 1k tokens - adds ~2.5ms to a 10k token prompt
+- 📊 **Context**: Network + LLM TTFT is typically 600ms+, grooming adds < 0.5% overhead
+- 🚀 **Individual operations** (HTML, whitespace) are < 0.5ms per 1k tokens
+
+**Real-world impact:**
+```
+10k token RAG context grooming: ~2.5ms overhead
+Network latency: ~100ms
+LLM Processing (TTFT): ~500ms+
+Total overhead: < 0.5% of request time
+```
+
+> 🔬 **Run yourself:** `python benchmark/latency/benchmark.py` (no API keys needed)
 
 ## 🎮 Interactive Demo
 

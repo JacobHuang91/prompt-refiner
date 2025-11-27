@@ -32,7 +32,7 @@ Each module contains specialized operations that can be composed into pipelines 
 
 1. **Unicode handling**: Be careful with non-ASCII characters
 2. **Whitespace**: Different types (spaces, tabs, newlines) need different handling
-3. **Performance**: Process large prompts efficiently
+3. **Performance**: Process large prompts efficiently (target: < 0.5ms per 1k tokens)
 4. **Backward compatibility**: Don't break existing functionality when adding features
 
 ## Technology Stack
@@ -83,7 +83,11 @@ examples/
 └── all_modules_demo.py  # Complete demo
 
 benchmark/
-└── custom/              # Custom A/B testing benchmark
+├── README.md            # Index of all benchmarks
+├── latency/             # Latency/performance benchmark
+│   ├── benchmark.py     # Performance measurement script
+│   └── README.md        # Latency benchmark documentation
+└── custom/              # Quality/cost A/B testing benchmark
     ├── benchmark.py     # Main orchestrator
     ├── datasets.py      # Test data loader
     ├── evaluators.py    # Quality metrics (cosine + LLM judge)
@@ -94,12 +98,16 @@ benchmark/
     └── README.md        # Full benchmark documentation
 ```
 
-## Testing
+## Testing & Benchmarking
 
+### Unit Tests
 - Unit tests for all operations organized by module
 - Edge case testing (empty strings, Unicode, very long inputs)
-- Performance benchmarks for large inputs
 - Tests are separated by module for better organization
+
+### Benchmarks
+- **Latency Benchmark**: Measures processing overhead (< 0.5ms per 1k tokens)
+- **Quality/Cost Benchmark**: Measures token reduction (4-15%) and response quality (96-99%)
 
 ## Future Vision
 
