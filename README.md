@@ -120,6 +120,42 @@ clean_prompt = pipeline.run(raw_input)
 
 > 💡 **Why pipe operator?** More concise, Pythonic, and familiar to LangChain/LangGraph users.
 
+## 📊 Proven Effectiveness
+
+We benchmarked Prompt Groomer on 30 real-world test cases (SQuAD + RAG scenarios) to measure token reduction and response quality:
+
+<div align="center">
+
+| Strategy | Token Reduction | Quality (Cosine) | Judge Approval | Overall Equivalent |
+|----------|----------------|------------------|----------------|--------------------|
+| **Minimal** | 4.3% | 0.987 | 86.7% | 86.7% |
+| **Standard** | 4.8% | 0.984 | 90.0% | 86.7% |
+| **Aggressive** | **15.0%** | 0.964 | 80.0% | 66.7% |
+
+</div>
+
+**Key Insights:**
+- **Aggressive strategy achieves 3x more savings (15%) vs Minimal** while maintaining 96.4% quality
+- Individual RAG tests showed **17-74% token savings** with aggressive strategy
+- **Deduplicate** (Standard) shows minimal gains on typical RAG contexts
+- **TruncateTokens** (Aggressive) provides the largest cost reduction for long contexts
+- **Trade-off**: More aggressive = more savings but slightly lower judge approval
+
+**Example: RAG with duplicates**
+- Minimal (HTML + Whitespace): 17% reduction
+- Standard (+ Deduplicate): 31% reduction
+- **Aggressive (+ Truncate 150 tokens): 49% reduction** 🎉
+
+<div align="center">
+
+![Token Reduction vs Quality](benchmark/simple/results/benchmark_results.png)
+
+</div>
+
+> 💰 **Cost Savings:** At scale (1M tokens/month), 15% reduction saves **~$54/month** on GPT-4 input tokens.
+>
+> 📖 **See full benchmark:** [benchmark/simple/README.md](benchmark/simple/README.md)
+
 ## 4 Core Modules
 
 Prompt Groomer is organized into 4 specialized modules:

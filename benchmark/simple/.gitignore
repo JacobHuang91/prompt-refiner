@@ -1,0 +1,32 @@
+# Environment variables with API keys
+.env
+
+# Results directory
+results/
+*.csv
+*.png
+*.md
+!README.md
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

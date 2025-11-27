@@ -1,0 +1,92 @@
+[
+  {
+    "id": "squad_001",
+    "question": "When did Beyonce start becoming popular?",
+    "context": "Beyoncé Giselle Knowles-Carter (/biːˈjɒnseɪ/ bee-YON-say) (born September 4, 1981) is an American singer, songwriter, record producer and actress. Born and raised in Houston, Texas, she performed in various singing and dancing competitions as a child, and rose to fame in the late 1990s as lead singer of R&B girl-group Destiny's Child.   Managed by her father, Mathew Knowles, the group became one of the world's best-selling girl groups of all time. Their hiatus saw the release of Beyoncé's debut album, Dangerously in Love (2003), which established her as a solo artist worldwide, earned five Grammy Awards and featured the Billboard Hot 100 number-one singles \"Crazy in Love\" and \"Baby Boy\".",
+    "expected_answer": "in the late 1990s"
+  },
+  {
+    "id": "squad_002",
+    "question": "What is the most common element in the Earth's atmosphere?",
+    "context": "The atmosphere of Earth is the layer of gases, commonly known as air, that surrounds the planet Earth and is retained by Earth's gravity.   The atmosphere protects life on Earth by absorbing ultraviolet solar radiation, warming the surface through heat retention (greenhouse effect), and reducing temperature extremes between day and night.   By volume, dry air contains 78.09% nitrogen, 20.95% oxygen, 0.93% argon, 0.04% carbon dioxide, and small amounts of other gases.",
+    "expected_answer": "nitrogen"
+  },
+  {
+    "id": "squad_003",
+    "question": "Who invented the telephone?",
+    "context": "Alexander Graham Bell (March 3, 1847 – August 2, 1922) was a Scottish-born scientist, inventor, engineer, and innovator who is credited with inventing and patenting the first practical telephone.   He also founded the American Telephone and Telegraph Company (AT&T) in 1885.   Bell's father, grandfather, and brother had all been associated with work on elocution and speech, and both his mother and wife were deaf, profoundly influencing Bell's life's work.",
+    "expected_answer": "Alexander Graham Bell"
+  },
+  {
+    "id": "squad_004",
+    "question": "What year did World War II end?",
+    "context": "World War II (often abbreviated to WWII or WW2), also known as the Second World War, was a global war that lasted from 1939 to 1945.   The vast majority of the world's countries—including all the great powers—eventually formed two opposing military alliances: the Allies and the Axis.   It was the most widespread war in history, and directly involved more than 100 million people from over 30 countries.   In a state of total war, the major participants threw their entire economic, industrial, and scientific capabilities behind the war effort, blurring the distinction between civilian and military resources.",
+    "expected_answer": "1945"
+  },
+  {
+    "id": "squad_005",
+    "question": "What is the capital of France?",
+    "context": "France, officially the French Republic, is a country whose territory consists of metropolitan France in Western Europe and several overseas regions and territories.   The metropolitan area of France extends from the Mediterranean Sea to the English Channel and the North Sea, and from the Rhine to the Atlantic Ocean.   Paris is the country's largest city and its capital, with over 2.2 million residents as of 2021.   Other major urban areas include Lyon, Marseille, Toulouse, Bordeaux, Lille and Nice.",
+    "expected_answer": "Paris"
+  },
+  {
+    "id": "squad_006",
+    "question": "How many planets are in our solar system?",
+    "context": "The Solar System is the gravitationally bound system of the Sun and the objects that orbit it, either directly or indirectly.   Of the objects that orbit the Sun directly, the largest are the eight planets, with the remainder being smaller objects, the dwarf planets and small Solar System bodies.   The eight planets are Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, and Neptune.   Pluto was reclassified as a dwarf planet in 2006.",
+    "expected_answer": "eight planets"
+  },
+  {
+    "id": "squad_007",
+    "question": "Who wrote Romeo and Juliet?",
+    "context": "Romeo and Juliet is a tragedy written by William Shakespeare early in his career about two young star-crossed lovers whose deaths ultimately reconcile their feuding families.   It was among Shakespeare's most popular plays during his lifetime and, along with Hamlet, is one of his most frequently performed plays.   Today, the title characters are regarded as archetypal young lovers.   The play is set in Verona, Italy.",
+    "expected_answer": "William Shakespeare"
+  },
+  {
+    "id": "squad_008",
+    "question": "What is the boiling point of water at sea level?",
+    "context": "Water is a transparent, tasteless, odorless, and nearly colorless chemical substance, which is the main constituent of Earth's streams, lakes, and oceans, and the fluids of most living organisms.   At sea level, water boils at 100 degrees Celsius (212 degrees Fahrenheit).   However, the boiling point decreases with altitude due to lower atmospheric pressure.   Water freezes at 0 degrees Celsius (32 degrees Fahrenheit) at standard atmospheric pressure.",
+    "expected_answer": "100 degrees Celsius"
+  },
+  {
+    "id": "squad_009",
+    "question": "How many continents are there?",
+    "context": "A continent is one of several very large landmasses.   Generally identified by convention rather than any strict criteria, up to seven regions are commonly regarded as continents.   These are (from largest in size to smallest): Asia, Africa, North America, South America, Antarctica, Europe, and Australia.   Some geographic schemes count only six continents, combining Europe and Asia into Eurasia.   The term continent is used to differentiate between various large areas of Earth's land.",
+    "expected_answer": "seven"
+  },
+  {
+    "id": "squad_010",
+    "question": "What is the speed of light?",
+    "context": "The speed of light in vacuum, commonly denoted c, is a universal physical constant important in many areas of physics.   Its exact value is 299,792,458 meters per second (approximately 300,000 kilometers per second, or 186,000 miles per second).   According to special relativity, c is the upper limit for the speed at which conventional matter, energy, or any signal carrying information can travel through space.   All forms of electromagnetic radiation, including visible light, travel at the speed of light.",
+    "expected_answer": "299,792,458 meters per second"
+  },
+  {
+    "id": "squad_011",
+    "question": "Who painted the Mona Lisa?",
+    "context": "The Mona Lisa is a half-length portrait painting by the Italian Renaissance artist Leonardo da Vinci that has been described as \"the best known, the most visited, the most written about, the most sung about, the most parodied work of art in the world\".   The painting is thought to have been completed between 1503 and 1519, when Leonardo was living in Florence, and is now in the Louvre Museum in Paris.   The subject's enigmatic smile has made it one of the most iconic images in art history.",
+    "expected_answer": "Leonardo da Vinci"
+  },
+  {
+    "id": "squad_012",
+    "question": "What is the largest ocean on Earth?",
+    "context": "The Pacific Ocean is the largest and deepest of Earth's oceanic divisions.   It extends from the Arctic Ocean in the north to the Southern Ocean in the south and is bounded by Asia and Australia in the west and the Americas in the east.   At approximately 165 million square kilometers (64 million square miles), this ocean occupies about 46% of Earth's water surface and about 32% of its total surface area, making it larger than all of Earth's land area combined.",
+    "expected_answer": "Pacific Ocean"
+  },
+  {
+    "id": "squad_013",
+    "question": "What is the tallest mountain in the world?",
+    "context": "Mount Everest is Earth's highest mountain above sea level, located in the Mahalangur Himal sub-range of the Himalayas.   The China–Nepal border runs across its summit point.   Its elevation (snow height) of 8,848.86 m (29,031.7 ft) was most recently established in 2020 by the Chinese and Nepali authorities.   Mount Everest attracts many climbers, including highly experienced mountaineers.   There are two main climbing routes, one approaching the summit from the southeast in Nepal and the other from the north in Tibet.",
+    "expected_answer": "Mount Everest"
+  },
+  {
+    "id": "squad_014",
+    "question": "What is DNA an abbreviation for?",
+    "context": "Deoxyribonucleic acid (DNA) is a molecule composed of two chains that coil around each other to form a double helix carrying genetic instructions for the development, functioning, growth and reproduction of all known organisms and many viruses.   DNA and ribonucleic acid (RNA) are nucleic acids; alongside proteins, lipids and complex carbohydrates (polysaccharides), nucleic acids are one of the four major types of macromolecules that are essential for all known forms of life.   The two DNA strands are known as polynucleotides as they are composed of simpler monomeric units called nucleotides.",
+    "expected_answer": "Deoxyribonucleic acid"
+  },
+  {
+    "id": "squad_015",
+    "question": "Who was the first person to walk on the moon?",
+    "context": "Neil Alden Armstrong (August 5, 1930 – August 25, 2012) was an American astronaut and aeronautical engineer who was the first person to walk on the Moon.   He was also a naval aviator, test pilot, and university professor.   On July 20, 1969, Armstrong and Apollo 11 pilot Buzz Aldrin landed the Apollo Lunar Module Eagle, and Armstrong became the first person to step onto the lunar surface six hours and 39 minutes later on July 21 at 02:56 UTC.   Armstrong spent about two and a half hours outside the spacecraft, and together with Aldrin collected 47.5 pounds (21.5 kg) of lunar material to bring back to Earth.",
+    "expected_answer": "Neil Armstrong"
+  }
+]
