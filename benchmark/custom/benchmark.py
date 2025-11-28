@@ -1,4 +1,4 @@
-"""Main benchmark orchestrator for evaluating prompt-groomer effectiveness."""
+"""Main benchmark orchestrator for evaluating prompt-refiner effectiveness."""
 
 import os
 import time
@@ -11,19 +11,19 @@ from datasets import create_test_dataset
 from evaluators import CosineEvaluator, LLMJudgeEvaluator, evaluate_responses
 from visualizer import create_all_visualizations
 
-# Import prompt_groomer from project root
+# Import prompt_refiner from project root
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
-from prompt_groomer import Groomer
-from prompt_groomer.cleaner import StripHTML, NormalizeWhitespace
-from prompt_groomer.compressor import TruncateTokens, Deduplicate
+from prompt_refiner import Refiner
+from prompt_refiner.cleaner import StripHTML, NormalizeWhitespace
+from prompt_refiner.compressor import TruncateTokens, Deduplicate
 
 
 class Benchmark:
     """
-    Orchestrates the cost-effectiveness benchmark for prompt-groomer.
+    Orchestrates the cost-effectiveness benchmark for prompt-refiner.
 
-    Tests multiple grooming strategies to measure:
+    Tests multiple refining strategies to measure:
     - Token reduction (cost savings)
     - Response quality maintenance (cosine similarity + LLM judge)
     """
@@ -58,30 +58,30 @@ class Benchmark:
         self.cosine_evaluator = CosineEvaluator(api_key=openai_api_key)
         self.judge_evaluator = LLMJudgeEvaluator(api_key=openai_api_key)
 
-        # Setup grooming strategies
-        self.groomers = self._setup_grooming_strategies()
+        # Setup refining strategies
+        self.refiners = self._setup_refining_strategies()
 
         # Results storage
         self.results = []
 
-    def _setup_grooming_strategies(self) -> Dict[str, Groomer]:
+    def _setup_refining_strategies(self) -> Dict[str, Refiner]:
         """
-        Define grooming strategies with different aggressiveness levels.
+        Define refining strategies with different aggressiveness levels.
 
         Returns:
-            Dictionary mapping strategy name to Groomer instance
+            Dictionary mapping strategy name to Refiner instance
         """
         return {
-            "minimal": Groomer()
+            "minimal": Refiner()
                 .pipe(StripHTML())
                 .pipe(NormalizeWhitespace()),
 
-            "standard": Groomer()
+            "standard": Refiner()
                 .pipe(StripHTML())
                 .pipe(NormalizeWhitespace())
                 .pipe(Deduplicate(similarity_threshold=0.8, granularity="sentence")),
 
-            "aggressive": Groomer()
+            "aggressive": Refiner()
                 .pipe(StripHTML())
                 .pipe(NormalizeWhitespace())
                 .pipe(Deduplicate(similarity_threshold=0.7, granularity="sentence"))
@@ -99,7 +99,7 @@ class Benchmark:
 
         Args:
             query: User question/query
-            context: Context information (raw or groomed)
+            context: Context information (raw or refined)
             max_retries: Number of retry attempts on failure
 
         Returns:
@@ -146,45 +146,45 @@ Answer:"""
         strategy: str
     ) -> Dict[str, Any]:
         """
-        Run a single test case with one grooming strategy.
+        Run a single test case with one refining strategy.
 
         Args:
             test_case: Test case dictionary with query, context, expected
-            strategy: Grooming strategy name
+            strategy: Refining strategy name
 
         Returns:
             Dictionary with results for this test
         """
-        # Get context (raw and groomed)
+        # Get context (raw and refined)
         context_raw = test_case["context"]
-        groomer = self.groomers[strategy]
-        context_groomed = groomer.run(context_raw)
+        refiner = self.refiners[strategy]
+        context_refined = refiner.run(context_raw)
 
         # Calculate token counts
-        from prompt_groomer.analyzer import CountTokens
+        from prompt_refiner.analyzer import CountTokens
 
         counter_raw = CountTokens()
         counter_raw.process(context_raw)
         stats_raw = counter_raw.get_stats()
 
-        counter_groomed = CountTokens()
-        counter_groomed.process(context_groomed)
-        stats_groomed = counter_groomed.get_stats()
+        counter_refined = CountTokens()
+        counter_refined.process(context_refined)
+        stats_refined = counter_refined.get_stats()
 
         token_reduction = (
-            (stats_raw["tokens"] - stats_groomed["tokens"]) / stats_raw["tokens"] * 100
+            (stats_raw["tokens"] - stats_refined["tokens"]) / stats_raw["tokens"] * 100
             if stats_raw["tokens"] > 0 else 0
         )
 
         # Query LLM with both versions
         result_raw = self._query_llm(test_case["query"], context_raw)
-        result_groomed = self._query_llm(test_case["query"], context_groomed)
+        result_refined = self._query_llm(test_case["query"], context_refined)
 
         # Evaluate quality
         evaluation = evaluate_responses(
             question=test_case["query"],
             response_raw=result_raw["response"],
-            response_groomed=result_groomed["response"],
+            response_refined=result_refined["response"],
             cosine_evaluator=self.cosine_evaluator,
             judge_evaluator=self.judge_evaluator
         )
@@ -194,14 +194,14 @@ Answer:"""
             "test_type": test_case["type"],
             "strategy": strategy,
             "context_tokens_raw": stats_raw["tokens"],
-            "context_tokens_groomed": stats_groomed["tokens"],
+            "context_tokens_refined": stats_refined["tokens"],
             "token_reduction": token_reduction,
             "prompt_tokens_raw": result_raw["prompt_tokens"],
-            "prompt_tokens_groomed": result_groomed["prompt_tokens"],
+            "prompt_tokens_refined": result_refined["prompt_tokens"],
             "total_tokens_raw": result_raw["total_tokens"],
-            "total_tokens_groomed": result_groomed["total_tokens"],
+            "total_tokens_refined": result_refined["total_tokens"],
             "response_raw": result_raw["response"],
-            "response_groomed": result_groomed["response"],
+            "response_refined": result_refined["response"],
             "quality_cosine": evaluation.get("cosine", {}).get("similarity", None),
             "quality_equivalent_cosine": evaluation.get("cosine", {}).get("equivalent", None),
             "quality_equivalent_judge": evaluation.get("judge", {}).get("equivalent", None),
@@ -224,7 +224,7 @@ Answer:"""
         Returns:
             DataFrame with all results
         """
-        print("🚀 Starting Prompt Groomer Benchmark\n")
+        print("🚀 Starting Prompt Refiner Benchmark\n")
         print(f"Model: {self.model}")
         print(f"Strategies: {', '.join(self.strategies)}")
         print(f"Test cases: {n_squad} SQuAD + {n_rag} RAG = {n_squad + n_rag} total\n")
@@ -312,7 +312,7 @@ Answer:"""
         report_path = output_path / "BENCHMARK_RESULTS.md"
 
         with open(report_path, "w") as f:
-            f.write("# Prompt Groomer Benchmark Results\n\n")
+            f.write("# Prompt Refiner Benchmark Results\n\n")
             f.write(f"**Model:** {self.model}\n")
             f.write(f"**Test Cases:** {len(df) // len(self.strategies)} total\n")
             f.write(f"**Strategies Tested:** {', '.join(self.strategies)}\n\n")
@@ -375,7 +375,7 @@ def main():
 
     import argparse
 
-    parser = argparse.ArgumentParser(description="Run Prompt Groomer benchmark")
+    parser = argparse.ArgumentParser(description="Run Prompt Refiner benchmark")
     parser.add_argument(
         "--api-key",
         default=os.getenv("OPENAI_API_KEY"),

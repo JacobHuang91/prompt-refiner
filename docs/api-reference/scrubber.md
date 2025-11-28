@@ -6,7 +6,7 @@ The Scrubber module provides operations for security and privacy, including auto
 
 Redact sensitive personally identifiable information (PII) from text using regex patterns.
 
-::: prompt_groomer.scrubber.RedactPII
+::: prompt_refiner.scrubber.RedactPII
     options:
       show_source: true
       members_order: source
@@ -24,7 +24,7 @@ Redact sensitive personally identifiable information (PII) from text using regex
 ### Examples
 
 ```python
-from prompt_groomer import RedactPII
+from prompt_refiner import RedactPII
 
 # Redact all PII types
 redactor = RedactPII()
@@ -54,7 +54,7 @@ result = redactor.process("This is Confidential information")
 ### Combining Options
 
 ```python
-from prompt_groomer import RedactPII
+from prompt_refiner import RedactPII
 
 # Redact standard PII + custom patterns + keywords
 redactor = RedactPII(
@@ -79,10 +79,10 @@ result = redactor.process(text)
 ### Before Sending to LLM APIs
 
 ```python
-from prompt_groomer import Groomer, RedactPII
+from prompt_refiner import Refiner, RedactPII
 
 secure_pipeline = (
-    Groomer()
+    Refiner()
     .pipe(RedactPII(redact_types={"email", "phone", "ssn", "credit_card"}))
 )
 
@@ -93,10 +93,10 @@ secure_text = secure_pipeline.run(user_input)
 ### Logging and Monitoring
 
 ```python
-from prompt_groomer import Groomer, RedactPII
+from prompt_refiner import Refiner, RedactPII
 
 log_redactor = (
-    Groomer()
+    Refiner()
     .pipe(RedactPII())  # Redact all PII types
 )
 
@@ -108,11 +108,11 @@ logger.info(safe_log)
 ### Data Export Compliance
 
 ```python
-from prompt_groomer import Groomer, RedactPII
+from prompt_refiner import Refiner, RedactPII
 
 # Custom redaction for specific compliance needs
 gdpr_redactor = (
-    Groomer()
+    Refiner()
     .pipe(RedactPII(
         redact_types={"email", "phone", "ip"},
         custom_keywords={"customer_name", "address", "dob"}

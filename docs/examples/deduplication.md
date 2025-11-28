@@ -9,7 +9,7 @@ Your RAG system retrieved multiple similar chunks that contain overlapping infor
 ## Example Code
 
 ```python
-from prompt_groomer import Deduplicate
+from prompt_refiner import Deduplicate
 
 # RAG results with duplicates
 rag_results = """
@@ -71,7 +71,7 @@ pipeline = Deduplicate(
 
 ## Full Example
 
-See: [`examples/compressor/deduplication.py`](https://github.com/JacobHuang91/prompt-groomer/blob/main/examples/compressor/deduplication.py)
+See: [`examples/compressor/deduplication.py`](https://github.com/JacobHuang91/prompt-refiner/blob/main/examples/compressor/deduplication.py)
 
 ## Related
 

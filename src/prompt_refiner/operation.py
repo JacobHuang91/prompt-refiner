@@ -4,11 +4,11 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from .groomer import Groomer
+    from .refiner import Refiner
 
 
 class Operation(ABC):
-    """Base class for all prompt grooming operations."""
+    """Base class for all prompt refining operations."""
 
     @abstractmethod
     def process(self, text: str) -> str:
@@ -23,7 +23,7 @@ class Operation(ABC):
         """
         pass
 
-    def __or__(self, other: "Operation") -> "Groomer":
+    def __or__(self, other: "Operation") -> "Refiner":
         """
         Support pipe operator syntax for composing operations.
 
@@ -33,14 +33,14 @@ class Operation(ABC):
             other: The operation to chain with this operation
 
         Returns:
-            A Groomer pipeline containing both operations
+            A Refiner pipeline containing both operations
 
         Example:
-            >>> from prompt_groomer import StripHTML, NormalizeWhitespace
+            >>> from prompt_refiner import StripHTML, NormalizeWhitespace
             >>> pipeline = StripHTML() | NormalizeWhitespace()
             >>> result = pipeline.run("<div>  hello  </div>")
             >>> # Returns: "hello"
         """
-        from .groomer import Groomer
+        from .refiner import Refiner
 
-        return Groomer().pipe(self).pipe(other)
+        return Refiner().pipe(self).pipe(other)

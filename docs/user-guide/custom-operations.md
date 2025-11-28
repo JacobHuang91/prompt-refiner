@@ -1,13 +1,13 @@
 # Custom Operations
 
-Create your own operations to extend Prompt Groomer.
+Create your own operations to extend Prompt Refiner.
 
 ## Creating a Custom Operation
 
 All operations inherit from the `Operation` base class and implement the `process` method:
 
 ```python
-from prompt_groomer import Operation
+from prompt_refiner import Operation
 
 class RemoveEmojis(Operation):
     """Remove emoji characters from text."""
@@ -29,10 +29,10 @@ class RemoveEmojis(Operation):
 Use it like any built-in operation:
 
 ```python
-from prompt_groomer import Groomer, NormalizeWhitespace
+from prompt_refiner import Refiner, NormalizeWhitespace
 
 pipeline = (
-    Groomer()
+    Refiner()
     .pipe(RemoveEmojis())
     .pipe(NormalizeWhitespace())
 )
@@ -47,7 +47,7 @@ result = pipeline.run("Hello 😀 World 🌍!")
 
 ```python
 import re
-from prompt_groomer import Operation
+from prompt_refiner import Operation
 
 class RemoveURLs(Operation):
     def process(self, text: str) -> str:
@@ -58,7 +58,7 @@ class RemoveURLs(Operation):
 ### Lowercase Text
 
 ```python
-from prompt_groomer import Operation
+from prompt_refiner import Operation
 
 class Lowercase(Operation):
     def process(self, text: str) -> str:
@@ -69,7 +69,7 @@ class Lowercase(Operation):
 
 ```python
 import re
-from prompt_groomer import Operation
+from prompt_refiner import Operation
 
 class RemoveNumbers(Operation):
     def process(self, text: str) -> str:
@@ -85,6 +85,6 @@ class RemoveNumbers(Operation):
 
 ## Contributing
 
-Have a useful operation? Consider contributing it to Prompt Groomer!
+Have a useful operation? Consider contributing it to Prompt Refiner!
 
 [See contributing guide →](../contributing.md){ .md-button }

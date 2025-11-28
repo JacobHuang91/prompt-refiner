@@ -1,6 +1,6 @@
 """Example: Smart text truncation with sentence boundaries."""
 
-from prompt_groomer import Groomer, TruncateTokens
+from prompt_refiner import Refiner, TruncateTokens
 
 long_text = """
 The quick brown fox jumps over the lazy dog. This is the first sentence about foxes.
@@ -19,33 +19,33 @@ print(f"\nOriginal text ({len(long_text.split())} words):\n{long_text}")
 print("\n" + "-" * 60)
 print("Strategy: HEAD (keep beginning)")
 print("-" * 60)
-groomer_head = Groomer().pipe(TruncateTokens(max_tokens=20, strategy="head"))
-truncated_head = groomer_head.run(long_text)
+refiner_head = Refiner().pipe(TruncateTokens(max_tokens=20, strategy="head"))
+truncated_head = refiner_head.run(long_text)
 print(f"Result: {truncated_head}")
 
 # Example 2: Keep the end (tail strategy - useful for conversation history)
 print("\n" + "-" * 60)
 print("Strategy: TAIL (keep end)")
 print("-" * 60)
-groomer_tail = Groomer().pipe(TruncateTokens(max_tokens=20, strategy="tail"))
-truncated_tail = groomer_tail.run(long_text)
+refiner_tail = Refiner().pipe(TruncateTokens(max_tokens=20, strategy="tail"))
+truncated_tail = refiner_tail.run(long_text)
 print(f"Result: {truncated_tail}")
 
 # Example 3: Keep beginning and end (middle_out strategy)
 print("\n" + "-" * 60)
 print("Strategy: MIDDLE_OUT (keep both ends)")
 print("-" * 60)
-groomer_middle = Groomer().pipe(TruncateTokens(max_tokens=30, strategy="middle_out"))
-truncated_middle = groomer_middle.run(long_text)
+refiner_middle = Refiner().pipe(TruncateTokens(max_tokens=30, strategy="middle_out"))
+truncated_middle = refiner_middle.run(long_text)
 print(f"Result: {truncated_middle}")
 
 # Example 4: Sentence boundary respect
 print("\n" + "-" * 60)
 print("With sentence boundary detection")
 print("-" * 60)
-groomer_sentence = Groomer().pipe(
+refiner_sentence = Refiner().pipe(
     TruncateTokens(max_tokens=25, strategy="head", respect_sentence_boundary=True)
 )
-truncated_sentence = groomer_sentence.run(long_text)
+truncated_sentence = refiner_sentence.run(long_text)
 print(f"Result: {truncated_sentence}")
 print("\nNotice how it keeps complete sentences!")

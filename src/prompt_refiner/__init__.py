@@ -1,4 +1,4 @@
-"""Prompt Groomer - A lightweight library for optimizing LLM inputs."""
+"""Prompt Refiner - A lightweight library for optimizing LLM inputs."""
 
 __version__ = "0.1.0"
 
@@ -7,11 +7,11 @@ from .analyzer import CountTokens
 # Import all operations for convenience
 from .cleaner import FixUnicode, NormalizeWhitespace, StripHTML
 from .compressor import Deduplicate, TruncateTokens
-from .groomer import Groomer
+from .refiner import Refiner
 from .scrubber import RedactPII
 
 __all__ = [
-    "Groomer",
+    "Refiner",
     # Cleaner operations
     "StripHTML",
     "NormalizeWhitespace",

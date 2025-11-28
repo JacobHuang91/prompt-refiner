@@ -1,12 +1,12 @@
 [project]
-name = "prompt-groomer"
-version = "0.2.2"
+name = "prompt-refiner"
+version = "0.1.0"
 description = "A lightweight Python library for optimizing and cleaning LLM inputs"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
 authors = [
-    { name = "Jacob Huang", email = "jacobhuang91@gmail.com" }
+    { name = "Xinghao Huang", email = "jacobhuang91@gmail.com" }
 ]
 keywords = ["llm", "prompt", "optimization", "tokens", "ai"]
 classifiers = [
@@ -45,10 +45,10 @@ benchmark = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/JacobHuang91/prompt-groomer"
-Repository = "https://github.com/JacobHuang91/prompt-groomer"
-Issues = "https://github.com/JacobHuang91/prompt-groomer/issues"
-Documentation = "https://jacobhuang91.github.io/prompt-groomer/"
+Homepage = "https://github.com/JacobHuang91/prompt-refiner"
+Repository = "https://github.com/JacobHuang91/prompt-refiner"
+Issues = "https://github.com/JacobHuang91/prompt-refiner/issues"
+Documentation = "https://jacobhuang91.github.io/prompt-refiner/"
 
 [build-system]
 requires = ["hatchling"]

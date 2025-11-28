@@ -1,7 +1,7 @@
 import time
 import streamlit as st
 import tiktoken
-from prompt_groomer import (
+from prompt_refiner import (
     StripHTML,
     NormalizeWhitespace,
     FixUnicode,
@@ -12,7 +12,7 @@ from prompt_groomer import (
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="Prompt Groomer - Interactive Demo",
+    page_title="Prompt Refiner - Interactive Demo",
     page_icon="🧹",
     layout="wide",
 )
@@ -65,11 +65,11 @@ Additional    information    with    way    too    many    spaces    between    
         "text": """<div class="documentation">
     <h1>   Installation   Guide   </h1>
     <p>  To install the package, run the following command:  </p>
-    <pre><code>  pip install prompt-groomer  </code></pre>
+    <pre><code>  pip install prompt-refiner  </code></pre>
 
     <h2>   Quick    Start   </h2>
     <p>   Import the library:   </p>
-    <pre><code>from prompt_groomer import Groomer</code></pre>
+    <pre><code>from prompt_refiner import Refiner</code></pre>
 
     <p>   For more information, visit our website at https://example.com/docs   </p>
 </div>""",
@@ -230,13 +230,13 @@ def apply_preset_strategy(strategy: str) -> dict:
 
 
 # --- Main App ---
-st.title("🧹 Prompt Groomer")
+st.title("🧹 Prompt Refiner")
 st.markdown(
     """
 **Stop paying for invisible tokens.** Optimize your LLM inputs to save costs, improve context usage, and enhance security.
 
-[![GitHub](https://img.shields.io/github/stars/JacobHuang91/prompt-groomer?style=social)](https://github.com/JacobHuang91/prompt-groomer)
-[![PyPI](https://img.shields.io/pypi/v/prompt-groomer)](https://pypi.org/project/prompt-groomer/)
+[![GitHub](https://img.shields.io/github/stars/JacobHuang91/prompt-refiner?style=social)](https://github.com/JacobHuang91/prompt-refiner)
+[![PyPI](https://img.shields.io/pypi/v/prompt-refiner)](https://pypi.org/project/prompt-refiner/)
 """
 )
 
@@ -355,9 +355,9 @@ with st.sidebar:
     st.divider()
 
     # Info
-    st.caption("📖 [Documentation](https://jacobhuang91.github.io/prompt-groomer/)")
-    st.caption("💻 [GitHub](https://github.com/JacobHuang91/prompt-groomer)")
-    st.caption("📦 [PyPI](https://pypi.org/project/prompt-groomer/)")
+    st.caption("📖 [Documentation](https://jacobhuang91.github.io/prompt-refiner/)")
+    st.caption("💻 [GitHub](https://github.com/JacobHuang91/prompt-refiner)")
+    st.caption("📦 [PyPI](https://pypi.org/project/prompt-refiner/)")
 
 # --- Main Content ---
 
@@ -365,7 +365,7 @@ with st.sidebar:
 selected_example = st.selectbox(
     "Choose a preset example or enter custom text:",
     ["Custom"] + list(PRESET_EXAMPLES.keys()),
-    help="Select a pre-configured example to see prompt-groomer in action",
+    help="Select a pre-configured example to see prompt-refiner in action",
 )
 
 if selected_example != "Custom":
@@ -450,7 +450,7 @@ with col2:
     elif processing_error:
         st.error(f"⚠️ Error processing text: {processing_error}")
         st.info(
-            "Make sure you have the latest version: `pip install --upgrade prompt-groomer`"
+            "Make sure you have the latest version: `pip install --upgrade prompt-refiner`"
         )
     elif not raw_text.strip():
         st.info("👈 Enter text in the left panel to see the magic happen!")
@@ -522,13 +522,13 @@ st.markdown(
 ### 📦 Installation
 
 ```bash
-pip install prompt-groomer
+pip install prompt-refiner
 ```
 
 ### 💻 Example Code
 
 ```python
-from prompt_groomer import (
+from prompt_refiner import (
     StripHTML,
     NormalizeWhitespace,
     TruncateTokens
@@ -546,12 +546,12 @@ cleaned = pipeline.run(dirty_text)
 
 ### 🔗 Links
 
-- 📖 [Documentation](https://jacobhuang91.github.io/prompt-groomer/)
-- 💻 [GitHub Repository](https://github.com/JacobHuang91/prompt-groomer)
-- 📦 [PyPI Package](https://pypi.org/project/prompt-groomer/)
+- 📖 [Documentation](https://jacobhuang91.github.io/prompt-refiner/)
+- 💻 [GitHub Repository](https://github.com/JacobHuang91/prompt-refiner)
+- 📦 [PyPI Package](https://pypi.org/project/prompt-refiner/)
 
 ---
 
-Made with ❤️ by [Jacob Huang](https://github.com/JacobHuang91) | Easy to install: `pip install prompt-groomer`
+Made with ❤️ by [Xinghao Huang](https://github.com/JacobHuang91) | Easy to install: `pip install prompt-refiner`
 """
 )

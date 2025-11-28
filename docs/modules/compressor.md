@@ -9,7 +9,7 @@ Reduce text size while preserving meaning through smart truncation and deduplica
 Smart text truncation respecting sentence boundaries.
 
 ```python
-from prompt_groomer import TruncateTokens
+from prompt_refiner import TruncateTokens
 
 # Keep first 100 tokens
 truncator = TruncateTokens(max_tokens=100, strategy="head")
@@ -28,7 +28,7 @@ truncator = TruncateTokens(max_tokens=100, strategy="middle_out")
 Remove duplicate or similar content chunks.
 
 ```python
-from prompt_groomer import Deduplicate
+from prompt_refiner import Deduplicate
 
 # Remove paragraphs with 85% similarity
 deduper = Deduplicate(similarity_threshold=0.85)
@@ -52,7 +52,7 @@ deduper = Deduplicate(granularity="sentence")
 ### RAG Context Optimization
 
 ```python
-from prompt_groomer import Deduplicate, TruncateTokens
+from prompt_refiner import Deduplicate, TruncateTokens
 
 rag_optimizer = (
     Deduplicate()

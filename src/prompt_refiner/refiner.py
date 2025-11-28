@@ -1,18 +1,18 @@
-"""Main Groomer class for building prompt processing pipelines."""
+"""Main Refiner class for building prompt processing pipelines."""
 
 from typing import List
 
 from .operation import Operation
 
 
-class Groomer:
-    """A pipeline builder for prompt grooming operations."""
+class Refiner:
+    """A pipeline builder for prompt refining operations."""
 
     def __init__(self):
-        """Initialize an empty groomer pipeline."""
+        """Initialize an empty refiner pipeline."""
         self._operations: List[Operation] = []
 
-    def pipe(self, operation: Operation) -> "Groomer":
+    def pipe(self, operation: Operation) -> "Refiner":
         """
         Add an operation to the pipeline.
 
@@ -40,7 +40,7 @@ class Groomer:
             result = operation.process(result)
         return result
 
-    def __or__(self, other: Operation) -> "Groomer":
+    def __or__(self, other: Operation) -> "Refiner":
         """
         Support pipe operator syntax for adding operations to the pipeline.
 
@@ -53,7 +53,7 @@ class Groomer:
             Self for method chaining
 
         Example:
-            >>> from prompt_groomer import StripHTML, NormalizeWhitespace, TruncateTokens
+            >>> from prompt_refiner import StripHTML, NormalizeWhitespace, TruncateTokens
             >>> pipeline = StripHTML() | NormalizeWhitespace() | TruncateTokens(max_tokens=100)
             >>> result = pipeline.run(text)
         """

@@ -53,7 +53,7 @@ class CosineEvaluator:
 
         Args:
             response_a: First response (raw)
-            response_b: Second response (groomed)
+            response_b: Second response (refined)
 
         Returns:
             Dictionary with:
@@ -115,7 +115,7 @@ class LLMJudgeEvaluator:
         Args:
             question: The original question/query
             response_a: First response (raw)
-            response_b: Second response (groomed)
+            response_b: Second response (refined)
 
         Returns:
             Dictionary with:
@@ -130,7 +130,7 @@ Question: {question}
 Response A (Original):
 {response_a}
 
-Response B (After Grooming):
+Response B (After Refining):
 {response_b}
 
 Task: Determine if Response B provides essentially the same information and quality as Response A.
@@ -172,7 +172,7 @@ Respond in JSON format:
 def evaluate_responses(
     question: str,
     response_raw: str,
-    response_groomed: str,
+    response_refined: str,
     cosine_evaluator: Optional[CosineEvaluator] = None,
     judge_evaluator: Optional[LLMJudgeEvaluator] = None
 ) -> Dict[str, Any]:
@@ -182,7 +182,7 @@ def evaluate_responses(
     Args:
         question: Original question/query
         response_raw: Response from raw prompt
-        response_groomed: Response from groomed prompt
+        response_refined: Response from refined prompt
         cosine_evaluator: Optional CosineEvaluator instance
         judge_evaluator: Optional LLMJudgeEvaluator instance
 
@@ -194,14 +194,14 @@ def evaluate_responses(
     if cosine_evaluator:
         results["cosine"] = cosine_evaluator.evaluate(
             response_raw,
-            response_groomed
+            response_refined
         )
 
     if judge_evaluator:
         results["judge"] = judge_evaluator.evaluate(
             question,
             response_raw,
-            response_groomed
+            response_refined
         )
 
     # Aggregate decision

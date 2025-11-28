@@ -9,7 +9,7 @@ User input contains personal information that should not be sent to external LLM
 ## Example Code
 
 ```python
-from prompt_groomer import RedactPII
+from prompt_refiner import RedactPII
 
 user_input = """
 Please contact me at john.doe@example.com or call 555-123-4567.
@@ -39,7 +39,7 @@ secure = pipeline.run(user_input)
 
 ## Full Example
 
-See: [`examples/scrubber/pii_redaction.py`](https://github.com/JacobHuang91/prompt-groomer/blob/main/examples/scrubber/pii_redaction.py)
+See: [`examples/scrubber/pii_redaction.py`](https://github.com/JacobHuang91/prompt-refiner/blob/main/examples/scrubber/pii_redaction.py)
 
 ## Related
 

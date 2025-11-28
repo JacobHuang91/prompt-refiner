@@ -1,6 +1,6 @@
 """Tests for Cleaner module operations."""
 
-from prompt_groomer import FixUnicode, NormalizeWhitespace, StripHTML
+from prompt_refiner import FixUnicode, NormalizeWhitespace, StripHTML
 
 
 def test_strip_html_basic():

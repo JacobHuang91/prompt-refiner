@@ -1,9 +1,9 @@
-site_name: Prompt Groomer
+site_name: Prompt Refiner
 site_description: A lightweight Python library for optimizing and cleaning LLM inputs
-site_author: Jacob Huang
-site_url: https://jacobhuang91.github.io/prompt-groomer/
-repo_name: JacobHuang91/prompt-groomer
-repo_url: https://github.com/JacobHuang91/prompt-groomer
+site_author: Xinghao Huang
+site_url: https://jacobhuang91.github.io/prompt-refiner/
+repo_name: JacobHuang91/prompt-refiner
+repo_url: https://github.com/JacobHuang91/prompt-refiner
 
 theme:
   name: material
@@ -80,7 +80,7 @@ nav:
       - Analyzer: modules/analyzer.md
   - API Reference:
       - Overview: api-reference/index.md
-      - Groomer: api-reference/groomer.md
+      - Refiner: api-reference/refiner.md
       - Cleaner: api-reference/cleaner.md
       - Compressor: api-reference/compressor.md
       - Scrubber: api-reference/scrubber.md

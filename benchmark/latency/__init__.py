@@ -1,1 +1,1 @@
-"""Latency benchmark for prompt-groomer."""
+"""Latency benchmark for prompt-refiner."""

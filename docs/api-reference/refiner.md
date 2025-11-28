@@ -1,8 +1,8 @@
-# Groomer Class
+# Refiner Class
 
-The `Groomer` class is the core pipeline builder that allows you to chain multiple operations together.
+The `Refiner` class is the core pipeline builder that allows you to chain multiple operations together.
 
-::: prompt_groomer.groomer.Groomer
+::: prompt_refiner.refiner.Refiner
     options:
       show_source: true
       members_order: source
@@ -13,7 +13,7 @@ The `Groomer` class is the core pipeline builder that allows you to chain multip
 ### Pipe Operator (Recommended)
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace
+from prompt_refiner import StripHTML, NormalizeWhitespace
 
 # Create a pipeline using the pipe operator
 pipeline = (
@@ -28,14 +28,14 @@ print(result)  # "Hello World!"
 
 ### Fluent API with .pipe()
 
-The `Groomer` class supports method chaining with `.pipe()`:
+The `Refiner` class supports method chaining with `.pipe()`:
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace
+from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace
 
 # Create a pipeline using the fluent API
 pipeline = (
-    Groomer()
+    Refiner()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
 )
@@ -49,7 +49,7 @@ Both approaches work identically - choose the one that fits your style.
 
 ## Pipeline Execution
 
-When you call `run(text)`, the Groomer:
+When you call `run(text)`, the Refiner:
 
 1. Takes the input text
 2. Passes it through each operation in sequence
@@ -58,5 +58,5 @@ When you call `run(text)`, the Groomer:
 
 ```python
 # Pipeline: text → Operation1 → Operation2 → Operation3 → result
-result = groomer.run(text)
+result = refiner.run(text)
 ```

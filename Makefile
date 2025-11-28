@@ -22,7 +22,7 @@ install:
 	uv pip install -e ".[dev]"
 
 test:
-	pytest tests/ -v --cov=src/prompt_groomer --cov-report=term-missing
+	pytest tests/ -v --cov=src/prompt_refiner --cov-report=term-missing
 
 lint:
 	ruff check src/ tests/

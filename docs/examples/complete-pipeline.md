@@ -5,7 +5,7 @@ A comprehensive example using all 4 modules together.
 ## Full Optimization Pipeline
 
 ```python
-from prompt_groomer import (
+from prompt_refiner import (
     # Cleaner
     StripHTML, NormalizeWhitespace, FixUnicode,
     # Compressor
@@ -56,10 +56,10 @@ print(counter.format_stats())
 !!! tip "Alternative: Fluent API"
     You can also use `.pipe()` method chaining:
     ```python
-    from prompt_groomer import Groomer
+    from prompt_refiner import Refiner
 
     pipeline = (
-        Groomer()
+        Refiner()
         .pipe(StripHTML())
         .pipe(FixUnicode())
         .pipe(NormalizeWhitespace())
@@ -69,7 +69,7 @@ print(counter.format_stats())
 
 ## Full Example
 
-See: [`examples/all_modules_demo.py`](https://github.com/JacobHuang91/prompt-groomer/blob/main/examples/all_modules_demo.py)
+See: [`examples/all_modules_demo.py`](https://github.com/JacobHuang91/prompt-refiner/blob/main/examples/all_modules_demo.py)
 
 ```bash
 python examples/all_modules_demo.py

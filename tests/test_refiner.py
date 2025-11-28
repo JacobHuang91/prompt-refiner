@@ -1,35 +1,35 @@
-"""Tests for Groomer pipeline."""
+"""Tests for Refiner pipeline."""
 
-from prompt_groomer import Groomer, NormalizeWhitespace, StripHTML, TruncateTokens
+from prompt_refiner import Refiner, NormalizeWhitespace, StripHTML, TruncateTokens
 
 
-def test_groomer_single_operation():
-    """Test groomer with a single operation."""
-    groomer = Groomer().pipe(NormalizeWhitespace())
+def test_refiner_single_operation():
+    """Test refiner with a single operation."""
+    refiner = Refiner().pipe(NormalizeWhitespace())
 
-    result = groomer.run("hello   world")
+    result = refiner.run("hello   world")
     assert result == "hello world"
 
 
-def test_groomer_multiple_operations():
-    """Test groomer with multiple chained operations."""
-    groomer = Groomer().pipe(StripHTML()).pipe(NormalizeWhitespace())
+def test_refiner_multiple_operations():
+    """Test refiner with multiple chained operations."""
+    refiner = Refiner().pipe(StripHTML()).pipe(NormalizeWhitespace())
 
-    result = groomer.run("<div>  hello   world  </div>")
+    result = refiner.run("<div>  hello   world  </div>")
     assert result == "hello world"
 
 
-def test_groomer_full_pipeline():
+def test_refiner_full_pipeline():
     """Test the full pipeline from the example."""
-    groomer = (
-        Groomer()
+    refiner = (
+        Refiner()
         .pipe(StripHTML())
         .pipe(NormalizeWhitespace())
         .pipe(TruncateTokens(max_tokens=10, strategy="head"))
     )
 
     raw_input = "<div>  User input with <b>lots</b> of   spaces... </div>"
-    clean_prompt = groomer.run(raw_input)
+    clean_prompt = refiner.run(raw_input)
 
     # Should strip HTML, normalize whitespace, and keep first 10 words
     assert "<" not in clean_prompt
@@ -37,11 +37,11 @@ def test_groomer_full_pipeline():
     assert "  " not in clean_prompt
 
 
-def test_groomer_empty_pipeline():
-    """Test groomer with no operations."""
-    groomer = Groomer()
+def test_refiner_empty_pipeline():
+    """Test refiner with no operations."""
+    refiner = Refiner()
 
-    result = groomer.run("unchanged")
+    result = refiner.run("unchanged")
     assert result == "unchanged"
 
 

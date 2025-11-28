@@ -1,17 +1,17 @@
-# Prompt Groomer
+# Prompt Refiner
 
 <div align="center">
 
-[![PyPI version](https://img.shields.io/pypi/v/prompt-groomer.svg)](https://pypi.org/project/prompt-groomer/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/prompt-groomer.svg)](https://pypi.org/project/prompt-groomer/)
-[![Downloads](https://img.shields.io/pypi/dm/prompt-groomer.svg)](https://pypi.org/project/prompt-groomer/)
-[![GitHub Stars](https://img.shields.io/github/stars/JacobHuang91/prompt-groomer)](https://github.com/JacobHuang91/prompt-groomer)
-[![CI Status](https://github.com/JacobHuang91/prompt-groomer/workflows/CI/badge.svg)](https://github.com/JacobHuang91/prompt-groomer/actions)
-[![codecov](https://codecov.io/gh/JacobHuang91/prompt-groomer/branch/main/graph/badge.svg)](https://codecov.io/gh/JacobHuang91/prompt-groomer)
-[![License](https://img.shields.io/github/license/JacobHuang91/prompt-groomer)](https://github.com/JacobHuang91/prompt-groomer/blob/main/LICENSE)
+[![PyPI version](https://img.shields.io/pypi/v/prompt-refiner.svg)](https://pypi.org/project/prompt-refiner/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/prompt-refiner.svg)](https://pypi.org/project/prompt-refiner/)
+[![Downloads](https://img.shields.io/pypi/dm/prompt-refiner.svg)](https://pypi.org/project/prompt-refiner/)
+[![GitHub Stars](https://img.shields.io/github/stars/JacobHuang91/prompt-refiner)](https://github.com/JacobHuang91/prompt-refiner)
+[![CI Status](https://github.com/JacobHuang91/prompt-refiner/workflows/CI/badge.svg)](https://github.com/JacobHuang91/prompt-refiner/actions)
+[![codecov](https://codecov.io/gh/JacobHuang91/prompt-refiner/branch/main/graph/badge.svg)](https://codecov.io/gh/JacobHuang91/prompt-refiner)
+[![License](https://img.shields.io/github/license/JacobHuang91/prompt-refiner)](https://github.com/JacobHuang91/prompt-refiner/blob/main/LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://jacobhuang91.github.io/prompt-groomer/)
-[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/Xinghao91/prompt-groomer)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://jacobhuang91.github.io/prompt-refiner/)
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/Xinghao91/prompt-refiner)
 
 </div>
 
@@ -32,11 +32,11 @@
 
 ---
 
-## Why use Prompt Groomer?
+## Why use Prompt Refiner?
 
 Stop paying for invisible tokens and dirty data.
 
-| Feature | Before (Dirty Input) | After (Groomed) |
+| Feature | Before (Dirty Input) | After (Refined) |
 | :--- | :--- | :--- |
 | **HTML Cleaning** | `<div><b>Hello</b> world</div>` | `Hello world` |
 | **Whitespace** | `User    input\n\n\n  here` | `User input here` |
@@ -47,7 +47,7 @@ Stop paying for invisible tokens and dirty data.
 ### 📦 It's this easy:
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace
+from prompt_refiner import StripHTML, NormalizeWhitespace
 
 cleaned = (StripHTML() | NormalizeWhitespace()).run(dirty_input)
 ```
@@ -63,7 +63,7 @@ cleaned = (StripHTML() | NormalizeWhitespace()).run(dirty_input)
 
 ## Overview
 
-Prompt Groomer helps you clean and optimize prompts before sending them to LLM APIs. By removing unnecessary whitespace, duplicate characters, and other inefficiencies, you can:
+Prompt Refiner helps you clean and optimize prompts before sending them to LLM APIs. By removing unnecessary whitespace, duplicate characters, and other inefficiencies, you can:
 
 - Reduce token usage and API costs
 - Improve prompt quality and consistency
@@ -77,16 +77,16 @@ This project is in early development. Features are being added iteratively.
 
 ```bash
 # Using uv (recommended)
-uv pip install prompt-groomer
+uv pip install prompt-refiner
 
 # Using pip
-pip install prompt-groomer
+pip install prompt-refiner
 ```
 
 ## Quick Start
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace, TruncateTokens
+from prompt_refiner import StripHTML, NormalizeWhitespace, TruncateTokens
 
 # ✨ The Pythonic "Pipe" Syntax (Recommended)
 pipeline = (
@@ -106,10 +106,10 @@ clean_prompt = pipeline.run(raw_input)
 Prefer method chaining? Use the traditional fluent API:
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, TruncateTokens
+from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, TruncateTokens
 
 pipeline = (
-    Groomer()
+    Refiner()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
     .pipe(TruncateTokens(max_tokens=1000))
@@ -124,7 +124,7 @@ clean_prompt = pipeline.run(raw_input)
 
 ## 📊 Proven Effectiveness
 
-We benchmarked Prompt Groomer on 30 real-world test cases (SQuAD + RAG scenarios) to measure token reduction and response quality:
+We benchmarked Prompt Refiner on 30 real-world test cases (SQuAD + RAG scenarios) to measure token reduction and response quality:
 
 <div align="center">
 
@@ -160,7 +160,7 @@ We benchmarked Prompt Groomer on 30 real-world test cases (SQuAD + RAG scenarios
 
 ## ⚡ Performance & Latency
 
-**"What's the latency overhead?"** - Negligible. Prompt Groomer adds **< 0.5ms per 1k tokens** of overhead.
+**"What's the latency overhead?"** - Negligible. Prompt Refiner adds **< 0.5ms per 1k tokens** of overhead.
 
 <div align="center">
 
@@ -175,12 +175,12 @@ We benchmarked Prompt Groomer on 30 real-world test cases (SQuAD + RAG scenarios
 **Key Insights:**
 - ⚡ **Minimal strategy**: Only 0.05ms per 1k tokens (faster than a network packet)
 - 🎯 **Standard strategy**: 0.25ms per 1k tokens - adds ~2.5ms to a 10k token prompt
-- 📊 **Context**: Network + LLM TTFT is typically 600ms+, grooming adds < 0.5% overhead
+- 📊 **Context**: Network + LLM TTFT is typically 600ms+, refining adds < 0.5% overhead
 - 🚀 **Individual operations** (HTML, whitespace) are < 0.5ms per 1k tokens
 
 **Real-world impact:**
 ```
-10k token RAG context grooming: ~2.5ms overhead
+10k token RAG context refining: ~2.5ms overhead
 Network latency: ~100ms
 LLM Processing (TTFT): ~500ms+
 Total overhead: < 0.5% of request time
@@ -190,13 +190,13 @@ Total overhead: < 0.5% of request time
 
 ## 🎮 Interactive Demo
 
-Try prompt-groomer in your browser - no installation required!
+Try prompt-refiner in your browser - no installation required!
 
 <div align="center">
 
-[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/Xinghao91/prompt-groomer)
+[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-sm.svg)](https://huggingface.co/spaces/Xinghao91/prompt-refiner)
 
-**[🚀 Launch Interactive Demo →](https://huggingface.co/spaces/Xinghao91/prompt-groomer)**
+**[🚀 Launch Interactive Demo →](https://huggingface.co/spaces/Xinghao91/prompt-refiner)**
 
 </div>
 
@@ -210,7 +210,7 @@ Play with different strategies, see real-time token savings, and find the perfec
 
 ## 4 Core Modules
 
-Prompt Groomer is organized into 4 specialized modules:
+Prompt Refiner is organized into 4 specialized modules:
 
 ### 1. **Cleaner** - Clean Dirty Data
 - `StripHTML()` - Remove HTML tags, convert to Markdown
@@ -231,7 +231,7 @@ Prompt Groomer is organized into 4 specialized modules:
 ## Complete Example
 
 ```python
-from prompt_groomer import (
+from prompt_refiner import (
     # Cleaner
     StripHTML, NormalizeWhitespace, FixUnicode,
     # Compressor

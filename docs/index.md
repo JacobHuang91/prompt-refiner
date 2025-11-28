@@ -1,10 +1,10 @@
-# Prompt Groomer
+# Prompt Refiner
 
 A lightweight Python library for optimizing and cleaning LLM inputs. Reduce token usage, improve prompt quality, and lower API costs.
 
 ## Overview
 
-Prompt Groomer helps you clean and optimize prompts before sending them to LLM APIs. By removing unnecessary whitespace, duplicate characters, and other inefficiencies, you can:
+Prompt Refiner helps you clean and optimize prompts before sending them to LLM APIs. By removing unnecessary whitespace, duplicate characters, and other inefficiencies, you can:
 
 - **Reduce token usage and API costs** - Remove unnecessary characters and content
 - **Improve prompt quality** - Clean HTML, fix Unicode issues, normalize whitespace
@@ -12,7 +12,7 @@ Prompt Groomer helps you clean and optimize prompts before sending them to LLM A
 - **Track optimization value** - Measure token savings and cost reductions
 
 !!! success "Proven Effectiveness"
-    Benchmarked on 30 real-world test cases, Prompt Groomer achieves **4-15% token reduction** while maintaining 96-99% quality. Aggressive optimization can save up to **~$54/month** on GPT-4 at scale (1M tokens/month).
+    Benchmarked on 30 real-world test cases, Prompt Refiner achieves **4-15% token reduction** while maintaining 96-99% quality. Aggressive optimization can save up to **~$54/month** on GPT-4 at scale (1M tokens/month).
 
     Processing overhead is **< 0.5ms per 1k tokens** - negligible compared to network and LLM latency.
 
@@ -28,7 +28,7 @@ Prompt Groomer helps you clean and optimize prompts before sending them to LLM A
 Build custom cleaning pipelines with the pipe operator:
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace, TruncateTokens
+from prompt_refiner import StripHTML, NormalizeWhitespace, TruncateTokens
 
 # Define a cleaning pipeline
 pipeline = (
@@ -43,16 +43,16 @@ clean_prompt = pipeline.run(raw_input)
 ```
 
 !!! tip "Alternative: Fluent API"
-    Prefer method chaining? Use `Groomer().pipe()`:
+    Prefer method chaining? Use `Refiner().pipe()`:
     ```python
-    from prompt_groomer import Groomer
+    from prompt_refiner import Refiner
 
-    pipeline = Groomer().pipe(StripHTML()).pipe(NormalizeWhitespace())
+    pipeline = Refiner().pipe(StripHTML()).pipe(NormalizeWhitespace())
     ```
 
 ## 4 Core Modules
 
-Prompt Groomer is organized into 4 specialized modules:
+Prompt Refiner is organized into 4 specialized modules:
 
 ### 1. Cleaner - Clean Dirty Data
 - **StripHTML()** - Remove HTML tags, convert to Markdown
@@ -81,7 +81,7 @@ Prompt Groomer is organized into 4 specialized modules:
 ## Complete Example
 
 ```python
-from prompt_groomer import (
+from prompt_refiner import (
     # Cleaner
     StripHTML, NormalizeWhitespace, FixUnicode,
     # Compressor
@@ -122,7 +122,7 @@ print(counter.format_stats())  # Shows token savings
 
     ---
 
-    Install Prompt Groomer and build your first pipeline in minutes
+    Install Prompt Refiner and build your first pipeline in minutes
 
     [:octicons-arrow-right-24: Getting Started](getting-started.md)
 

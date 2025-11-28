@@ -1,6 +1,6 @@
 """Tests for Analyzer module operations."""
 
-from prompt_groomer import CountTokens
+from prompt_refiner import CountTokens
 
 
 def test_count_tokens_basic():

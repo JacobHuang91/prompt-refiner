@@ -1,17 +1,17 @@
 # Pipeline Basics
 
-Learn how to build effective pipelines with Prompt Groomer.
+Learn how to build effective pipelines with Prompt Refiner.
 
 ## Two Ways to Build Pipelines
 
-Prompt Groomer supports two syntax options for building pipelines:
+Prompt Refiner supports two syntax options for building pipelines:
 
 ### Pipe Operator (Recommended)
 
 The pipe operator (`|`) provides a clean, Pythonic syntax similar to LangChain:
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace, TruncateTokens
+from prompt_refiner import StripHTML, NormalizeWhitespace, TruncateTokens
 
 pipeline = (
     StripHTML()
@@ -23,7 +23,7 @@ result = pipeline.run(input_text)
 ```
 
 **Why use this:**
-- More concise - no need to import or instantiate `Groomer()`
+- More concise - no need to import or instantiate `Refiner()`
 - Familiar to LangChain, LangGraph, and modern Python framework users
 - Cleaner visual appearance
 
@@ -32,10 +32,10 @@ result = pipeline.run(input_text)
 The fluent API uses method chaining with `.pipe()`:
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, TruncateTokens
+from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, TruncateTokens
 
 pipeline = (
-    Groomer()
+    Refiner()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
     .pipe(TruncateTokens(max_tokens=1000))
@@ -45,7 +45,7 @@ result = pipeline.run(input_text)
 ```
 
 **Why use this:**
-- More explicit - clear that you're creating a Groomer pipeline
+- More explicit - clear that you're creating a Refiner pipeline
 - Traditional method chaining pattern
 
 !!! tip "Choose One Style"

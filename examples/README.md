@@ -1,6 +1,6 @@
-# Prompt Groomer Examples
+# Prompt Refiner Examples
 
-This directory contains examples demonstrating the 4 core modules of Prompt Groomer.
+This directory contains examples demonstrating the 4 core modules of Prompt Refiner.
 
 ## Quick Start
 
@@ -169,10 +169,10 @@ python examples/all_modules_demo.py
 
 ### Web Scraping Pipeline
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, FixUnicode
+from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, FixUnicode
 
-groomer = (
-    Groomer()
+refiner = (
+    Refiner()
     .pipe(StripHTML(to_markdown=True))
     .pipe(NormalizeWhitespace())
     .pipe(FixUnicode())
@@ -181,10 +181,10 @@ groomer = (
 
 ### RAG Context Optimization
 ```python
-from prompt_groomer import Groomer, Deduplicate, TruncateTokens
+from prompt_refiner import Refiner, Deduplicate, TruncateTokens
 
-groomer = (
-    Groomer()
+refiner = (
+    Refiner()
     .pipe(Deduplicate(similarity_threshold=0.85))
     .pipe(TruncateTokens(max_tokens=500, strategy="head"))
 )
@@ -192,11 +192,11 @@ groomer = (
 
 ### Enterprise Data Protection
 ```python
-from prompt_groomer import Groomer, RedactPII, CountTokens
+from prompt_refiner import Refiner, RedactPII, CountTokens
 
 counter = CountTokens(original_text=original)
-groomer = (
-    Groomer()
+refiner = (
+    Refiner()
     .pipe(RedactPII())
     .pipe(counter)
 )

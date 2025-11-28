@@ -1,6 +1,6 @@
 """Tests for Compressor module operations."""
 
-from prompt_groomer import Deduplicate, TruncateTokens
+from prompt_refiner import Deduplicate, TruncateTokens
 
 
 def test_truncate_tokens_head():

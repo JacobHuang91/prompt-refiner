@@ -6,7 +6,7 @@ The Cleaner module provides operations for cleaning dirty data, including HTML r
 
 Remove HTML tags from text, with options to preserve semantic tags or convert to Markdown.
 
-::: prompt_groomer.cleaner.StripHTML
+::: prompt_refiner.cleaner.StripHTML
     options:
       show_source: true
       members_order: source
@@ -15,7 +15,7 @@ Remove HTML tags from text, with options to preserve semantic tags or convert to
 ### Examples
 
 ```python
-from prompt_groomer import StripHTML
+from prompt_refiner import StripHTML
 
 # Basic HTML stripping
 stripper = StripHTML()
@@ -39,7 +39,7 @@ result = stripper.process("<div>Keep <b>Remove</b></div>")
 
 Collapse excessive whitespace, tabs, and newlines into single spaces.
 
-::: prompt_groomer.cleaner.NormalizeWhitespace
+::: prompt_refiner.cleaner.NormalizeWhitespace
     options:
       show_source: true
       members_order: source
@@ -48,7 +48,7 @@ Collapse excessive whitespace, tabs, and newlines into single spaces.
 ### Examples
 
 ```python
-from prompt_groomer import NormalizeWhitespace
+from prompt_refiner import NormalizeWhitespace
 
 normalizer = NormalizeWhitespace()
 result = normalizer.process("Hello    World  \t\n  Foo")
@@ -61,7 +61,7 @@ result = normalizer.process("Hello    World  \t\n  Foo")
 
 Remove problematic Unicode characters including zero-width spaces and control characters.
 
-::: prompt_groomer.cleaner.FixUnicode
+::: prompt_refiner.cleaner.FixUnicode
     options:
       show_source: true
       members_order: source
@@ -70,7 +70,7 @@ Remove problematic Unicode characters including zero-width spaces and control ch
 ### Examples
 
 ```python
-from prompt_groomer import FixUnicode
+from prompt_refiner import FixUnicode
 
 # Remove zero-width spaces and control chars
 fixer = FixUnicode()
@@ -88,10 +88,10 @@ result = fixer.process("Hello\u200bWorld")
 ### Web Scraping
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, FixUnicode
+from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, FixUnicode
 
 web_cleaner = (
-    Groomer()
+    Refiner()
     .pipe(StripHTML(to_markdown=True))
     .pipe(FixUnicode())
     .pipe(NormalizeWhitespace())
@@ -101,10 +101,10 @@ web_cleaner = (
 ### Text Normalization
 
 ```python
-from prompt_groomer import Groomer, NormalizeWhitespace, FixUnicode
+from prompt_refiner import Refiner, NormalizeWhitespace, FixUnicode
 
 text_normalizer = (
-    Groomer()
+    Refiner()
     .pipe(FixUnicode())
     .pipe(NormalizeWhitespace())
 )

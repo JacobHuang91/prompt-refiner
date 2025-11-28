@@ -1,6 +1,6 @@
 """Example: Fixing problematic Unicode characters."""
 
-from prompt_groomer import FixUnicode, Groomer
+from prompt_refiner import FixUnicode, Refiner
 
 # Text with problematic Unicode characters
 text_with_issues = (
@@ -16,7 +16,7 @@ print(f"\nOriginal (with invisible characters):\n{repr(text_with_issues)}")
 print(f"Visual appearance: {text_with_issues}")
 
 # Clean unicode
-groomer = Groomer().pipe(FixUnicode())
-cleaned = groomer.run(text_with_issues)
+refiner = Refiner().pipe(FixUnicode())
+cleaned = refiner.run(text_with_issues)
 print(f"\nCleaned:\n{repr(cleaned)}")
 print(f"Visual appearance: {cleaned}")

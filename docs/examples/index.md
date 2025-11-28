@@ -1,6 +1,6 @@
 # Examples
 
-Practical examples for each module in Prompt Groomer.
+Practical examples for each module in Prompt Refiner.
 
 ## By Module
 
@@ -30,12 +30,12 @@ Practical examples for each module in Prompt Groomer.
 
 ## Running Examples Locally
 
-All examples are available in the [`examples/`](https://github.com/JacobHuang91/prompt-groomer/tree/main/examples) directory:
+All examples are available in the [`examples/`](https://github.com/JacobHuang91/prompt-refiner/tree/main/examples) directory:
 
 ```bash
 # Clone the repository
-git clone https://github.com/JacobHuang91/prompt-groomer.git
-cd prompt-groomer
+git clone https://github.com/JacobHuang91/prompt-refiner.git
+cd prompt-refiner
 
 # Install dependencies
 make install
@@ -48,4 +48,4 @@ python examples/all_modules_demo.py
 
 - [Getting Started Guide](../getting-started.md)
 - [API Reference](../api-reference/index.md)
-- [Report Issues](https://github.com/JacobHuang91/prompt-groomer/issues)
+- [Report Issues](https://github.com/JacobHuang91/prompt-refiner/issues)

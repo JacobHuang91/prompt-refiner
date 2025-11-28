@@ -1,10 +1,10 @@
-# Prompt Groomer - Project Context
+# Prompt Refiner - Project Context
 
 This document provides context for Claude Code and developers working on this project.
 
 ## Project Purpose
 
-Prompt Groomer is a Python library designed to optimize LLM prompts by cleaning and reducing unnecessary tokens. This helps users:
+Prompt Refiner is a Python library designed to optimize LLM prompts by cleaning and reducing unnecessary tokens. This helps users:
 
 - Lower API costs by reducing token count
 - Improve prompt quality through normalization
@@ -19,7 +19,7 @@ The library is organized into 4 core modules:
 - **Scrubber**: Operations for security and privacy (PII redaction)
 - **Analyzer**: Operations for analyzing and reporting on optimization (token counting)
 
-Each module contains specialized operations that can be composed into pipelines using the `Groomer` class.
+Each module contains specialized operations that can be composed into pipelines using the `Refiner` class.
 
 ## Development Philosophy
 
@@ -52,9 +52,9 @@ Each module contains specialized operations that can be composed into pipelines 
 ## Project Structure
 
 ```
-src/prompt_groomer/
+src/prompt_refiner/
 ├── __init__.py          # Main exports
-├── groomer.py           # Pipeline builder
+├── refiner.py           # Pipeline builder
 ├── operation.py         # Base operation class
 ├── cleaner/             # Cleaner module
 │   ├── html.py
@@ -69,7 +69,7 @@ src/prompt_groomer/
     └── counter.py
 
 tests/
-├── test_groomer.py      # Pipeline tests
+├── test_refiner.py      # Pipeline tests
 ├── test_cleaner.py      # Cleaner module tests
 ├── test_compressor.py   # Compressor module tests
 ├── test_scrubber.py     # Scrubber module tests

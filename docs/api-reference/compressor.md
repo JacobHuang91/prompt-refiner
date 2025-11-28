@@ -6,7 +6,7 @@ The Compressor module provides operations for reducing text size through smart t
 
 Truncate text to a maximum number of tokens with intelligent sentence boundary detection.
 
-::: prompt_groomer.compressor.TruncateTokens
+::: prompt_refiner.compressor.TruncateTokens
     options:
       show_source: true
       members_order: source
@@ -21,7 +21,7 @@ Truncate text to a maximum number of tokens with intelligent sentence boundary d
 ### Examples
 
 ```python
-from prompt_groomer import TruncateTokens
+from prompt_refiner import TruncateTokens
 
 # Keep first 100 tokens
 truncator = TruncateTokens(max_tokens=100, strategy="head")
@@ -50,7 +50,7 @@ result = truncator.process(long_text)
 
 Remove duplicate or highly similar text chunks, useful for RAG contexts.
 
-::: prompt_groomer.compressor.Deduplicate
+::: prompt_refiner.compressor.Deduplicate
     options:
       show_source: true
       members_order: source
@@ -69,7 +69,7 @@ Remove duplicate or highly similar text chunks, useful for RAG contexts.
 ### Examples
 
 ```python
-from prompt_groomer import Deduplicate
+from prompt_refiner import Deduplicate
 
 # Basic deduplication (85% similarity threshold)
 deduper = Deduplicate(similarity_threshold=0.85)
@@ -99,10 +99,10 @@ result = deduper.process(text_with_duplicates)
 ### RAG Context Optimization
 
 ```python
-from prompt_groomer import Groomer, Deduplicate, TruncateTokens
+from prompt_refiner import Refiner, Deduplicate, TruncateTokens
 
 rag_optimizer = (
-    Groomer()
+    Refiner()
     .pipe(Deduplicate(similarity_threshold=0.85))  # Remove duplicates first
     .pipe(TruncateTokens(max_tokens=2000))        # Then fit in context window
 )
@@ -111,10 +111,10 @@ rag_optimizer = (
 ### Conversation History Compression
 
 ```python
-from prompt_groomer import Groomer, Deduplicate, TruncateTokens
+from prompt_refiner import Refiner, Deduplicate, TruncateTokens
 
 conversation_compressor = (
-    Groomer()
+    Refiner()
     .pipe(Deduplicate(granularity="sentence"))
     .pipe(TruncateTokens(max_tokens=1000, strategy="tail"))  # Keep recent messages
 )
@@ -123,10 +123,10 @@ conversation_compressor = (
 ### Document Summarization Prep
 
 ```python
-from prompt_groomer import Groomer, Deduplicate, TruncateTokens
+from prompt_refiner import Refiner, Deduplicate, TruncateTokens
 
 summarization_prep = (
-    Groomer()
+    Refiner()
     .pipe(Deduplicate(similarity_threshold=0.90))  # Remove near-duplicates
     .pipe(TruncateTokens(max_tokens=4000, strategy="middle_out"))  # Keep intro + conclusion
 )

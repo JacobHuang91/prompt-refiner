@@ -1,6 +1,6 @@
 """Tests for Scrubber module operations."""
 
-from prompt_groomer import RedactPII
+from prompt_refiner import RedactPII
 
 
 def test_redact_pii_email():

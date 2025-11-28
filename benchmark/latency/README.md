@@ -1,11 +1,11 @@
 # Latency Benchmark
 
-This benchmark measures the processing overhead of Prompt Groomer operations.
+This benchmark measures the processing overhead of Prompt Refiner operations.
 
 ## What It Measures
 
 - **Individual operations**: HTML stripping, whitespace normalization, Unicode fixing, deduplication, truncation
-- **Complete strategies**: Minimal, Standard, and Aggressive grooming pipelines
+- **Complete strategies**: Minimal, Standard, and Aggressive refining pipelines
 - **Multiple input sizes**: 1k, 10k, and 50k tokens
 
 For each operation and strategy, the benchmark reports:
@@ -28,7 +28,7 @@ The benchmark takes about 30-60 seconds to complete.
 
 ```
 ================================================================================
-PROMPT GROOMER - LATENCY BENCHMARK
+PROMPT REFINER - LATENCY BENCHMARK
 ================================================================================
 
 📊 INDIVIDUAL OPERATIONS
@@ -44,7 +44,7 @@ Actual size: 10,010 tokens (40,040 characters)
   TruncateTokens      :   0.81ms avg  |    0.80ms median  |    0.89ms p95  |  0.08ms per 1k tokens
 
 ================================================================================
-📦 GROOMING STRATEGIES
+📦 REFINING STRATEGIES
 --------------------------------------------------------------------------------
 
 Test data: ~10,000 tokens
@@ -66,7 +66,7 @@ Actual size: 10,010 tokens (40,040 characters)
 ### Real-World Context
 
 For a typical RAG application with 10k token context:
-- Grooming overhead: **~2.5ms** (Standard strategy)
+- Refining overhead: **~2.5ms** (Standard strategy)
 - Network latency: **~100ms**
 - LLM Processing (TTFT): **~500ms+**
 - **Total overhead: < 0.5% of request time**
@@ -122,14 +122,14 @@ Test data is generated to match target token counts (using 1 token ≈ 4 charact
 
 ### When Latency Matters
 
-Grooming overhead is negligible compared to:
+Refining overhead is negligible compared to:
 - Network roundtrip (50-100ms)
 - LLM Time-To-First-Token (TTFT) (300-1000ms)
 - Full response generation (1000-5000ms)
 
 ### When to Optimize
 
-Consider grooming latency only if:
+Consider refining latency only if:
 - You're processing > 100k tokens in a tight loop
 - Your total pipeline budget is < 10ms
 - You're doing real-time client-side processing on mobile devices

@@ -23,8 +23,25 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Verify version matches tag
+        if: github.event_name == 'release'
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/v}
+          PACKAGE_VERSION=$(grep '^version = ' pyproject.toml | cut -d'"' -f2)
+          if [ "$TAG_VERSION" != "$PACKAGE_VERSION" ]; then
+            echo "Error: Tag version ($TAG_VERSION) does not match package version ($PACKAGE_VERSION)"
+            exit 1
+          fi
+          echo "✓ Version check passed: $TAG_VERSION"
+
+      - name: Install dependencies
+        run: uv pip install --system twine
+
       - name: Build package
         run: uv build
+
+      - name: Check package
+        run: twine check dist/*
 
       - name: Publish to PyPI
         env:

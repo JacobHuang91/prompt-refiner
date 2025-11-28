@@ -1,1 +1,1 @@
-"""Tests for prompt-groomer."""
+"""Tests for prompt-refiner."""

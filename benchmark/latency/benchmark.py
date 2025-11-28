@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Latency Benchmark for Prompt Groomer
+Latency Benchmark for Prompt Refiner
 
-Measures the latency overhead of different grooming operations and strategies.
+Measures the latency overhead of different refining operations and strategies.
 Answers the question: "What's the latency overhead?"
 
 Usage:
@@ -13,12 +13,12 @@ import time
 import statistics
 from typing import Dict, List, Tuple
 
-from prompt_groomer import Groomer
-from prompt_groomer.cleaner.html import StripHTML
-from prompt_groomer.cleaner.whitespace import NormalizeWhitespace
-from prompt_groomer.cleaner.unicode import FixUnicode
-from prompt_groomer.compressor.deduplicate import Deduplicate
-from prompt_groomer.compressor.truncate import TruncateTokens
+from prompt_refiner import Refiner
+from prompt_refiner.cleaner.html import StripHTML
+from prompt_refiner.cleaner.whitespace import NormalizeWhitespace
+from prompt_refiner.cleaner.unicode import FixUnicode
+from prompt_refiner.compressor.deduplicate import Deduplicate
+from prompt_refiner.compressor.truncate import TruncateTokens
 
 
 def estimate_token_count(text: str) -> int:
@@ -83,7 +83,7 @@ def run_benchmark():
     """Run comprehensive latency benchmark"""
 
     print("=" * 80)
-    print("PROMPT GROOMER - LATENCY BENCHMARK")
+    print("PROMPT REFINER - LATENCY BENCHMARK")
     print("=" * 80)
     print()
 
@@ -92,30 +92,30 @@ def run_benchmark():
 
     # Operations to test
     operations = {
-        "StripHTML": lambda text: Groomer().pipe(StripHTML()).run(text),
-        "NormalizeWhitespace": lambda text: Groomer().pipe(NormalizeWhitespace()).run(text),
-        "FixUnicode": lambda text: Groomer().pipe(FixUnicode()).run(text),
-        "Deduplicate": lambda text: Groomer().pipe(Deduplicate()).run(text),
-        "TruncateTokens": lambda text: Groomer().pipe(TruncateTokens(max_tokens=1000)).run(text),
+        "StripHTML": lambda text: Refiner().pipe(StripHTML()).run(text),
+        "NormalizeWhitespace": lambda text: Refiner().pipe(NormalizeWhitespace()).run(text),
+        "FixUnicode": lambda text: Refiner().pipe(FixUnicode()).run(text),
+        "Deduplicate": lambda text: Refiner().pipe(Deduplicate()).run(text),
+        "TruncateTokens": lambda text: Refiner().pipe(TruncateTokens(max_tokens=1000)).run(text),
     }
 
     # Strategies (combinations)
     strategies = {
         "Minimal (HTML + Whitespace)": lambda text: (
-            Groomer()
+            Refiner()
             .pipe(StripHTML())
             .pipe(NormalizeWhitespace())
             .run(text)
         ),
         "Standard (+ Deduplication)": lambda text: (
-            Groomer()
+            Refiner()
             .pipe(StripHTML())
             .pipe(NormalizeWhitespace())
             .pipe(Deduplicate(similarity_threshold=0.8, granularity="sentence"))
             .run(text)
         ),
         "Aggressive (+ Truncate)": lambda text: (
-            Groomer()
+            Refiner()
             .pipe(StripHTML())
             .pipe(NormalizeWhitespace())
             .pipe(Deduplicate(similarity_threshold=0.7, granularity="sentence"))
@@ -152,7 +152,7 @@ def run_benchmark():
 
     # Test strategies
     print("\n" + "=" * 80)
-    print("📦 GROOMING STRATEGIES")
+    print("📦 REFINING STRATEGIES")
     print("-" * 80)
 
     for size in test_sizes:
@@ -211,8 +211,8 @@ def run_benchmark():
     print("   • Aggressive strategy: ~3-8ms per 1k tokens (includes truncation)")
     print()
     print("🎯 Recommendation:")
-    print("   Grooming overhead is negligible compared to network + LLM latency (600ms+).")
-    print("   Standard grooming adds ~2.5ms overhead - less than 0.5% of total request time.")
+    print("   Refining overhead is negligible compared to network + LLM latency (600ms+).")
+    print("   Standard refining adds ~2.5ms overhead - less than 0.5% of total request time.")
     print()
     print("=" * 80)
 

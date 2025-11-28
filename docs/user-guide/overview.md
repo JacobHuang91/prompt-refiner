@@ -1,10 +1,10 @@
 # User Guide Overview
 
-Learn how to use Prompt Groomer effectively to optimize your LLM inputs.
+Learn how to use Prompt Refiner effectively to optimize your LLM inputs.
 
-## What is Prompt Groomer?
+## What is Prompt Refiner?
 
-Prompt Groomer is a library for cleaning and optimizing text before sending it to LLM APIs. It helps you:
+Prompt Refiner is a library for cleaning and optimizing text before sending it to LLM APIs. It helps you:
 
 - **Save money** by reducing token usage
 - **Improve quality** by cleaning and normalizing text
@@ -18,7 +18,7 @@ Prompt Groomer is a library for cleaning and optimizing text before sending it t
 An **Operation** is a single transformation that processes text:
 
 ```python
-from prompt_groomer import StripHTML
+from prompt_refiner import StripHTML
 
 operation = StripHTML()
 result = operation.process("<p>Hello</p>")
@@ -32,7 +32,7 @@ All operations implement the same interface: `process(text: str) -> str`
 A **Pipeline** chains multiple operations together:
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace
+from prompt_refiner import StripHTML, NormalizeWhitespace
 
 # Using the pipe operator (recommended)
 pipeline = (
@@ -46,9 +46,9 @@ result = pipeline.run("<p>Hello    World</p>")
 
 Alternatively, use the fluent API:
 ```python
-from prompt_groomer import Groomer
+from prompt_refiner import Refiner
 
-pipeline = Groomer().pipe(StripHTML()).pipe(NormalizeWhitespace())
+pipeline = Refiner().pipe(StripHTML()).pipe(NormalizeWhitespace())
 ```
 
 ### The 4 Modules

@@ -1,6 +1,6 @@
 # Benchmark Results
 
-Prompt Groomer's effectiveness has been validated through comprehensive testing covering both **quality & cost savings** and **performance & latency**.
+Prompt Refiner's effectiveness has been validated through comprehensive testing covering both **quality & cost savings** and **performance & latency**.
 
 ## Available Benchmarks
 
@@ -10,7 +10,7 @@ Comprehensive A/B testing on 30 real-world test cases measuring token reduction 
 [Jump to Quality Benchmark →](#results-summary)
 
 ### ⚡ Latency Benchmark
-Performance testing measuring processing overhead of grooming operations.
+Performance testing measuring processing overhead of refining operations.
 
 [Jump to Latency Benchmark →](#latency-performance)
 
@@ -111,7 +111,7 @@ Real-world cost savings for production applications:
 
 ### Token Reduction vs Quality
 
-![Benchmark Results](https://raw.githubusercontent.com/JacobHuang91/prompt-groomer/main/benchmark/custom/results/benchmark_results.png)
+![Benchmark Results](https://raw.githubusercontent.com/JacobHuang91/prompt-refiner/main/benchmark/custom/results/benchmark_results.png)
 
 The scatter plot shows each strategy's position in the cost-quality tradeoff space. Standard strategy achieves near-optimal quality while maintaining solid savings.
 
@@ -211,7 +211,7 @@ pipeline = StripHTML() | NormalizeWhitespace()
 
 ## Latency & Performance
 
-**"What's the latency overhead?"** - Negligible. Prompt Groomer adds **< 0.5ms per 1k tokens** of overhead.
+**"What's the latency overhead?"** - Negligible. Prompt Refiner adds **< 0.5ms per 1k tokens** of overhead.
 
 ### Performance Results
 
@@ -225,20 +225,20 @@ pipeline = StripHTML() | NormalizeWhitespace()
 
 - ⚡ **Minimal strategy**: Only 0.05ms per 1k tokens (faster than a network packet)
 - 🎯 **Standard strategy**: 0.25ms per 1k tokens - adds ~2.5ms to a 10k token prompt
-- 📊 **Context**: Network + LLM TTFT is typically 600ms+, grooming adds < 0.5% overhead
+- 📊 **Context**: Network + LLM TTFT is typically 600ms+, refining adds < 0.5% overhead
 - 🚀 **Individual operations** (HTML, whitespace) are < 0.5ms per 1k tokens
 
 ### Real-World Impact
 
 ```
-10k token RAG context grooming: ~2.5ms overhead
+10k token RAG context refining: ~2.5ms overhead
 Network latency: ~100ms
 LLM Processing (TTFT): ~500ms+
 Total overhead: < 0.5% of request time
 ```
 
 !!! success "Performance Takeaway"
-    Grooming overhead is negligible compared to network + LLM latency (600ms+). Standard grooming adds ~2.5ms overhead - less than 0.5% of total request time.
+    Refining overhead is negligible compared to network + LLM latency (600ms+). Standard refining adds ~2.5ms overhead - less than 0.5% of total request time.
 
 ### Running the Latency Benchmark
 
@@ -261,17 +261,17 @@ This will:
 
 ## Learn More
 
-- [View Quality Benchmark Documentation](https://github.com/JacobHuang91/prompt-groomer/tree/main/benchmark/custom)
-- [View Latency Benchmark Documentation](https://github.com/JacobHuang91/prompt-groomer/tree/main/benchmark/latency)
-- [Browse Test Cases](https://github.com/JacobHuang91/prompt-groomer/tree/main/benchmark/custom/data)
-- [Examine Raw Results](https://github.com/JacobHuang91/prompt-groomer/blob/main/benchmark/custom/results/BENCHMARK_RESULTS.md)
+- [View Quality Benchmark Documentation](https://github.com/JacobHuang91/prompt-refiner/tree/main/benchmark/custom)
+- [View Latency Benchmark Documentation](https://github.com/JacobHuang91/prompt-refiner/tree/main/benchmark/latency)
+- [Browse Test Cases](https://github.com/JacobHuang91/prompt-refiner/tree/main/benchmark/custom/data)
+- [Examine Raw Results](https://github.com/JacobHuang91/prompt-refiner/blob/main/benchmark/custom/results/BENCHMARK_RESULTS.md)
 
 ## Contributing
 
 Have ideas to improve the benchmark? We welcome:
 - New test cases (especially domain-specific scenarios)
 - Additional evaluation metrics
-- Alternative grooming strategies
+- Alternative refining strategies
 - Multi-model comparisons
 
-[Open an issue](https://github.com/JacobHuang91/prompt-groomer/issues) or submit a PR!
+[Open an issue](https://github.com/JacobHuang91/prompt-refiner/issues) or submit a PR!

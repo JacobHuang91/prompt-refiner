@@ -1,6 +1,6 @@
 # Contributing Guide
 
-Thank you for your interest in contributing to Prompt Groomer!
+Thank you for your interest in contributing to Prompt Refiner!
 
 ## Development Setup
 
@@ -13,8 +13,8 @@ Thank you for your interest in contributing to Prompt Groomer!
 
 ```bash
 # Clone the repository
-git clone https://github.com/JacobHuang91/prompt-groomer.git
-cd prompt-groomer
+git clone https://github.com/JacobHuang91/prompt-refiner.git
+cd prompt-refiner
 
 # Install dependencies
 make install
@@ -32,8 +32,8 @@ make lint
 ## Project Structure
 
 ```
-prompt-groomer/
-├── src/prompt_groomer/     # Source code
+prompt-refiner/
+├── src/prompt_refiner/     # Source code
 │   ├── cleaner/           # Cleaner module
 │   ├── compressor/        # Compressor module
 │   ├── scrubber/          # Scrubber module
@@ -140,8 +140,8 @@ Then visit http://127.0.0.1:8000
 
 ## Questions?
 
-- [Open an issue](https://github.com/JacobHuang91/prompt-groomer/issues)
-- [Start a discussion](https://github.com/JacobHuang91/prompt-groomer/discussions)
+- [Open an issue](https://github.com/JacobHuang91/prompt-refiner/issues)
+- [Start a discussion](https://github.com/JacobHuang91/prompt-refiner/discussions)
 
 ## License
 

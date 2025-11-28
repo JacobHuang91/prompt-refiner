@@ -6,7 +6,7 @@ The Analyzer module provides operations for measuring optimization impact and tr
 
 Count tokens and provide before/after statistics to demonstrate optimization value.
 
-::: prompt_groomer.analyzer.CountTokens
+::: prompt_refiner.analyzer.CountTokens
     options:
       show_source: true
       members_order: source
@@ -28,7 +28,7 @@ Count tokens and provide before/after statistics to demonstrate optimization val
 #### Basic Token Counting
 
 ```python
-from prompt_groomer import CountTokens
+from prompt_refiner import CountTokens
 
 counter = CountTokens()
 counter.process("Hello World")
@@ -41,7 +41,7 @@ print(stats)
 #### Before/After Comparison
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, CountTokens
+from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, CountTokens
 
 original_text = "<p>Hello    World   </p>"
 
@@ -49,14 +49,14 @@ original_text = "<p>Hello    World   </p>"
 counter = CountTokens(original_text=original_text)
 
 # Build pipeline with counter at the end
-groomer = (
-    Groomer()
+refiner = (
+    Refiner()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
     .pipe(counter)
 )
 
-result = groomer.run(original_text)
+result = refiner.run(original_text)
 
 # Get statistics
 stats = counter.get_stats()
@@ -78,19 +78,19 @@ print(counter.format_stats())
 #### Cost Calculation Example
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, CountTokens
+from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, CountTokens
 
 original_text = """Your long text here..."""
 counter = CountTokens(original_text=original_text)
 
-groomer = (
-    Groomer()
+refiner = (
+    Refiner()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
     .pipe(counter)
 )
 
-result = groomer.run(original_text)
+result = refiner.run(original_text)
 stats = counter.get_stats()
 
 # Calculate cost savings
@@ -110,8 +110,8 @@ print(f"Savings: ${savings:.4f} per request")
 ### ROI Demonstration
 
 ```python
-from prompt_groomer import (
-    Groomer, StripHTML, NormalizeWhitespace,
+from prompt_refiner import (
+    Refiner, StripHTML, NormalizeWhitespace,
     Deduplicate, TruncateTokens, CountTokens
 )
 
@@ -119,7 +119,7 @@ original_text = """Your messy input..."""
 counter = CountTokens(original_text=original_text)
 
 full_optimization = (
-    Groomer()
+    Refiner()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
     .pipe(Deduplicate())
@@ -134,14 +134,14 @@ print(counter.format_stats())
 ### A/B Testing Different Strategies
 
 ```python
-from prompt_groomer import Groomer, TruncateTokens, Deduplicate, CountTokens
+from prompt_refiner import Refiner, TruncateTokens, Deduplicate, CountTokens
 
 original_text = """Your text..."""
 
 # Strategy A: Just truncate
 counter_a = CountTokens(original_text=original_text)
 strategy_a = (
-    Groomer()
+    Refiner()
     .pipe(TruncateTokens(max_tokens=500))
     .pipe(counter_a)
 )
@@ -150,7 +150,7 @@ strategy_a.run(original_text)
 # Strategy B: Deduplicate then truncate
 counter_b = CountTokens(original_text=original_text)
 strategy_b = (
-    Groomer()
+    Refiner()
     .pipe(Deduplicate())
     .pipe(TruncateTokens(max_tokens=500))
     .pipe(counter_b)
@@ -165,20 +165,20 @@ print("Strategy B:", counter_b.format_stats())
 
 ```python
 import logging
-from prompt_groomer import Groomer, StripHTML, CountTokens
+from prompt_refiner import Refiner, StripHTML, CountTokens
 
 logger = logging.getLogger(__name__)
 
 def process_user_input(text):
     counter = CountTokens(original_text=text)
 
-    groomer = (
-        Groomer()
+    refiner = (
+        Refiner()
         .pipe(StripHTML())
         .pipe(counter)
     )
 
-    result = groomer.run(text)
+    result = refiner.run(text)
     stats = counter.get_stats()
 
     # Log optimization impact
@@ -207,8 +207,8 @@ def process_user_input(text):
     For accurate "after" measurements, place `CountTokens` as the last operation in your pipeline:
 
     ```python
-    groomer = (
-        Groomer()
+    refiner = (
+        Refiner()
         .pipe(Operation1())
         .pipe(Operation2())
         .pipe(CountTokens(original_text=text))  # Last!

@@ -1,6 +1,6 @@
 """Example: Removing duplicate content (useful for RAG)."""
 
-from prompt_groomer import Deduplicate, Groomer
+from prompt_refiner import Deduplicate, Refiner
 
 # Simulated RAG retrieval with similar chunks
 rag_results = """
@@ -24,20 +24,20 @@ print(f"\nOriginal RAG results:\n{rag_results}")
 print("\n" + "-" * 60)
 print("Deduplication: Sentence level, Jaccard similarity (80%)")
 print("-" * 60)
-groomer = Groomer().pipe(
+refiner = Refiner().pipe(
     Deduplicate(similarity_threshold=0.8, method="jaccard", granularity="sentence")
 )
-deduped = groomer.run(rag_results)
+deduped = refiner.run(rag_results)
 print(f"Result:\n{deduped}")
 
 # Example 2: More aggressive deduplication
 print("\n" + "-" * 60)
 print("Deduplication: Sentence level, Levenshtein distance (70%)")
 print("-" * 60)
-groomer_aggressive = Groomer().pipe(
+refiner_aggressive = Refiner().pipe(
     Deduplicate(similarity_threshold=0.7, method="levenshtein", granularity="sentence")
 )
-deduped_aggressive = groomer_aggressive.run(rag_results)
+deduped_aggressive = refiner_aggressive.run(rag_results)
 print(f"Result:\n{deduped_aggressive}")
 
 # Example 3: Paragraph level deduplication
@@ -53,8 +53,8 @@ print("\n" + "-" * 60)
 print("Deduplication: Paragraph level")
 print("-" * 60)
 print(f"\nOriginal:\n{paragraph_text}")
-groomer_para = Groomer().pipe(
+refiner_para = Refiner().pipe(
     Deduplicate(similarity_threshold=0.95, method="jaccard", granularity="paragraph")
 )
-deduped_para = groomer_para.run(paragraph_text)
+deduped_para = refiner_para.run(paragraph_text)
 print(f"\nResult:\n{deduped_para}")

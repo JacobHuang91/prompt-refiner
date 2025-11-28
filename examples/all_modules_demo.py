@@ -1,10 +1,10 @@
-"""Demo script showing all 4 core modules of Prompt Groomer."""
+"""Demo script showing all 4 core modules of Prompt Refiner."""
 
-from prompt_groomer import (
+from prompt_refiner import (
     CountTokens,
     Deduplicate,
     FixUnicode,
-    Groomer,
+    Refiner,
     NormalizeWhitespace,
     RedactPII,
     StripHTML,
@@ -21,7 +21,7 @@ def demo_cleaner_module():
     # Sample dirty text with HTML, bad whitespace, and unicode issues
     dirty_text = """
     <div style="color: red">
-        <h1>Welcome   to  <strong>Prompt Groomer</strong>!</h1>
+        <h1>Welcome   to  <strong>Prompt Refiner</strong>!</h1>
         <p>This    is    a   paragraph    with   excessive    spaces.</p>
         <p>Here's some zero-width space:\u200bHidden\u200bSpaces</p>
     </div>
@@ -30,11 +30,11 @@ def demo_cleaner_module():
     print(f"\nOriginal text:\n{repr(dirty_text)}")
 
     # Clean it up
-    groomer = (
-        Groomer().pipe(StripHTML(to_markdown=True)).pipe(NormalizeWhitespace()).pipe(FixUnicode())
+    refiner = (
+        Refiner().pipe(StripHTML(to_markdown=True)).pipe(NormalizeWhitespace()).pipe(FixUnicode())
     )
 
-    cleaned = groomer.run(dirty_text)
+    cleaned = refiner.run(dirty_text)
     print(f"\nCleaned text:\n{cleaned}")
 
 
@@ -57,13 +57,13 @@ def demo_compressor_module():
     print(f"\nOriginal text:\n{long_text}")
 
     # Deduplicate
-    dedup_groomer = Groomer().pipe(Deduplicate(similarity_threshold=0.7))
-    deduped = dedup_groomer.run(long_text)
+    dedup_refiner = Refiner().pipe(Deduplicate(similarity_threshold=0.7))
+    deduped = dedup_refiner.run(long_text)
     print(f"\nAfter deduplication:\n{deduped}")
 
     # Truncate with smart sentence boundaries
-    truncate_groomer = Groomer().pipe(TruncateTokens(max_tokens=20, strategy="head"))
-    truncated = truncate_groomer.run(long_text)
+    truncate_refiner = Refiner().pipe(TruncateTokens(max_tokens=20, strategy="head"))
+    truncated = truncate_refiner.run(long_text)
     print(f"\nAfter truncation (20 tokens, head strategy):\n{truncated}")
 
 
@@ -83,13 +83,13 @@ def demo_scrubber_module():
     print(f"\nOriginal text:\n{sensitive_text}")
 
     # Redact PII
-    groomer = Groomer().pipe(RedactPII())
-    redacted = groomer.run(sensitive_text)
+    refiner = Refiner().pipe(RedactPII())
+    redacted = refiner.run(sensitive_text)
     print(f"\nAfter PII redaction:\n{redacted}")
 
     # Redact only specific types
-    groomer_selective = Groomer().pipe(RedactPII(redact_types={"email", "phone"}))
-    redacted_selective = groomer_selective.run(sensitive_text)
+    refiner_selective = Refiner().pipe(RedactPII(redact_types={"email", "phone"}))
+    redacted_selective = refiner_selective.run(sensitive_text)
     print(f"\nAfter selective PII redaction (only email/phone):\n{redacted_selective}")
 
 
@@ -113,14 +113,14 @@ def demo_analyzer_module():
     counter = CountTokens(original_text=original_text)
 
     # Clean and count
-    groomer = (
-        Groomer()
+    refiner = (
+        Refiner()
         .pipe(StripHTML())
         .pipe(NormalizeWhitespace())
         .pipe(counter)  # Counter as the last step
     )
 
-    cleaned = groomer.run(original_text)
+    cleaned = refiner.run(original_text)
     print(f"\nCleaned text:\n{cleaned}")
 
     # Show statistics
@@ -150,8 +150,8 @@ def demo_full_pipeline():
     counter = CountTokens(original_text=original_text)
 
     # Complete pipeline
-    groomer = (
-        Groomer()
+    refiner = (
+        Refiner()
         .pipe(StripHTML(to_markdown=True))  # Cleaner
         .pipe(NormalizeWhitespace())  # Cleaner
         .pipe(FixUnicode())  # Cleaner
@@ -161,7 +161,7 @@ def demo_full_pipeline():
         .pipe(counter)  # Analyzer
     )
 
-    result = groomer.run(original_text)
+    result = refiner.run(original_text)
 
     print(f"\nFinal result:\n{result}")
     print(f"\n{counter.format_stats()}")
@@ -169,7 +169,7 @@ def demo_full_pipeline():
 
 if __name__ == "__main__":
     print("\n" + "=" * 60)
-    print("PROMPT GROOMER - 4 CORE MODULES DEMONSTRATION")
+    print("PROMPT REFINER - 4 CORE MODULES DEMONSTRATION")
     print("=" * 60)
 
     demo_cleaner_module()

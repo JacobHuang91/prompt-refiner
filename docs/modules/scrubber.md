@@ -18,7 +18,7 @@ Automatically redact personally identifiable information using regex patterns.
 ### Basic Usage
 
 ```python
-from prompt_groomer import RedactPII
+from prompt_refiner import RedactPII
 
 # Redact all PII types
 redactor = RedactPII()

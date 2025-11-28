@@ -9,7 +9,7 @@ You want to demonstrate the value of prompt optimization.
 ## Example Code
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace, CountTokens
+from prompt_refiner import StripHTML, NormalizeWhitespace, CountTokens
 
 original_text = "<p>Hello    World   from   HTML  </p>"
 
@@ -54,7 +54,7 @@ print(f"Annual savings: ${annual_savings:.2f}")
 
 ## Full Example
 
-See: [`examples/analyzer/token_counting.py`](https://github.com/JacobHuang91/prompt-groomer/blob/main/examples/analyzer/token_counting.py)
+See: [`examples/analyzer/token_counting.py`](https://github.com/JacobHuang91/prompt-refiner/blob/main/examples/analyzer/token_counting.py)
 
 ## Related
 

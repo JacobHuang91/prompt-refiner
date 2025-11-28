@@ -1,6 +1,6 @@
 # Modules Overview
 
-Prompt Groomer is organized into 4 specialized modules, each designed to handle a specific aspect of prompt optimization.
+Prompt Refiner is organized into 4 specialized modules, each designed to handle a specific aspect of prompt optimization.
 
 ## The 4 Core Modules
 
@@ -76,8 +76,8 @@ The Analyzer module tracks optimization impact.
 The real power comes from combining modules in a pipeline:
 
 ```python
-from prompt_groomer import (
-    Groomer,
+from prompt_refiner import (
+    Refiner,
     StripHTML, NormalizeWhitespace,  # Cleaner
     TruncateTokens,                  # Compressor
     RedactPII,                       # Scrubber
@@ -88,7 +88,7 @@ original_text = "Your text here..."
 counter = CountTokens(original_text=original_text)
 
 pipeline = (
-    Groomer()
+    Refiner()
     # Clean first
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())

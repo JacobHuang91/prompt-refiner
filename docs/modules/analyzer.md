@@ -9,19 +9,19 @@ Measure token usage before and after optimization.
 ### Basic Usage
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace, CountTokens
+from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, CountTokens
 
 original_text = "<p>Hello    World</p>"
 counter = CountTokens(original_text=original_text)
 
-groomer = (
-    Groomer()
+refiner = (
+    Refiner()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
     .pipe(counter)
 )
 
-result = groomer.run(original_text)
+result = refiner.run(original_text)
 print(counter.format_stats())
 # Original: 6 tokens
 # Cleaned: 2 tokens

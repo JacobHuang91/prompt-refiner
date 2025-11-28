@@ -1,4 +1,4 @@
-"""Benchmark module for evaluating prompt-groomer cost-effectiveness."""
+"""Benchmark module for evaluating prompt-refiner cost-effectiveness."""
 
 from .benchmark import Benchmark
 from .datasets import (

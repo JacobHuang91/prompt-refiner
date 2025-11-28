@@ -9,7 +9,7 @@ You've scraped content from a website and need to clean it before sending to an 
 ## Example Code
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace
+from prompt_refiner import StripHTML, NormalizeWhitespace
 
 html_content = """
 <div class="article">
@@ -48,7 +48,7 @@ print(markdown)
 
 ## Full Example
 
-See the complete example: [`examples/cleaner/html_cleaning.py`](https://github.com/JacobHuang91/prompt-groomer/blob/main/examples/cleaner/html_cleaning.py)
+See the complete example: [`examples/cleaner/html_cleaning.py`](https://github.com/JacobHuang91/prompt-refiner/blob/main/examples/cleaner/html_cleaning.py)
 
 ```bash
 python examples/cleaner/html_cleaning.py

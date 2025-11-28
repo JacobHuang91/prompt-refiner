@@ -1,5 +1,5 @@
 ---
-title: Prompt Groomer Demo
+title: Prompt Refiner Demo
 emoji: 🧹
 colorFrom: blue
 colorTo: green
@@ -9,9 +9,9 @@ app_file: app.py
 pinned: false
 ---
 
-# 🧹 Prompt Groomer - Interactive Demo
+# 🧹 Prompt Refiner - Interactive Demo
 
-Live demonstration of [prompt-groomer](https://github.com/JacobHuang91/prompt-groomer) library capabilities.
+Live demonstration of [prompt-refiner](https://github.com/JacobHuang91/prompt-refiner) library capabilities.
 
 Stop paying for invisible tokens. Optimize your LLM inputs to save costs, improve context usage, and enhance security.
 
@@ -36,13 +36,13 @@ Stop paying for invisible tokens. Optimize your LLM inputs to save costs, improv
 Try it live here, then install for your project:
 
 ```bash
-pip install prompt-groomer
+pip install prompt-refiner
 ```
 
 ## 💻 Example Usage
 
 ```python
-from prompt_groomer import (
+from prompt_refiner import (
     StripHTML,
     NormalizeWhitespace,
     TruncateTokens
@@ -60,9 +60,9 @@ cleaned = pipeline.run(dirty_text)
 
 ## 🔗 Links
 
-- 📖 [Documentation](https://jacobhuang91.github.io/prompt-groomer/)
-- 💻 [GitHub Repository](https://github.com/JacobHuang91/prompt-groomer)
-- 📦 [PyPI Package](https://pypi.org/project/prompt-groomer/)
+- 📖 [Documentation](https://jacobhuang91.github.io/prompt-refiner/)
+- 💻 [GitHub Repository](https://github.com/JacobHuang91/prompt-refiner)
+- 📦 [PyPI Package](https://pypi.org/project/prompt-refiner/)
 
 ## 📊 Proven Effectiveness
 
@@ -91,4 +91,4 @@ Benchmarked on 30 real-world test cases:
 
 ---
 
-Made with ❤️ by [Jacob Huang](https://github.com/JacobHuang91)
+Made with ❤️ by [Xinghao Huang](https://github.com/JacobHuang91)

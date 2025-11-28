@@ -1,7 +1,7 @@
 """Example: Creating a custom operation."""
 
-from prompt_groomer import Groomer, NormalizeWhitespace
-from prompt_groomer.operation import Operation
+from prompt_refiner import Refiner, NormalizeWhitespace
+from prompt_refiner.operation import Operation
 
 
 class RemoveEmojis(Operation):
@@ -33,8 +33,8 @@ class UpperCase(Operation):
 
 
 # Use custom operations in a pipeline
-groomer = (
-    Groomer()
+refiner = (
+    Refiner()
     .pipe(RemoveEmojis())
     .pipe(NormalizeWhitespace())
     .pipe(UpperCase())
@@ -42,7 +42,7 @@ groomer = (
 
 text_with_emojis = "Hello 👋 world 🌍 this is awesome! 🎉"
 
-result = groomer.run(text_with_emojis)
+result = refiner.run(text_with_emojis)
 
 print("Original:")
 print(text_with_emojis)

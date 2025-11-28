@@ -1,19 +1,19 @@
 # Getting Started
 
-Get up and running with Prompt Groomer in minutes.
+Get up and running with Prompt Refiner in minutes.
 
 ## Installation
 
 === "Using uv (recommended)"
 
     ```bash
-    uv pip install prompt-groomer
+    uv pip install prompt-refiner
     ```
 
 === "Using pip"
 
     ```bash
-    pip install prompt-groomer
+    pip install prompt-refiner
     ```
 
 ## Your First Pipeline
@@ -21,7 +21,7 @@ Get up and running with Prompt Groomer in minutes.
 Let's create a simple pipeline to clean HTML and normalize whitespace:
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace
+from prompt_refiner import StripHTML, NormalizeWhitespace
 
 # Create a pipeline using the pipe operator
 pipeline = (
@@ -46,7 +46,7 @@ print(clean_output)
 
 ## Understanding the Pipeline Pattern
 
-Prompt Groomer uses a **pipeline pattern** where you chain operations together:
+Prompt Refiner uses a **pipeline pattern** where you chain operations together:
 
 1. **Create operations** - Initialize the operations you need
 2. **Chain with `|` operator** - Combine operations in order
@@ -63,12 +63,12 @@ result = pipeline.run(text)  # 3. Run
 ```
 
 !!! tip "Alternative: Fluent API"
-    Prefer method chaining? Use the traditional fluent API with `Groomer().pipe()`:
+    Prefer method chaining? Use the traditional fluent API with `Refiner().pipe()`:
     ```python
-    from prompt_groomer import Groomer
+    from prompt_refiner import Refiner
 
     pipeline = (
-        Groomer()
+        Refiner()
         .pipe(Operation1())
         .pipe(Operation2())
         .pipe(Operation3())
@@ -85,7 +85,7 @@ result = pipeline.run(text)  # 3. Run
 Clean content scraped from the web:
 
 ```python
-from prompt_groomer import StripHTML, NormalizeWhitespace, FixUnicode
+from prompt_refiner import StripHTML, NormalizeWhitespace, FixUnicode
 
 web_cleaner = (
     StripHTML(to_markdown=True)  # Convert to Markdown
@@ -99,7 +99,7 @@ web_cleaner = (
 Optimize retrieved context for RAG applications:
 
 ```python
-from prompt_groomer import Deduplicate, TruncateTokens
+from prompt_refiner import Deduplicate, TruncateTokens
 
 rag_optimizer = (
     Deduplicate(similarity_threshold=0.85)  # Remove duplicates
@@ -112,7 +112,7 @@ rag_optimizer = (
 Redact sensitive information before sending to APIs:
 
 ```python
-from prompt_groomer import RedactPII
+from prompt_refiner import RedactPII
 
 secure_pipeline = RedactPII(redact_types={"email", "phone", "ssn"})
 ```
@@ -122,7 +122,7 @@ secure_pipeline = RedactPII(redact_types={"email", "phone", "ssn"})
 Complete optimization with metrics:
 
 ```python
-from prompt_groomer import (
+from prompt_refiner import (
     StripHTML, NormalizeWhitespace,
     TruncateTokens, RedactPII, CountTokens
 )
@@ -155,7 +155,7 @@ Curious about the real-world effectiveness? Check out our comprehensive benchmar
 
 ## Exploring Modules
 
-Prompt Groomer has 4 specialized modules:
+Prompt Refiner has 4 specialized modules:
 
 - **[Cleaner](modules/cleaner.md)** - Clean dirty data (HTML, whitespace, Unicode)
 - **[Compressor](modules/compressor.md)** - Reduce size (truncation, deduplication)

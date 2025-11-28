@@ -1,6 +1,6 @@
-# Prompt Groomer Benchmark
+# Prompt Refiner Benchmark
 
-This benchmark validates the cost-effectiveness of prompt-groomer by measuring:
+This benchmark validates the cost-effectiveness of prompt-refiner by measuring:
 - **Token reduction** (cost savings)
 - **Response quality maintenance** (semantic similarity)
 
@@ -8,7 +8,7 @@ This benchmark validates the cost-effectiveness of prompt-groomer by measuring:
 
 The benchmark runs A/B tests comparing:
 - **Raw prompts** (unprocessed context)
-- **Groomed prompts** (cleaned with different strategies)
+- **Refined prompts** (cleaned with different strategies)
 
 For each strategy, it measures:
 1. **Token Reduction**: Percentage of tokens saved
@@ -118,7 +118,7 @@ Available options:
 - `--n-rag`: Number of RAG scenarios (default: 15)
 - `--output-dir`: Output directory (default: `./results`)
 
-## 📈 Grooming Strategies
+## 📈 Refining Strategies
 
 The benchmark tests 3 strategies with increasing aggressiveness:
 
@@ -162,7 +162,7 @@ After running, you'll find in `./results/`:
 
 2. **`benchmark_results.csv`** - Full detailed results
    - Every test case result
-   - Token counts (raw vs groomed)
+   - Token counts (raw vs refined)
    - Quality metrics
    - Actual responses
 
@@ -206,7 +206,7 @@ Based on 30 test cases (15 SQuAD + 15 RAG scenarios) using gpt-4o-mini:
 ## 💰 Cost Estimation
 
 The benchmark itself costs approximately:
-- **Model calls**: 60 calls (30 raw + 30 groomed) × 3 strategies = 180 calls
+- **Model calls**: 60 calls (30 raw + 30 refined) × 3 strategies = 180 calls
 - **Embeddings**: 60 pairs × 2 = 120 embedding calls
 - **Judge evaluations**: 90 evaluation calls
 
@@ -218,7 +218,7 @@ The benchmark itself costs approximately:
 - Higher is better for cost savings
 - 20%+ reduction is excellent
 - 10-20% is good
-- <10% may not be worth the grooming overhead
+- <10% may not be worth the refining overhead
 
 ### Quality Metrics
 
@@ -272,9 +272,9 @@ Edit `data/rag_scenarios.json` or `data/squad_samples.json`:
 Modify `benchmark.py`:
 
 ```python
-def _setup_grooming_strategies(self):
+def _setup_refining_strategies(self):
     return {
-        "custom": Groomer()
+        "custom": Refiner()
             .pipe(YourOperation())
             .pipe(AnotherOperation())
     }
@@ -285,8 +285,8 @@ def _setup_grooming_strategies(self):
 If you use these benchmark results in your work, please cite:
 
 ```
-Prompt Groomer Benchmark Results
-https://github.com/JacobHuang91/prompt-groomer
+Prompt Refiner Benchmark Results
+https://github.com/JacobHuang91/prompt-refiner
 ```
 
 ## 🤝 Contributing

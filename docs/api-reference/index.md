@@ -1,6 +1,6 @@
 # API Reference
 
-Complete API reference for all Prompt Groomer classes and operations.
+Complete API reference for all Prompt Refiner classes and operations.
 
 This section contains auto-generated documentation from the codebase docstrings. All operations inherit from the base `Operation` class and implement a `process(text: str) -> str` method.
 
@@ -8,13 +8,13 @@ This section contains auto-generated documentation from the codebase docstrings.
 
 <div class="grid cards" markdown>
 
--   :material-pipe:{ .lg .middle } __Groomer__
+-   :material-pipe:{ .lg .middle } __Refiner__
 
     ---
 
     Pipeline builder for chaining operations
 
-    [:octicons-arrow-right-24: Groomer API](groomer.md)
+    [:octicons-arrow-right-24: Refiner API](refiner.md)
 
 -   :material-broom:{ .lg .middle } __Cleaner__
 
@@ -52,7 +52,7 @@ This section contains auto-generated documentation from the codebase docstrings.
 
 ## Operation Base Class
 
-All operations in Prompt Groomer inherit from the `Operation` base class:
+All operations in Prompt Refiner inherit from the `Operation` base class:
 
 ```python
 from abc import ABC, abstractmethod
@@ -66,23 +66,23 @@ class Operation(ABC):
 
 ## Usage Pattern
 
-Operations are used within a `Groomer` pipeline:
+Operations are used within a `Refiner` pipeline:
 
 ```python
-from prompt_groomer import Groomer, StripHTML, NormalizeWhitespace
+from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace
 
-groomer = (
-    Groomer()
+refiner = (
+    Refiner()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
 )
 
-result = groomer.run("Your text here...")
+result = refiner.run("Your text here...")
 ```
 
 ## Module Organization
 
-- **[Groomer](groomer.md)** - Core pipeline builder class
+- **[Refiner](refiner.md)** - Core pipeline builder class
 - **[Cleaner](cleaner.md)** - `StripHTML`, `NormalizeWhitespace`, `FixUnicode`
 - **[Compressor](compressor.md)** - `TruncateTokens`, `Deduplicate`
 - **[Scrubber](scrubber.md)** - `RedactPII`

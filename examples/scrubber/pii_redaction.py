@@ -1,6 +1,6 @@
 """Example: Redacting PII (Personally Identifiable Information)."""
 
-from prompt_groomer import Groomer, RedactPII
+from prompt_refiner import Refiner, RedactPII
 
 # Customer support ticket with PII
 support_ticket = """
@@ -28,16 +28,16 @@ print(f"\nOriginal ticket:\n{support_ticket}")
 print("\n" + "-" * 60)
 print("Full PII redaction (all types)")
 print("-" * 60)
-groomer = Groomer().pipe(RedactPII())
-redacted = groomer.run(support_ticket)
+refiner = Refiner().pipe(RedactPII())
+redacted = refiner.run(support_ticket)
 print(f"Result:\n{redacted}")
 
 # Example 2: Selective redaction (only email and phone)
 print("\n" + "-" * 60)
 print("Selective redaction (email and phone only)")
 print("-" * 60)
-groomer_selective = Groomer().pipe(RedactPII(redact_types={"email", "phone"}))
-redacted_selective = groomer_selective.run(support_ticket)
+refiner_selective = Refiner().pipe(RedactPII(redact_types={"email", "phone"}))
+redacted_selective = refiner_selective.run(support_ticket)
 print(f"Result:\n{redacted_selective}")
 
 # Example 3: Custom patterns and keywords
@@ -55,11 +55,11 @@ print("Custom patterns and keywords")
 print("-" * 60)
 print(f"\nOriginal document:\n{internal_doc}")
 
-groomer_custom = Groomer().pipe(
+refiner_custom = Refiner().pipe(
     RedactPII(
         redact_types={"email", "ip"},
         custom_keywords={"classified", "secret", "confidential", "proprietary"},
     )
 )
-redacted_custom = groomer_custom.run(internal_doc)
+redacted_custom = refiner_custom.run(internal_doc)
 print(f"\nRedacted document:\n{redacted_custom}")

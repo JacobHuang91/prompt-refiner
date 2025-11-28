@@ -1,9 +1,9 @@
 """Example: Counting tokens and showing optimization value."""
 
-from prompt_groomer import (
+from prompt_refiner import (
     CountTokens,
     FixUnicode,
-    Groomer,
+    Refiner,
     NormalizeWhitespace,
     StripHTML,
     TruncateTokens,
@@ -30,8 +30,8 @@ print(f"\nOriginal text:\n{original_text}")
 counter = CountTokens(original_text=original_text)
 
 # Build optimization pipeline
-groomer = (
-    Groomer()
+refiner = (
+    Refiner()
     .pipe(StripHTML())  # Remove HTML tags
     .pipe(NormalizeWhitespace())  # Fix whitespace
     .pipe(FixUnicode())  # Clean unicode
@@ -39,7 +39,7 @@ groomer = (
 )
 
 # Process text
-cleaned = groomer.run(original_text)
+cleaned = refiner.run(original_text)
 
 print(f"\nCleaned text:\n{cleaned}")
 print("\n" + "=" * 60)
@@ -53,15 +53,15 @@ print("WITH TRUNCATION")
 print("=" * 60)
 
 counter2 = CountTokens(original_text=original_text)
-groomer_truncate = (
-    Groomer()
+refiner_truncate = (
+    Refiner()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
     .pipe(TruncateTokens(max_tokens=20, strategy="head"))
     .pipe(counter2)
 )
 
-truncated = groomer_truncate.run(original_text)
+truncated = refiner_truncate.run(original_text)
 print(f"\nTruncated text:\n{truncated}")
 print("\n" + "=" * 60)
 print("TOKEN STATISTICS")

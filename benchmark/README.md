@@ -1,12 +1,12 @@
-# Prompt Groomer Benchmarks
+# Prompt Refiner Benchmarks
 
-This directory contains different benchmarking approaches to validate the cost-effectiveness of prompt-groomer.
+This directory contains different benchmarking approaches to validate the cost-effectiveness of prompt-refiner.
 
 ## 📊 Available Benchmarks
 
 ### [`latency/`](latency/) - Latency & Performance
 
-Measures the processing overhead of prompt grooming operations:
+Measures the processing overhead of prompt refining operations:
 - Tests individual operations and complete strategies
 - Measures latency at 1k, 10k, and 50k token scales
 - Reports average, median, and P95 latency
@@ -20,8 +20,8 @@ Measures the processing overhead of prompt grooming operations:
 
 ### [`custom/`](custom/) - Custom A/B Testing
 
-A custom A/B testing approach that compares raw vs groomed prompts:
-- Tests 3 grooming strategies (minimal, standard, aggressive)
+A custom A/B testing approach that compares raw vs refined prompts:
+- Tests 3 refining strategies (minimal, standard, aggressive)
 - Uses 30 curated test cases (SQuAD + RAG scenarios)
 - Measures token reduction and response quality
 - Quality evaluation via cosine similarity + LLM-as-a-judge
