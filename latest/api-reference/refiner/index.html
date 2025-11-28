@@ -9,10 +9,10 @@
         <meta name="description" content="A lightweight Python library for optimizing and cleaning LLM inputs">
       
       
-        <meta name="author" content="Jacob Huang">
+        <meta name="author" content="Xinghao Huang">
       
       
-        <link rel="canonical" href="https://jacobhuang91.github.io/prompt-groomer/latest/api-reference/groomer/">
+        <link rel="canonical" href="https://jacobhuang91.github.io/prompt-refiner/latest/api-reference/refiner/">
       
       
         <link rel="prev" href="../">
@@ -29,7 +29,7 @@
     
     
       
-        <title>Groomer - Prompt Groomer</title>
+        <title>Refiner - Prompt Refiner</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#groomer-class" class="md-skip">
+        <a href="#refiner-class" class="md-skip">
           Skip to content
         </a>
       
@@ -100,7 +100,7 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Prompt Groomer" class="md-header__button md-logo" aria-label="Prompt Groomer" data-md-component="logo">
+    <a href="../.." title="Prompt Refiner" class="md-header__button md-logo" aria-label="Prompt Refiner" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -114,13 +114,13 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            Prompt Groomer
+            Prompt Refiner
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Groomer
+              Refiner
             
           </span>
         </div>
@@ -202,13 +202,13 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/JacobHuang91/prompt-groomer" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/JacobHuang91/prompt-refiner" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    JacobHuang91/prompt-groomer
+    JacobHuang91/prompt-refiner
   </div>
 </a>
       </div>
@@ -407,23 +407,23 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Prompt Groomer" class="md-nav__button md-logo" aria-label="Prompt Groomer" data-md-component="logo">
+    <a href="../.." title="Prompt Refiner" class="md-nav__button md-logo" aria-label="Prompt Refiner" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
-    Prompt Groomer
+    Prompt Refiner
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/JacobHuang91/prompt-groomer" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/JacobHuang91/prompt-refiner" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    JacobHuang91/prompt-groomer
+    JacobHuang91/prompt-refiner
   </div>
 </a>
     </div>
@@ -961,7 +961,7 @@
   <span class="md-ellipsis">
     
   
-    Groomer
+    Refiner
   
 
     
@@ -979,7 +979,7 @@
   <span class="md-ellipsis">
     
   
-    Groomer
+    Refiner
   
 
     
@@ -1005,19 +1005,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Groomer
+        Refiner
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Groomer">
+    <nav class="md-nav" aria-label="Refiner">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer-functions" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
         Functions
@@ -1029,7 +1029,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer.pipe" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner.pipe" class="md-nav__link">
     <span class="md-ellipsis">
       
         pipe
@@ -1040,7 +1040,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer.run" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner.run" class="md-nav__link">
     <span class="md-ellipsis">
       
         run
@@ -1051,7 +1051,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer.__or__" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner.__or__" class="md-nav__link">
     <span class="md-ellipsis">
       
         __or__
@@ -1530,19 +1530,19 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Groomer
+        Refiner
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Groomer">
+    <nav class="md-nav" aria-label="Refiner">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer-functions" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner-functions" class="md-nav__link">
     <span class="md-ellipsis">
       
         Functions
@@ -1554,7 +1554,7 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer.pipe" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner.pipe" class="md-nav__link">
     <span class="md-ellipsis">
       
         pipe
@@ -1565,7 +1565,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer.run" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner.run" class="md-nav__link">
     <span class="md-ellipsis">
       
         run
@@ -1576,7 +1576,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#prompt_groomer.groomer.Groomer.__or__" class="md-nav__link">
+  <a href="#prompt_refiner.refiner.Refiner.__or__" class="md-nav__link">
     <span class="md-ellipsis">
       
         __or__
@@ -1666,29 +1666,29 @@
   
 
 
-<h1 id="groomer-class">Groomer Class</h1>
-<p>The <code>Groomer</code> class is the core pipeline builder that allows you to chain multiple operations together.</p>
+<h1 id="refiner-class">Refiner Class</h1>
+<p>The <code>Refiner</code> class is the core pipeline builder that allows you to chain multiple operations together.</p>
 
 
 <div class="doc doc-object doc-class">
 
 
 
-<h2 id="prompt_groomer.groomer.Groomer" class="doc doc-heading">
-            <span class="doc doc-object-name doc-class-name">prompt_groomer.groomer.Groomer</span>
+<h2 id="prompt_refiner.refiner.Refiner" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">prompt_refiner.refiner.Refiner</span>
 
 
 </h2>
-<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">Groomer</span><span class="p">()</span>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">Refiner</span><span class="p">()</span>
 </code></pre></div>
 
     <div class="doc doc-contents first">
 
 
 
-        <p>A pipeline builder for prompt grooming operations.</p>
+        <p>A pipeline builder for prompt refining operations.</p>
 
-        <p>Initialize an empty groomer pipeline.</p>
+        <p>Initialize an empty refiner pipeline.</p>
 
 
 
@@ -1698,11 +1698,11 @@
 
 
                   <details class="mkdocstrings-source">
-                    <summary>Source code in <code>src/prompt_groomer/groomer.py</code></summary>
+                    <summary>Source code in <code>src/prompt_refiner/refiner.py</code></summary>
                     <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-11">11</a></span>
 <span class="normal"><a href="#__codelineno-0-12">12</a></span>
 <span class="normal"><a href="#__codelineno-0-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize an empty groomer pipeline.&quot;&quot;&quot;</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize an empty refiner pipeline.&quot;&quot;&quot;</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_operations</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Operation</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 </code></pre></div></td></tr></table></div>
                   </details>
@@ -1718,12 +1718,12 @@
 
 
 
-<h3 id="prompt_groomer.groomer.Groomer-functions">Functions</h3>
+<h3 id="prompt_refiner.refiner.Refiner-functions">Functions</h3>
 
 <div class="doc doc-object doc-function">
 
 
-<h4 id="prompt_groomer.groomer.Groomer.pipe" class="doc doc-heading">
+<h4 id="prompt_refiner.refiner.Refiner.pipe" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">pipe</span>
 
 
@@ -1752,7 +1752,7 @@
                 <code>operation</code>
             </td>
             <td>
-                  <code><span title="prompt_groomer.operation.Operation">Operation</span></code>
+                  <code><span title="prompt_refiner.operation.Operation">Operation</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1778,7 +1778,7 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><a class="autorefs autorefs-internal" title="prompt_groomer.groomer.Groomer" href="#prompt_groomer.groomer.Groomer">Groomer</a></code>
+                  <code><a class="autorefs autorefs-internal" title="prompt_refiner.refiner.Refiner" href="#prompt_refiner.refiner.Refiner">Refiner</a></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1791,7 +1791,7 @@
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/prompt_groomer/groomer.py</code></summary>
+              <summary>Source code in <code>src/prompt_refiner/refiner.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-15">15</a></span>
 <span class="normal"><a href="#__codelineno-0-16">16</a></span>
 <span class="normal"><a href="#__codelineno-0-17">17</a></span>
@@ -1803,7 +1803,7 @@
 <span class="normal"><a href="#__codelineno-0-23">23</a></span>
 <span class="normal"><a href="#__codelineno-0-24">24</a></span>
 <span class="normal"><a href="#__codelineno-0-25">25</a></span>
-<span class="normal"><a href="#__codelineno-0-26">26</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="k">def</span><span class="w"> </span><span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="n">Operation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Groomer&quot;</span><span class="p">:</span>
+<span class="normal"><a href="#__codelineno-0-26">26</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="k">def</span><span class="w"> </span><span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">:</span> <span class="n">Operation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Refiner&quot;</span><span class="p">:</span>
 <a id="__codelineno-0-16" name="__codelineno-0-16"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="sd">    Add an operation to the pipeline.</span>
 <a id="__codelineno-0-18" name="__codelineno-0-18"></a>
@@ -1824,7 +1824,7 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="prompt_groomer.groomer.Groomer.run" class="doc doc-heading">
+<h4 id="prompt_refiner.refiner.Refiner.run" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">run</span>
 
 
@@ -1892,7 +1892,7 @@
 
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/prompt_groomer/groomer.py</code></summary>
+              <summary>Source code in <code>src/prompt_refiner/refiner.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-28">28</a></span>
 <span class="normal"><a href="#__codelineno-0-29">29</a></span>
 <span class="normal"><a href="#__codelineno-0-30">30</a></span>
@@ -1929,7 +1929,7 @@
 <div class="doc doc-object doc-function">
 
 
-<h4 id="prompt_groomer.groomer.Groomer.__or__" class="doc doc-heading">
+<h4 id="prompt_refiner.refiner.Refiner.__or__" class="doc doc-heading">
             <span class="doc doc-object-name doc-function-name">__or__</span>
 
 
@@ -1959,7 +1959,7 @@
                 <code>other</code>
             </td>
             <td>
-                  <code><span title="prompt_groomer.operation.Operation">Operation</span></code>
+                  <code><span title="prompt_refiner.operation.Operation">Operation</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1985,7 +1985,7 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><a class="autorefs autorefs-internal" title="prompt_groomer.groomer.Groomer" href="#prompt_groomer.groomer.Groomer">Groomer</a></code>
+                  <code><a class="autorefs autorefs-internal" title="prompt_refiner.refiner.Refiner" href="#prompt_refiner.refiner.Refiner">Refiner</a></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -2002,7 +2002,7 @@
   <blockquote>
 <blockquote>
 <blockquote>
-<p>from prompt_groomer import StripHTML, NormalizeWhitespace, TruncateTokens
+<p>from prompt_refiner import StripHTML, NormalizeWhitespace, TruncateTokens
 pipeline = StripHTML() | NormalizeWhitespace() | TruncateTokens(max_tokens=100)
 result = pipeline.run(text)</p>
 </blockquote>
@@ -2011,7 +2011,7 @@ result = pipeline.run(text)</p>
 </details>
 
             <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/prompt_groomer/groomer.py</code></summary>
+              <summary>Source code in <code>src/prompt_refiner/refiner.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-43">43</a></span>
 <span class="normal"><a href="#__codelineno-0-44">44</a></span>
 <span class="normal"><a href="#__codelineno-0-45">45</a></span>
@@ -2029,7 +2029,7 @@ result = pipeline.run(text)</p>
 <span class="normal"><a href="#__codelineno-0-57">57</a></span>
 <span class="normal"><a href="#__codelineno-0-58">58</a></span>
 <span class="normal"><a href="#__codelineno-0-59">59</a></span>
-<span class="normal"><a href="#__codelineno-0-60">60</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Operation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Groomer&quot;</span><span class="p">:</span>
+<span class="normal"><a href="#__codelineno-0-60">60</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="k">def</span><span class="w"> </span><span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Operation</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Refiner&quot;</span><span class="p">:</span>
 <a id="__codelineno-0-44" name="__codelineno-0-44"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="sd">    Support pipe operator syntax for adding operations to the pipeline.</span>
 <a id="__codelineno-0-46" name="__codelineno-0-46"></a>
@@ -2042,7 +2042,7 @@ result = pipeline.run(text)</p>
 <a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="sd">        Self for method chaining</span>
 <a id="__codelineno-0-54" name="__codelineno-0-54"></a>
 <a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="sd">    Example:</span>
-<a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">        &gt;&gt;&gt; from prompt_groomer import StripHTML, NormalizeWhitespace, TruncateTokens</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="sd">        &gt;&gt;&gt; from prompt_refiner import StripHTML, NormalizeWhitespace, TruncateTokens</span>
 <a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="sd">        &gt;&gt;&gt; pipeline = StripHTML() | NormalizeWhitespace() | TruncateTokens(max_tokens=100)</span>
 <a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="sd">        &gt;&gt;&gt; result = pipeline.run(text)</span>
 <a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="sd">    &quot;&quot;&quot;</span>
@@ -2061,7 +2061,7 @@ result = pipeline.run(text)</p>
 
 </div><h2 id="usage-examples">Usage Examples</h2>
 <h3 id="pipe-operator-recommended">Pipe Operator (Recommended)</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_groomer</span><span class="w"> </span><span class="kn">import</span> <span class="n">StripHTML</span><span class="p">,</span> <span class="n">NormalizeWhitespace</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">StripHTML</span><span class="p">,</span> <span class="n">NormalizeWhitespace</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Create a pipeline using the pipe operator</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="p">(</span>
@@ -2074,12 +2074,12 @@ result = pipeline.run(text)</p>
 <a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># &quot;Hello World!&quot;</span>
 </code></pre></div>
 <h3 id="fluent-api-with-pipe">Fluent API with .pipe()</h3>
-<p>The <code>Groomer</code> class supports method chaining with <code>.pipe()</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_groomer</span><span class="w"> </span><span class="kn">import</span> <span class="n">Groomer</span><span class="p">,</span> <span class="n">StripHTML</span><span class="p">,</span> <span class="n">NormalizeWhitespace</span>
+<p>The <code>Refiner</code> class supports method chaining with <code>.pipe()</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">Refiner</span><span class="p">,</span> <span class="n">StripHTML</span><span class="p">,</span> <span class="n">NormalizeWhitespace</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Create a pipeline using the fluent API</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="p">(</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">Groomer</span><span class="p">()</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">Refiner</span><span class="p">()</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">StripHTML</span><span class="p">())</span>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">NormalizeWhitespace</span><span class="p">())</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">)</span>
@@ -2090,7 +2090,7 @@ result = pipeline.run(text)</p>
 </code></pre></div>
 <p>Both approaches work identically - choose the one that fits your style.</p>
 <h2 id="pipeline-execution">Pipeline Execution</h2>
-<p>When you call <code>run(text)</code>, the Groomer:</p>
+<p>When you call <code>run(text)</code>, the Refiner:</p>
 <ol>
 <li>Takes the input text</li>
 <li>Passes it through each operation in sequence</li>
@@ -2098,7 +2098,7 @@ result = pipeline.run(text)</p>
 <li>Returns the final processed text</li>
 </ol>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Pipeline: text → Operation1 → Operation2 → Operation3 → result</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">groomer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">refiner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
 </code></pre></div>
 
 
