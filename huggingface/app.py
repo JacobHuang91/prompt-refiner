@@ -236,7 +236,7 @@ st.markdown(
 **Stop paying for invisible tokens.** Optimize your LLM inputs to save costs, improve context usage, and enhance security.
 
 [![GitHub](https://img.shields.io/github/stars/JacobHuang91/prompt-refiner?style=social)](https://github.com/JacobHuang91/prompt-refiner)
-[![PyPI](https://img.shields.io/pypi/v/prompt-refiner)](https://pypi.org/project/prompt-refiner/)
+[![PyPI](https://img.shields.io/pypi/v/llm-prompt-refiner)](https://pypi.org/project/llm-prompt-refiner/)
 """
 )
 
@@ -357,7 +357,7 @@ with st.sidebar:
     # Info
     st.caption("📖 [Documentation](https://jacobhuang91.github.io/prompt-refiner/)")
     st.caption("💻 [GitHub](https://github.com/JacobHuang91/prompt-refiner)")
-    st.caption("📦 [PyPI](https://pypi.org/project/prompt-refiner/)")
+    st.caption("📦 [PyPI](https://pypi.org/project/llm-prompt-refiner/)")
 
 # --- Main Content ---
 
@@ -548,7 +548,7 @@ cleaned = pipeline.run(dirty_text)
 
 - 📖 [Documentation](https://jacobhuang91.github.io/prompt-refiner/)
 - 💻 [GitHub Repository](https://github.com/JacobHuang91/prompt-refiner)
-- 📦 [PyPI Package](https://pypi.org/project/prompt-refiner/)
+- 📦 [PyPI Package](https://pypi.org/project/llm-prompt-refiner/)
 
 ---
 

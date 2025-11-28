@@ -62,7 +62,7 @@ cleaned = pipeline.run(dirty_text)
 
 - 📖 [Documentation](https://jacobhuang91.github.io/prompt-refiner/)
 - 💻 [GitHub Repository](https://github.com/JacobHuang91/prompt-refiner)
-- 📦 [PyPI Package](https://pypi.org/project/prompt-refiner/)
+- 📦 [PyPI Package](https://pypi.org/project/llm-prompt-refiner/)
 
 ## 📊 Proven Effectiveness
 
