@@ -2,9 +2,9 @@
 
 <div align="center">
 
-[![PyPI version](https://img.shields.io/pypi/v/prompt-refiner.svg)](https://pypi.org/project/prompt-refiner/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/prompt-refiner.svg)](https://pypi.org/project/prompt-refiner/)
-[![Downloads](https://img.shields.io/pypi/dm/prompt-refiner.svg)](https://pypi.org/project/prompt-refiner/)
+[![PyPI version](https://img.shields.io/pypi/v/llm-prompt-refiner.svg)](https://pypi.org/project/llm-prompt-refiner/)
+[![Python Versions](https://img.shields.io/pypi/pyversions/llm-prompt-refiner.svg)](https://pypi.org/project/llm-prompt-refiner/)
+[![Downloads](https://img.shields.io/pypi/dm/llm-prompt-refiner.svg)](https://pypi.org/project/llm-prompt-refiner/)
 [![GitHub Stars](https://img.shields.io/github/stars/JacobHuang91/prompt-refiner)](https://github.com/JacobHuang91/prompt-refiner)
 [![CI Status](https://github.com/JacobHuang91/prompt-refiner/workflows/CI/badge.svg)](https://github.com/JacobHuang91/prompt-refiner/actions)
 [![codecov](https://codecov.io/gh/JacobHuang91/prompt-refiner/branch/main/graph/badge.svg)](https://codecov.io/gh/JacobHuang91/prompt-refiner)
