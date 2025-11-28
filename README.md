@@ -77,10 +77,10 @@ This project is in early development. Features are being added iteratively.
 
 ```bash
 # Using uv (recommended)
-uv pip install prompt-refiner
+uv pip install llm-prompt-refiner
 
 # Using pip
-pip install prompt-refiner
+pip install llm-prompt-refiner
 ```
 
 ## Quick Start

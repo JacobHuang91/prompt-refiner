@@ -65,7 +65,7 @@ Additional    information    with    way    too    many    spaces    between    
         "text": """<div class="documentation">
     <h1>   Installation   Guide   </h1>
     <p>  To install the package, run the following command:  </p>
-    <pre><code>  pip install prompt-refiner  </code></pre>
+    <pre><code>  pip install llm-prompt-refiner  </code></pre>
 
     <h2>   Quick    Start   </h2>
     <p>   Import the library:   </p>
@@ -522,7 +522,7 @@ st.markdown(
 ### 📦 Installation
 
 ```bash
-pip install prompt-refiner
+pip install llm-prompt-refiner
 ```
 
 ### 💻 Example Code
@@ -552,6 +552,6 @@ cleaned = pipeline.run(dirty_text)
 
 ---
 
-Made with ❤️ by [Xinghao Huang](https://github.com/JacobHuang91) | Easy to install: `pip install prompt-refiner`
+Made with ❤️ by [Xinghao Huang](https://github.com/JacobHuang91) | Easy to install: `pip install llm-prompt-refiner`
 """
 )
