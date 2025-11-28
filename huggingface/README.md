@@ -36,7 +36,7 @@ Stop paying for invisible tokens. Optimize your LLM inputs to save costs, improv
 Try it live here, then install for your project:
 
 ```bash
-pip install prompt-refiner
+pip install llm-prompt-refiner
 ```
 
 ## 💻 Example Usage

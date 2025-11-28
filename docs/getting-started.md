@@ -7,13 +7,13 @@ Get up and running with Prompt Refiner in minutes.
 === "Using uv (recommended)"
 
     ```bash
-    uv pip install prompt-refiner
+    uv pip install llm-prompt-refiner
     ```
 
 === "Using pip"
 
     ```bash
-    pip install prompt-refiner
+    pip install llm-prompt-refiner
     ```
 
 ## Your First Pipeline

@@ -1,5 +1,5 @@
 [project]
-name = "prompt-refiner"
+name = "llm-prompt-refiner"
 version = "0.1.0"
 description = "A lightweight Python library for optimizing and cleaning LLM inputs"
 readme = "README.md"
