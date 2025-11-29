@@ -1,6 +1,6 @@
 [project]
 name = "llm-prompt-refiner"
-version = "0.1.0"
+version = "0.1.1"
 description = "A lightweight Python library for optimizing and cleaning LLM inputs"
 readme = "README.md"
 requires-python = ">=3.9"

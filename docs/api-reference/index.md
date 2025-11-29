@@ -48,6 +48,14 @@ This section contains auto-generated documentation from the codebase docstrings.
 
     [:octicons-arrow-right-24: Analyzer API](analyzer.md)
 
+-   :material-package-variant:{ .lg .middle } __Packer__
+
+    ---
+
+    Context budget management with priorities
+
+    [:octicons-arrow-right-24: Packer API](packer.md)
+
 </div>
 
 ## Operation Base Class
@@ -87,3 +95,4 @@ result = refiner.run("Your text here...")
 - **[Compressor](compressor.md)** - `TruncateTokens`, `Deduplicate`
 - **[Scrubber](scrubber.md)** - `RedactPII`
 - **[Analyzer](analyzer.md)** - `CountTokens`
+- **[Packer](packer.md)** - `ContextPacker`

@@ -56,7 +56,7 @@ cleaned = (StripHTML() | NormalizeWhitespace()).run(dirty_input)
 
 - **🪶 Zero Dependencies** - Lightweight core with no external dependencies
 - **⚡ Blazing Fast** - < 0.5ms per 1k tokens overhead, negligible impact on API latency
-- **🔧 Modular Design** - 4 focused modules: Cleaner, Compressor, Scrubber, Analyzer
+- **🔧 Modular Design** - 5 focused modules: Cleaner, Compressor, Scrubber, Analyzer, Packer
 - **🚀 Production Ready** - Battle-tested operations with comprehensive test coverage
 - **🎯 Type Safe** - Full type hints for better IDE support and fewer bugs
 - **📦 Easy to Use** - Modern pipe operator syntax (`|`), compose operations like LEGO blocks
@@ -208,9 +208,9 @@ Play with different strategies, see real-time token savings, and find the perfec
 - 🔧 All 7 operations configurable
 - 📊 Visual metrics dashboard
 
-## 4 Core Modules
+## 5 Core Modules
 
-Prompt Refiner is organized into 4 specialized modules:
+Prompt Refiner is organized into 5 specialized modules:
 
 ### 1. **Cleaner** - Clean Dirty Data
 - `StripHTML()` - Remove HTML tags, convert to Markdown
@@ -228,6 +228,11 @@ Prompt Refiner is organized into 4 specialized modules:
 ### 4. **Analyzer** - Show Value
 - `CountTokens()` - Track token savings and optimization impact
 
+### 5. **Packer** - Context Budget Management
+- `ContextPacker()` - Intelligently pack items into token budgets with priority-based selection
+  - Perfect for RAG applications and context window management
+  - Priority constants: `PRIORITY_SYSTEM`, `PRIORITY_USER`, `PRIORITY_HIGH`, `PRIORITY_MEDIUM`, `PRIORITY_LOW`
+
 ## Complete Example
 
 ```python
@@ -239,7 +244,9 @@ from prompt_refiner import (
     # Scrubber
     RedactPII,
     # Analyzer
-    CountTokens
+    CountTokens,
+    # Packer
+    ContextPacker, PRIORITY_SYSTEM, PRIORITY_USER, PRIORITY_HIGH
 )
 
 original_text = """<div>Your messy input here...</div>"""
@@ -275,6 +282,7 @@ Check out the [`examples/`](examples/) folder for detailed examples organized by
 - `compressor/` - Smart truncation, deduplication
 - `scrubber/` - PII redaction
 - `analyzer/` - Token counting and cost savings
+- `packer/` - Context budget management with priorities for RAG
 - `all_modules_demo.py` - Complete demonstration
 
 ## Development

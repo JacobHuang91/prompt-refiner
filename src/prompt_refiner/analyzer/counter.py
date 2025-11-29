@@ -22,8 +22,12 @@ class CountTokens(Operation):
         """
         Estimate token count.
 
-        Simple approximation: ~1 token per word.
-        For more accurate counting, use tiktoken as an optional dependency.
+        Uses the common approximation: 1 token ≈ 4 characters in English text.
+        This is more accurate than word counting for most use cases.
+
+        For reference:
+        - OpenAI's rule of thumb: 1 token ≈ 4 chars or ≈ 0.75 words
+        - This method: 1 token = 4 characters (simple, fast, reasonable)
 
         Args:
             text: The input text
@@ -31,7 +35,9 @@ class CountTokens(Operation):
         Returns:
             Estimated token count
         """
-        return len(text.split())
+        if not text:
+            return 0
+        return max(1, len(text) // 4)
 
     def process(self, text: str) -> str:
         """

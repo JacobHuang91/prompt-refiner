@@ -12,14 +12,15 @@ Prompt Refiner is a Python library designed to optimize LLM prompts by cleaning 
 
 ## Architecture
 
-The library is organized into 4 core modules:
+The library is organized into 5 core modules:
 
 - **Cleaner**: Operations for cleaning dirty data (HTML, whitespace, Unicode)
 - **Compressor**: Operations for reducing prompt size (truncation, deduplication)
 - **Scrubber**: Operations for security and privacy (PII redaction)
 - **Analyzer**: Operations for analyzing and reporting on optimization (token counting)
+- **Packer**: High-level context budget management (context window packing with priorities for RAG)
 
-Each module contains specialized operations that can be composed into pipelines using the `Refiner` class.
+Each module contains specialized operations that can be composed into pipelines using the `Refiner` class. The `Packer` module provides higher-level functionality for managing complex context budgets with priority-based selection.
 
 ## Development Philosophy
 
@@ -65,21 +66,25 @@ src/prompt_refiner/
 │   └── deduplicate.py
 ├── scrubber/            # Scrubber module
 │   └── pii.py
-└── analyzer/            # Analyzer module
-    └── counter.py
+├── analyzer/            # Analyzer module
+│   └── counter.py
+└── packer/              # Packer module
+    └── context_packer.py
 
 tests/
 ├── test_refiner.py      # Pipeline tests
 ├── test_cleaner.py      # Cleaner module tests
 ├── test_compressor.py   # Compressor module tests
 ├── test_scrubber.py     # Scrubber module tests
-└── test_analyzer.py     # Analyzer module tests
+├── test_analyzer.py     # Analyzer module tests
+└── test_packer.py       # Packer module tests
 
 examples/
 ├── cleaner/             # Cleaner examples
 ├── compressor/          # Compressor examples
 ├── scrubber/            # Scrubber examples
 ├── analyzer/            # Analyzer examples
+├── packer/              # Packer examples
 └── all_modules_demo.py  # Complete demo
 
 benchmark/

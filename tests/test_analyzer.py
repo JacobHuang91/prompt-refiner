@@ -10,7 +10,8 @@ def test_count_tokens_basic():
     assert result == "hello world test"  # Should not modify text
     stats = op.get_stats()
     assert "tokens" in stats
-    assert stats["tokens"] == 3
+    # "hello world test" = 16 chars → 16//4 = 4 tokens
+    assert stats["tokens"] == 4
 
 
 def test_count_tokens_with_comparison():
@@ -23,8 +24,11 @@ def test_count_tokens_with_comparison():
     assert "original" in stats
     assert "cleaned" in stats
     assert "saved" in stats
-    assert stats["original"] == 6
-    assert stats["cleaned"] == 6
+    # original = 42 chars → 42//4 = 10 tokens
+    # cleaned = 31 chars → 31//4 = 7 tokens
+    assert stats["original"] == 10
+    assert stats["cleaned"] == 7
+    assert stats["saved"] == 3
 
 
 def test_count_tokens_format():
