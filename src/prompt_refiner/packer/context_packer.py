@@ -1,10 +1,13 @@
 """Context packing operation for managing context budget."""
 
+import logging
 from dataclasses import dataclass
 from typing import List, Optional, Union
 
 from ..analyzer.counter import CountTokens
 from ..operation import Operation
+
+logger = logging.getLogger(__name__)
 
 # Priority constants - lower values = higher priority
 PRIORITY_SYSTEM = 0  # Absolute must-have (e.g., system prompts)
@@ -45,13 +48,15 @@ class ContextPacker:
         >>> final_prompt = packer.pack()
     """
 
-    def __init__(self, max_tokens: int, model: str = "gpt-4"):
+    def __init__(self, max_tokens: int, model: Optional[str] = None):
         """
         Initialize the context packer.
 
         Args:
             max_tokens: Maximum token budget (e.g., 4096, 8192)
-            model: Model name for tiktoken encoding (default: gpt-4)
+            model: Model name for tiktoken encoding. If None (default), uses character-based
+                   estimation. If specified (e.g., "gpt-4"), attempts to use tiktoken for
+                   precise counting.
         """
         self.raw_max_tokens = max_tokens
         self._items: List[PackableItem] = []
@@ -62,13 +67,15 @@ class ContextPacker:
         # Precise mode: 100% capacity, Estimation mode: 90% capacity (10% buffer)
         if not self._token_counter.is_precise:
             self.effective_max_tokens = int(max_tokens * 0.9)
-            print(
-                f"⚠️  Warning: tiktoken not installed. "
-                f"Using estimation mode with 10% safety buffer.\n"
-                f"   Effective limit: {self.effective_max_tokens} tokens "
-                f"(90% of {max_tokens})\n"
-                f"   Install for precise counting: pip install llm-prompt-refiner[token]"
-            )
+            if model is not None:
+                # User requested precise mode but tiktoken not installed
+                logger.warning(
+                    f"Model '{model}' specified but tiktoken not installed. "
+                    f"Using estimation mode with 10% safety buffer. "
+                    f"Effective limit: {self.effective_max_tokens} tokens (90% of {max_tokens}). "
+                    f"Install for precise counting: pip install llm-prompt-refiner[token]"
+                )
+            # No warning if model=None (user chose estimation mode)
         else:
             self.effective_max_tokens = max_tokens
 

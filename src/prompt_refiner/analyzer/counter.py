@@ -17,13 +17,14 @@ class CountTokens(Operation):
     - Estimation mode: Uses character-based approximation (1 token ≈ 4 characters)
     """
 
-    def __init__(self, original_text: Optional[str] = None, model: str = "gpt-4"):
+    def __init__(self, original_text: Optional[str] = None, model: Optional[str] = None):
         """
         Initialize the token counter.
 
         Args:
             original_text: Optional original text to compare against
-            model: Model name for tiktoken encoding (default: gpt-4)
+            model: Model name for tiktoken encoding. If None, uses character-based
+                   estimation. If specified, attempts to use tiktoken for precise counting.
         """
         self.original_text = original_text
         self.model = model
@@ -31,24 +32,30 @@ class CountTokens(Operation):
         self.is_precise = False
         self._encoding = None
 
-        # Try to import tiktoken for precise counting
-        try:
-            import tiktoken
-
+        # Only try tiktoken if user explicitly requests it by passing a model
+        if model is not None:
             try:
-                self._encoding = tiktoken.encoding_for_model(model)
-            except KeyError:
-                # Fall back to cl100k_base if model not found
-                self._encoding = tiktoken.get_encoding("cl100k_base")
-            self.is_precise = True
-            logger.debug(f"Using tiktoken for precise token counting (model: {model})")
-        except ImportError:
-            # User hasn't installed tiktoken - use estimation mode
+                import tiktoken
+
+                try:
+                    self._encoding = tiktoken.encoding_for_model(model)
+                except KeyError:
+                    # Fall back to cl100k_base if model not found
+                    self._encoding = tiktoken.get_encoding("cl100k_base")
+                self.is_precise = True
+                logger.debug(f"Using tiktoken for precise token counting (model: {model})")
+            except ImportError:
+                # User requested precise mode but tiktoken not installed
+                self.is_precise = False
+                logger.warning(
+                    f"Model '{model}' specified but tiktoken not installed. "
+                    "Falling back to character-based estimation. "
+                    "Install with: pip install llm-prompt-refiner[token]"
+                )
+        else:
+            # User didn't specify model - use estimation mode directly
             self.is_precise = False
-            logger.debug(
-                "tiktoken not installed. Using character-based estimation. "
-                "Install with: pip install llm-prompt-refiner[token]"
-            )
+            logger.debug("Using character-based token estimation (model not specified)")
 
     def _estimate_tokens(self, text: str) -> int:
         """
