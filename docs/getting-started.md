@@ -4,16 +4,29 @@ Get up and running with Prompt Refiner in minutes.
 
 ## Installation
 
-=== "Using uv (recommended)"
+=== "Default (Lightweight)"
 
-    ```bash
-    uv pip install llm-prompt-refiner
-    ```
-
-=== "Using pip"
+    Zero dependencies - perfect for most use cases:
 
     ```bash
     pip install llm-prompt-refiner
+    ```
+
+=== "With Precise Token Counting"
+
+    Install with optional `tiktoken` for precise token counting:
+
+    ```bash
+    pip install llm-prompt-refiner[token]
+    ```
+
+    Then opt-in by passing a `model` parameter:
+
+    ```python
+    from prompt_refiner import CountTokens, ContextPacker
+
+    counter = CountTokens(model="gpt-4")
+    packer = ContextPacker(max_tokens=1000, model="gpt-4")
     ```
 
 ## Your First Pipeline

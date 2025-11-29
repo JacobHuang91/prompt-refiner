@@ -88,6 +88,19 @@ pip install llm-prompt-refiner[token]
 - **Default (Lightweight)**: Zero dependencies, uses character-based token estimation
 - **Precise Mode**: Installs `tiktoken` for accurate token counting with no safety buffer
 
+To use precise mode, pass a `model` parameter:
+```python
+from prompt_refiner import CountTokens, ContextPacker
+
+# Default: estimation mode (no model parameter)
+counter = CountTokens()
+packer = ContextPacker(max_tokens=1000)
+
+# Opt-in: precise mode with tiktoken
+counter = CountTokens(model="gpt-4")
+packer = ContextPacker(max_tokens=1000, model="gpt-4")
+```
+
 ## Quick Start
 
 ```python

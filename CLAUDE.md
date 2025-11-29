@@ -24,10 +24,11 @@ Each module contains specialized operations that can be composed into pipelines 
 
 ## Development Philosophy
 
-- Keep it lightweight - minimal dependencies
+- Keep it lightweight - minimal dependencies (zero by default, optional for advanced features)
 - Focus on performance - cleaning should be fast
 - Make it configurable - users should control cleaning behavior
 - Start simple - add features incrementally
+- Graceful degradation - advanced features degrade gracefully when optional dependencies unavailable
 
 ## Key Considerations
 
@@ -42,6 +43,13 @@ Each module contains specialized operations that can be composed into pipelines 
 - uv for package management
 - pytest for testing
 - ruff for linting and formatting
+
+### Optional Dependencies
+
+- **tiktoken** (optional): For precise token counting
+  - Install with: `pip install llm-prompt-refiner[token]`
+  - Opt-in by passing `model` parameter to CountTokens or ContextPacker
+  - Falls back to character-based estimation if unavailable
 
 ## Code Style
 

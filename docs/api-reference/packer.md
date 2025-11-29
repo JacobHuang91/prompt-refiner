@@ -24,6 +24,31 @@ from prompt_refiner import (
 )
 ```
 
+### Token Counting Modes
+
+!!! info "Estimation vs Precise Mode"
+    ContextPacker uses the same token counting as CountTokens:
+
+    **Estimation Mode (Default)**
+    - Uses character-based approximation: ~1 token ≈ 4 characters
+    - Applies **10% safety buffer** to prevent context overflow
+    - Example: `max_tokens=1000` → `effective_max_tokens=900`
+
+    ```python
+    packer = ContextPacker(max_tokens=1000)  # 900 effective tokens
+    ```
+
+    **Precise Mode (Optional)**
+    - Requires `tiktoken`: `pip install llm-prompt-refiner[token]`
+    - Exact token counting, **no safety buffer** (100% capacity)
+    - Opt-in by passing a `model` parameter
+
+    ```python
+    packer = ContextPacker(max_tokens=1000, model="gpt-4")  # 1000 effective tokens
+    ```
+
+    **Recommendation**: Use precise mode in production when you need maximum token utilization.
+
 ### Examples
 
 #### Basic Usage
