@@ -1,43 +1,89 @@
 """Token counting and analysis operation."""
 
+import logging
+import math
 from typing import Optional
 
 from ..operation import Operation
 
+logger = logging.getLogger(__name__)
+
 
 class CountTokens(Operation):
-    """Count tokens and provide statistics before/after processing."""
+    """Count tokens and provide statistics before/after processing.
 
-    def __init__(self, original_text: Optional[str] = None):
+    Supports two modes:
+    - Precise mode: Uses tiktoken if installed (pip install llm-prompt-refiner[token])
+    - Estimation mode: Uses character-based approximation (1 token ≈ 4 characters)
+    """
+
+    def __init__(self, original_text: Optional[str] = None, model: Optional[str] = None):
         """
         Initialize the token counter.
 
         Args:
             original_text: Optional original text to compare against
+            model: Model name for tiktoken encoding. If None, uses character-based
+                   estimation. If specified, attempts to use tiktoken for precise counting.
         """
         self.original_text = original_text
+        self.model = model
         self._stats: Optional[dict] = None
+        self.is_precise = False
+        self._encoding = None
+
+        # Only try tiktoken if user explicitly requests it by passing a model
+        if model is not None:
+            try:
+                import tiktoken
+
+                try:
+                    self._encoding = tiktoken.encoding_for_model(model)
+                except KeyError:
+                    # Fall back to cl100k_base if model not found
+                    self._encoding = tiktoken.get_encoding("cl100k_base")
+                self.is_precise = True
+                logger.debug(f"Using tiktoken for precise token counting (model: {model})")
+            except ImportError:
+                # User requested precise mode but tiktoken not installed
+                self.is_precise = False
+                logger.warning(
+                    f"Model '{model}' specified but tiktoken not installed. "
+                    "Falling back to character-based estimation. "
+                    "Install with: pip install llm-prompt-refiner[token]"
+                )
+        else:
+            # User didn't specify model - use estimation mode directly
+            self.is_precise = False
+            logger.debug("Using character-based token estimation (model not specified)")
 
     def _estimate_tokens(self, text: str) -> int:
         """
-        Estimate token count.
+        Count tokens in text.
 
-        Uses the common approximation: 1 token ≈ 4 characters in English text.
-        This is more accurate than word counting for most use cases.
-
-        For reference:
-        - OpenAI's rule of thumb: 1 token ≈ 4 chars or ≈ 0.75 words
-        - This method: 1 token = 4 characters (simple, fast, reasonable)
+        Uses precise counting with tiktoken if available, otherwise falls back
+        to character-based estimation (1 token ≈ 4 characters).
 
         Args:
             text: The input text
 
         Returns:
-            Estimated token count
+            Token count (precise or estimated)
         """
         if not text:
             return 0
-        return max(1, len(text) // 4)
+
+        # Precise mode: Use tiktoken
+        if self.is_precise and self._encoding:
+            try:
+                return len(self._encoding.encode_ordinary(text))
+            except Exception as e:
+                logger.warning(f"tiktoken encoding failed: {e}. Falling back to estimation.")
+                # Fall through to estimation mode
+
+        # Estimation mode: 1 token ≈ 4 characters
+        # Using ceiling to be conservative (avoid underestimation)
+        return math.ceil(len(text) / 4)
 
     def process(self, text: str) -> str:
         """

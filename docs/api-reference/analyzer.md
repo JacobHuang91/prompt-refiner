@@ -12,16 +12,29 @@ Count tokens and provide before/after statistics to demonstrate optimization val
       members_order: source
       heading_level: 3
 
-### Token Estimation
+### Token Counting Modes
 
-!!! info "Token Estimation Method"
-    CountTokens uses a simple approximation: **~1 token per word**. This is fast but not as accurate as actual tokenizer libraries like `tiktoken`.
+!!! info "Two Counting Modes"
+    CountTokens supports two modes:
 
-    For more accurate token counting in production, consider:
+    **Estimation Mode (Default)**
+    - Zero dependencies, uses character-based approximation: **~1 token ≈ 4 characters**
+    - Fast and lightweight, good for most use cases
+    - Applies 10% safety buffer in ContextPacker to prevent overflow
 
-    - Using `tiktoken` for OpenAI models
-    - Using model-specific tokenizers
-    - Treating this as an approximation for optimization tracking
+    ```python
+    counter = CountTokens()  # Estimation mode
+    ```
+
+    **Precise Mode (Optional)**
+    - Requires `tiktoken`: `pip install llm-prompt-refiner[token]`
+    - Exact token counting using OpenAI's tokenizer
+    - No safety buffer needed, 100% capacity utilization
+    - Opt-in by passing a `model` parameter
+
+    ```python
+    counter = CountTokens(model="gpt-4")  # Precise mode
+    ```
 
 ### Examples
 

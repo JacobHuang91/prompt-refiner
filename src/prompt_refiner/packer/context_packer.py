@@ -1,10 +1,13 @@
 """Context packing operation for managing context budget."""
 
+import logging
 from dataclasses import dataclass
 from typing import List, Optional, Union
 
 from ..analyzer.counter import CountTokens
 from ..operation import Operation
+
+logger = logging.getLogger(__name__)
 
 # Priority constants - lower values = higher priority
 PRIORITY_SYSTEM = 0  # Absolute must-have (e.g., system prompts)
@@ -32,6 +35,11 @@ class ContextPacker:
     the maximum token limit. Items are selected by priority but restored to
     insertion order for natural reading flow.
 
+    Token Counting Modes:
+    - Precise mode: If tiktoken is installed, uses exact token counting (100% capacity)
+    - Estimation mode: If tiktoken is not installed, uses character-based estimation
+      with 10% safety buffer (90% capacity) to prevent context overflow
+
     Example:
         >>> packer = ContextPacker(max_tokens=1000)
         >>> packer.add_item("System prompt", priority=PRIORITY_SYSTEM)
@@ -40,27 +48,48 @@ class ContextPacker:
         >>> final_prompt = packer.pack()
     """
 
-    def __init__(self, max_tokens: int):
+    def __init__(self, max_tokens: int, model: Optional[str] = None):
         """
         Initialize the context packer.
 
         Args:
             max_tokens: Maximum token budget (e.g., 4096, 8192)
+            model: Model name for tiktoken encoding. If None (default), uses character-based
+                   estimation. If specified (e.g., "gpt-4"), attempts to use tiktoken for
+                   precise counting.
         """
-        self.max_tokens = max_tokens
+        self.raw_max_tokens = max_tokens
         self._items: List[PackableItem] = []
         self._insertion_counter = 0
-        self._token_counter = CountTokens()
+        self._token_counter = CountTokens(model=model)
+
+        # Apply safety buffer if using estimation mode
+        # Precise mode: 100% capacity, Estimation mode: 90% capacity (10% buffer)
+        if not self._token_counter.is_precise:
+            self.effective_max_tokens = int(max_tokens * 0.9)
+            if model is not None:
+                # User requested precise mode but tiktoken not installed
+                logger.warning(
+                    f"Model '{model}' specified but tiktoken not installed. "
+                    f"Using estimation mode with 10% safety buffer. "
+                    f"Effective limit: {self.effective_max_tokens} tokens (90% of {max_tokens}). "
+                    f"Install for precise counting: pip install llm-prompt-refiner[token]"
+                )
+            # No warning if model=None (user chose estimation mode)
+        else:
+            self.effective_max_tokens = max_tokens
 
     def _count_tokens(self, text: str) -> int:
         """
-        Count tokens in text using word-based estimation.
+        Count tokens in text.
+
+        Uses precise counting (tiktoken) if available, otherwise character-based estimation.
 
         Args:
             text: Text to count tokens in
 
         Returns:
-            Number of tokens (estimated)
+            Number of tokens (precise or estimated)
         """
         return self._token_counter._estimate_tokens(text)
 
@@ -132,14 +161,14 @@ class ContextPacker:
         current_tokens = 0
         separator_tokens = self._count_tokens(separator)
 
-        # Greedy packing
+        # Greedy packing - use effective_max_tokens (includes safety buffer if in estimation mode)
         for item in sorted_items:
             # Calculate cost including separator (except for first item)
             item_cost = item.tokens
             if selected_items:  # Not the first item
                 item_cost += separator_tokens
 
-            if current_tokens + item_cost <= self.max_tokens:
+            if current_tokens + item_cost <= self.effective_max_tokens:
                 selected_items.append(item)
                 current_tokens += item_cost
 

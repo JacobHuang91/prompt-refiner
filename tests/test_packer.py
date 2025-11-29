@@ -174,9 +174,11 @@ def test_token_packer_get_items():
 
     assert len(items) == 2
     assert items[0]["priority"] == PRIORITY_SYSTEM
-    assert items[0]["tokens"] == 1
+    # "first" = 5 chars → ceil(5/4) = 2 tokens
+    assert items[0]["tokens"] == 2
     assert items[1]["priority"] == PRIORITY_USER
-    assert items[1]["tokens"] == 1
+    # "second" = 6 chars → ceil(6/4) = 2 tokens
+    assert items[1]["tokens"] == 2
 
 
 def test_token_packer_priority_constants():
@@ -270,13 +272,14 @@ def test_token_packer_separator_token_counting():
 
 def test_token_packer_exact_budget_fit():
     """Test behavior when items exactly fit the budget."""
-    # With character-based estimation (1 token ≈ 4 chars):
-    # "one" = 3 chars → 1 token
-    # "two" = 3 chars → 1 token
-    # "three" = 5 chars → 1 token
-    # separator " " = 1 char → 1 token
-    # Total needed: 1 + 1 + 1 + 1 + 1 = 5 tokens minimum
-    packer = ContextPacker(max_tokens=5)
+    # With character-based estimation (1 token ≈ 4 chars) and ceiling:
+    # "one" = 3 chars → ceil(3/4) = 1 token
+    # "two" = 3 chars → ceil(3/4) = 1 token
+    # "three" = 5 chars → ceil(5/4) = 2 tokens
+    # separator " " = 1 char → ceil(1/4) = 1 token
+    # Total needed: 1 + 1 + 1 + 2 + 1 = 6 tokens
+    # With 10% safety buffer: need max_tokens = 7 (effective = 6.3 → 6)
+    packer = ContextPacker(max_tokens=7)
 
     packer.add_item("one", priority=PRIORITY_HIGH)
     packer.add_item("two", priority=PRIORITY_HIGH)

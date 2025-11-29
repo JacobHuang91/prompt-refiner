@@ -1,6 +1,6 @@
 """Prompt Refiner - A lightweight library for optimizing LLM inputs."""
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 from .analyzer import CountTokens
 

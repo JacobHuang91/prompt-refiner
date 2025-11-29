@@ -24,10 +24,10 @@ def test_count_tokens_with_comparison():
     assert "original" in stats
     assert "cleaned" in stats
     assert "saved" in stats
-    # original = 42 chars → 42//4 = 10 tokens
-    # cleaned = 31 chars → 31//4 = 7 tokens
-    assert stats["original"] == 10
-    assert stats["cleaned"] == 7
+    # original = 42 chars → ceil(42/4) = ceil(10.5) = 11 tokens
+    # cleaned = 31 chars → ceil(31/4) = ceil(7.75) = 8 tokens
+    assert stats["original"] == 11
+    assert stats["cleaned"] == 8
     assert stats["saved"] == 3
 
 

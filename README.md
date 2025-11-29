@@ -76,11 +76,29 @@ This project is in early development. Features are being added iteratively.
 ## Installation
 
 ```bash
-# Using uv (recommended)
-uv pip install llm-prompt-refiner
-
-# Using pip
+# Basic installation (lightweight, zero dependencies)
 pip install llm-prompt-refiner
+
+# With precise token counting (optional, installs tiktoken)
+pip install llm-prompt-refiner[token]
+```
+
+### Installation Modes
+
+- **Default (Lightweight)**: Zero dependencies, uses character-based token estimation
+- **Precise Mode**: Installs `tiktoken` for accurate token counting with no safety buffer
+
+To use precise mode, pass a `model` parameter:
+```python
+from prompt_refiner import CountTokens, ContextPacker
+
+# Default: estimation mode (no model parameter)
+counter = CountTokens()
+packer = ContextPacker(max_tokens=1000)
+
+# Opt-in: precise mode with tiktoken
+counter = CountTokens(model="gpt-4")
+packer = ContextPacker(max_tokens=1000, model="gpt-4")
 ```
 
 ## Quick Start
@@ -227,11 +245,15 @@ Prompt Refiner is organized into 5 specialized modules:
 
 ### 4. **Analyzer** - Show Value
 - `CountTokens()` - Track token savings and optimization impact
+  - **Estimation mode** (default): Character-based approximation (1 token ≈ 4 chars)
+  - **Precise mode** (with tiktoken): Exact token counts using OpenAI's tokenizer
 
 ### 5. **Packer** - Context Budget Management
 - `ContextPacker()` - Intelligently pack items into token budgets with priority-based selection
   - Perfect for RAG applications and context window management
   - Priority constants: `PRIORITY_SYSTEM`, `PRIORITY_USER`, `PRIORITY_HIGH`, `PRIORITY_MEDIUM`, `PRIORITY_LOW`
+  - **Estimation mode**: Applies 10% safety buffer to prevent context overflow
+  - **Precise mode**: Uses 100% of token budget with accurate counting
 
 ## Complete Example
 
