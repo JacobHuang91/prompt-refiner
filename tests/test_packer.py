@@ -83,9 +83,7 @@ def test_token_packer_with_jit_refinement():
 
     # Add item with HTML that needs stripping
     dirty_html = "<div><p>Clean this text</p></div>"
-    packer.add_item(
-        dirty_html, priority=PRIORITY_HIGH, refine_with=StripHTML()
-    )
+    packer.add_item(dirty_html, priority=PRIORITY_HIGH, refine_with=StripHTML())
 
     result = packer.pack()
 
@@ -242,13 +240,9 @@ def test_token_packer_rag_scenario():
     # Retrieved documents with different relevance scores
     packer.add_item("Doc 1: Core features are A B C.", priority=PRIORITY_HIGH)
 
-    packer.add_item(
-        "Doc 2: Additional features include D E F.", priority=PRIORITY_MEDIUM
-    )
+    packer.add_item("Doc 2: Additional features include D E F.", priority=PRIORITY_MEDIUM)
 
-    packer.add_item(
-        "Doc 3: Historical context about features." * 5, priority=PRIORITY_LOW
-    )
+    packer.add_item("Doc 3: Historical context about features." * 5, priority=PRIORITY_LOW)
 
     result = packer.pack()
 
