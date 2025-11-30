@@ -23,10 +23,10 @@ Get up and running with Prompt Refiner in minutes.
     Then opt-in by passing a `model` parameter:
 
     ```python
-    from prompt_refiner import CountTokens, ContextPacker
+    from prompt_refiner import CountTokens, MessagesPacker
 
     counter = CountTokens(model="gpt-4")
-    packer = ContextPacker(max_tokens=1000, model="gpt-4")
+    packer = MessagesPacker(max_tokens=1000, model="gpt-4")
     ```
 
 ## Your First Pipeline
@@ -155,6 +155,45 @@ result = full_pipeline.run(original_text)
 print(counter.format_stats())
 ```
 
+### Pattern 5: Advanced - RAG with Context Budget (v0.1.3+)
+
+For RAG applications, manage context budgets with priority-based packing:
+
+```python
+from prompt_refiner import (
+    MessagesPacker,
+    PRIORITY_SYSTEM, PRIORITY_USER, PRIORITY_HIGH,
+    StripHTML, NormalizeWhitespace
+)
+
+packer = MessagesPacker(max_tokens=1000)
+
+# System prompt (must include)
+packer.add(
+    "Answer based on provided context.",
+    role="system",
+    priority=PRIORITY_SYSTEM
+)
+
+# RAG documents with JIT cleaning
+packer.add(
+    "<div>Document 1...</div>",
+    role="system",
+    priority=PRIORITY_HIGH,
+    refine_with=[StripHTML(), NormalizeWhitespace()]
+)
+
+# Current user query (must include)
+packer.add(
+    "What is the answer?",
+    role="user",
+    priority=PRIORITY_USER
+)
+
+messages = packer.pack()  # Ready for chat APIs
+# response = client.chat.completions.create(messages=messages)
+```
+
 ## Proven Results
 
 Curious about the real-world effectiveness? Check out our comprehensive benchmark results:
@@ -168,12 +207,18 @@ Curious about the real-world effectiveness? Check out our comprehensive benchmar
 
 ## Exploring Modules
 
-Prompt Refiner has 4 specialized modules:
+Prompt Refiner has 5 specialized modules:
+
+### Basic Operations
 
 - **[Cleaner](modules/cleaner.md)** - Clean dirty data (HTML, whitespace, Unicode)
 - **[Compressor](modules/compressor.md)** - Reduce size (truncation, deduplication)
 - **[Scrubber](modules/scrubber.md)** - Security and privacy (PII redaction)
 - **[Analyzer](modules/analyzer.md)** - Metrics and analysis (token counting)
+
+### Advanced Usage
+
+- **[Packer](modules/packer.md)** - Context budget management for RAG and chatbots (v0.1.3+)
 
 ## Next Steps
 
