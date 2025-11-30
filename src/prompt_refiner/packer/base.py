@@ -68,7 +68,10 @@ class BasePacker(ABC):
         # Apply safety buffer for estimation mode
         if not self._token_counter.is_precise:
             self.effective_max_tokens = int(max_tokens * 0.9)
-            logger.debug(f"Using estimation mode with 10% safety buffer: {self.effective_max_tokens}/{max_tokens}")
+            logger.debug(
+                f"Using estimation mode with 10% safety buffer: "
+                f"{self.effective_max_tokens}/{max_tokens}"
+            )
         else:
             self.effective_max_tokens = max_tokens
             logger.debug(f"Using precise mode with tiktoken: {self.effective_max_tokens} tokens")
@@ -186,14 +189,20 @@ class BasePacker(ABC):
             if current_tokens + total_cost <= self.effective_max_tokens:
                 selected.append(item)
                 current_tokens += total_cost
-                logger.debug(f"Selected item: {item.tokens}+{overhead} tokens (total: {current_tokens}/{self.effective_max_tokens})")
+                logger.debug(
+                    f"Selected item: {item.tokens}+{overhead} tokens "
+                    f"(total: {current_tokens}/{self.effective_max_tokens})"
+                )
             else:
                 logger.debug(f"Dropped item: {item.tokens}+{overhead} tokens would exceed budget")
 
         # Restore insertion order
         selected.sort(key=lambda x: x.insertion_index)
 
-        logger.info(f"Packed {len(selected)}/{len(self._items)} items using {current_tokens}/{self.effective_max_tokens} tokens")
+        logger.info(
+            f"Packed {len(selected)}/{len(self._items)} items using "
+            f"{current_tokens}/{self.effective_max_tokens} tokens"
+        )
         return selected
 
     def reset(self) -> "BasePacker":

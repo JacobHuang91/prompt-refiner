@@ -75,7 +75,10 @@ class TextPacker(BasePacker):
         if self.text_format == TextFormat.MARKDOWN:
             self._reserve_fixed_headers()
 
-        logger.debug(f"TextPacker initialized with format={text_format.value}, separator={repr(self.separator)}")
+        logger.debug(
+            f"TextPacker initialized with format={text_format.value}, "
+            f"separator={repr(self.separator)}"
+        )
 
     def _reserve_fixed_headers(self) -> None:
         """
@@ -95,7 +98,10 @@ class TextPacker(BasePacker):
         """
         fixed_cost = 30
         self.effective_max_tokens -= fixed_cost
-        logger.debug(f"Reserved {fixed_cost} tokens for MARKDOWN headers, effective budget: {self.effective_max_tokens}")
+        logger.debug(
+            f"Reserved {fixed_cost} tokens for MARKDOWN headers, "
+            f"effective budget: {self.effective_max_tokens}"
+        )
 
     def _calculate_overhead(self, item: PackableItem) -> int:
         """
@@ -205,7 +211,11 @@ class TextPacker(BasePacker):
                 parts.append(formatted)
             result = self.separator.join(parts)
 
-        logger.info(f"Packed {len(selected_items)} items into {self._count_tokens(result)} token text (format={self.text_format.value})")
+        logger.info(
+            f"Packed {len(selected_items)} items into "
+            f"{self._count_tokens(result)} token text "
+            f"(format={self.text_format.value})"
+        )
         return result
 
     def _pack_markdown_grouped(self, selected_items: list) -> str:
@@ -266,7 +276,7 @@ class TextPacker(BasePacker):
             # Format conversation history
             if history:
                 conv_lines = [f"{role.capitalize()}: {content}" for role, content in history]
-                sections.append(f"### CONVERSATION:\n" + "\n".join(conv_lines))
+                sections.append("### CONVERSATION:\n" + "\n".join(conv_lines))
 
             # Final user query as INPUT
             if final_query:

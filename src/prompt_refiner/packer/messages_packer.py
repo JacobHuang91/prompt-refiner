@@ -43,7 +43,10 @@ class MessagesPacker(BasePacker):
             model: Optional model name for precise token counting
         """
         super().__init__(max_tokens, model)
-        logger.debug(f"MessagesPacker initialized with {max_tokens} tokens (effective: {self.effective_max_tokens})")
+        logger.debug(
+            f"MessagesPacker initialized with {max_tokens} tokens "
+            f"(effective: {self.effective_max_tokens})"
+        )
 
     def _calculate_overhead(self, item: PackableItem) -> int:
         """
