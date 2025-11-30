@@ -77,7 +77,8 @@ The Packer module manages context budgets with intelligent priority-based item s
 
 **Operations:**
 
-- **[ContextPacker](../api-reference/packer.md#contextpacker)** - Pack items into token budgets with priorities
+- **[MessagesPacker](../api-reference/packer.md#messagespacker)** - Pack items for chat completion APIs
+- **[TextPacker](../api-reference/packer.md#textpacker)** - Pack items for text completion APIs
 
 **When to use:**
 
@@ -123,39 +124,42 @@ result = pipeline.run(original_text)
 print(counter.format_stats())
 ```
 
-### Context Packer Example
+### Packer Example
 
 ```python
 from prompt_refiner import (
-    ContextPacker,
+    MessagesPacker,
     PRIORITY_SYSTEM,
     PRIORITY_USER,
     PRIORITY_HIGH,
     StripHTML
 )
 
-# Manage RAG context budget
-packer = ContextPacker(max_tokens=1000)
+# Manage RAG context budget for chat APIs
+packer = MessagesPacker(max_tokens=1000)
 
-packer.add_item(
+packer.add(
     "You are a helpful assistant.",
+    role="system",
     priority=PRIORITY_SYSTEM
 )
 
-packer.add_item(
+packer.add(
     "What is prompt-refiner?",
+    role="user",
     priority=PRIORITY_USER
 )
 
 # Clean documents before packing
 for doc in retrieved_docs:
-    packer.add_item(
+    packer.add(
         doc.content,
+        role="system",
         priority=PRIORITY_HIGH,
         refine_with=StripHTML()
     )
 
-final_context = packer.pack()
+messages = packer.pack()  # Returns List[Dict] directly
 ```
 
 ## Module Relationships
