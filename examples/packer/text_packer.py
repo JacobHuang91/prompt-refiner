@@ -39,20 +39,20 @@ def main():
     logger.info("=" * 80)
 
     # Initialize packer for base model with MARKDOWN format
+    # max_tokens is optional - omit it to include all items without limit
     packer = TextPacker(
-        max_tokens=300,
+        max_tokens=300,  # Or omit for unlimited: TextPacker(text_format=TextFormat.MARKDOWN)
         text_format=TextFormat.MARKDOWN,  # Use RAW, MARKDOWN, or XML
         separator="\n\n",  # Smart default for clarity
     )
 
-    # 1. System prompt (PRIORITY_SYSTEM - always included)
+    # 1. System prompt (auto priority=0 for role="system")
     packer.add(
         "You are a QA assistant. Answer questions based on the provided context.",
-        role="system",
-        priority=PRIORITY_SYSTEM,
+        role="system",  # Auto: PRIORITY_SYSTEM (0)
     )
 
-    # 2. RAG documents with JIT HTML cleaning (PRIORITY_HIGH/MEDIUM)
+    # 2. RAG documents with JIT HTML cleaning (auto priority=20 for no role)
     doc_html = """
     <div class="doc">
         <h2>TextPacker</h2>
@@ -62,36 +62,34 @@ def main():
     """
     packer.add(
         doc_html,
-        priority=PRIORITY_HIGH,
+        # No role = RAG document, auto: PRIORITY_HIGH (20)
         refine_with=StripHTML(),  # Clean HTML before packing
     )
 
     packer.add(
         "The library includes 5 modules: Cleaner, Compressor, Scrubber, Analyzer, and Packer.",
-        priority=PRIORITY_MEDIUM,
+        # No role = RAG document, auto: PRIORITY_HIGH (20)
     )
 
-    # 3. Conversation history (PRIORITY_LOW - can be dropped if needed)
+    # 3. Conversation history (auto priority=40 for history)
     conversation_history = [
         {"role": "user", "content": "What is prompt-refiner?"},
         {"role": "assistant", "content": "It's a Python library for optimizing LLM inputs."},
         {"role": "user", "content": "Does it reduce costs?"},
         {"role": "assistant", "content": "Yes, by removing unnecessary tokens it can save 10-20% on API costs."},
     ]
-    packer.add_messages(conversation_history, priority=PRIORITY_LOW)
+    packer.add_messages(conversation_history)  # Auto: PRIORITY_LOW (40) for history
 
-    # 4. Recent context (PRIORITY_HIGH - important to keep)
+    # 4. Recent context (user role = auto priority=10)
     packer.add(
         "I'm working with Llama-2-base and need efficient context management.",
-        role="user",
-        priority=PRIORITY_HIGH,
+        role="user",  # Auto: PRIORITY_USER (10)
     )
 
-    # 5. User query (PRIORITY_USER - must include)
+    # 5. Current query (user role = auto priority=10)
     packer.add(
         "What is TextPacker and how does it work?",
-        role="user",
-        priority=PRIORITY_USER,
+        role="user",  # Auto: PRIORITY_USER (10)
     )
 
     # Pack into text format

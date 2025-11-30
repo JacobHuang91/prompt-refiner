@@ -237,3 +237,55 @@ def test_messages_packer_budget_enforcement():
     # Should fit only some messages within budget
     assert len(messages) < 10
     assert len(messages) > 0
+
+
+def test_messages_packer_unlimited_mode():
+    """Test unlimited mode when max_tokens is None."""
+    packer = MessagesPacker()  # No max_tokens
+
+    # Add many items
+    for i in range(20):
+        packer.add(f"Message {i}", role="user", priority=PRIORITY_MEDIUM)
+
+    packer.add("System prompt", role="system", priority=PRIORITY_SYSTEM)
+    packer.add("User query", role="user", priority=PRIORITY_USER)
+
+    messages = packer.pack()
+
+    # All items should be included
+    assert len(messages) == 22
+    assert packer.effective_max_tokens is None
+    assert packer.raw_max_tokens is None
+
+
+def test_messages_packer_smart_defaults():
+    """Test smart priority defaults based on role."""
+    packer = MessagesPacker(max_tokens=200)
+
+    # Smart defaults: no priority parameter needed!
+    packer.add("System instruction", role="system")  # Auto: PRIORITY_SYSTEM (0)
+    packer.add("User question", role="user")  # Auto: PRIORITY_USER (10)
+    packer.add("RAG document")  # Auto: PRIORITY_HIGH (20) - no role
+    packer.add("Assistant response", role="assistant")  # Auto: PRIORITY_MEDIUM (30)
+
+    # Add conversation history (auto PRIORITY_LOW)
+    old_messages = [
+        {"role": "user", "content": "Old question"},
+        {"role": "assistant", "content": "Old answer"},
+    ]
+    packer.add_messages(old_messages)  # Auto: PRIORITY_LOW (40)
+
+    # Check that priorities were inferred correctly
+    items = packer.get_items()
+    assert items[0]["priority"] == PRIORITY_SYSTEM  # system role
+    assert items[1]["priority"] == PRIORITY_USER  # user role
+    assert items[2]["priority"] == PRIORITY_HIGH  # no role (RAG)
+    assert items[3]["priority"] == PRIORITY_MEDIUM  # assistant role
+    assert items[4]["priority"] == PRIORITY_LOW  # history
+    assert items[5]["priority"] == PRIORITY_LOW  # history
+
+    messages = packer.pack()
+
+    # System and user should be included, history likely dropped
+    assert any(msg["content"] == "System instruction" for msg in messages)
+    assert any(msg["content"] == "User question" for msg in messages)

@@ -43,17 +43,22 @@ class TextPacker(BasePacker):
 
     Example:
         >>> from prompt_refiner import TextPacker, TextFormat, PRIORITY_SYSTEM, PRIORITY_HIGH
+        >>> # With token budget
         >>> packer = TextPacker(max_tokens=1000, text_format=TextFormat.MARKDOWN)
         >>> packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
         >>> packer.add("Context document", priority=PRIORITY_HIGH)
         >>> prompt = packer.pack()
-        >>> # prompt = "### INSTRUCTIONS:\\nYou are helpful.\\n\\n### CONTEXT:\\nContext document"
         >>> # Use directly: completion.create(prompt=prompt)
+        >>>
+        >>> # Without token budget (unlimited mode)
+        >>> packer = TextPacker()  # All items included
+        >>> packer.add("System prompt", role="system", priority=PRIORITY_SYSTEM)
+        >>> prompt = packer.pack()
     """
 
     def __init__(
         self,
-        max_tokens: int,
+        max_tokens: Optional[int] = None,
         model: Optional[str] = None,
         text_format: TextFormat = TextFormat.RAW,
         separator: Optional[str] = None,
@@ -62,7 +67,7 @@ class TextPacker(BasePacker):
         Initialize text packer.
 
         Args:
-            max_tokens: Maximum token budget
+            max_tokens: Maximum token budget. If None, includes all items without limit.
             model: Optional model name for precise token counting
             text_format: Text formatting strategy (RAW, MARKDOWN, XML)
             separator: String to join items (default: "\\n\\n" for clarity)
@@ -73,12 +78,13 @@ class TextPacker(BasePacker):
 
         # For MARKDOWN grouped format: Pre-deduct fixed header costs ("entrance fee")
         # This prevents overestimating overhead for each item
-        if self.text_format == TextFormat.MARKDOWN:
+        if self.text_format == TextFormat.MARKDOWN and self.effective_max_tokens is not None:
             self._reserve_fixed_headers()
 
         logger.debug(
             f"TextPacker initialized with format={text_format.value}, "
-            f"separator={repr(self.separator)}"
+            f"separator={repr(self.separator)}, "
+            f"unlimited={self.effective_max_tokens is None}"
         )
 
     def _reserve_fixed_headers(self) -> None:

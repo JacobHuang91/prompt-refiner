@@ -53,12 +53,12 @@ class BasePacker(ABC):
     - pack(): Format and return packed items
     """
 
-    def __init__(self, max_tokens: int, model: Optional[str] = None):
+    def __init__(self, max_tokens: Optional[int] = None, model: Optional[str] = None):
         """
-        Initialize packer with token budget.
+        Initialize packer with optional token budget.
 
         Args:
-            max_tokens: Maximum token budget
+            max_tokens: Maximum token budget. If None, includes all items without limit.
             model: Optional model name for precise token counting (requires tiktoken)
         """
         self.raw_max_tokens = max_tokens
@@ -66,8 +66,11 @@ class BasePacker(ABC):
         self._insertion_counter = 0
         self._token_counter = CountTokens(model=model)
 
-        # Apply safety buffer for estimation mode
-        if not self._token_counter.is_precise:
+        # Calculate effective max tokens
+        if max_tokens is None:
+            self.effective_max_tokens = None
+            logger.debug("Unlimited mode: all items will be included")
+        elif not self._token_counter.is_precise:
             self.effective_max_tokens = int(max_tokens * 0.9)
             logger.debug(
                 f"Using estimation mode with 10% safety buffer: "
@@ -85,7 +88,7 @@ class BasePacker(ABC):
         self,
         content: str,
         role: Optional[str] = None,
-        priority: int = PRIORITY_MEDIUM,
+        priority: Optional[int] = None,
         refine_with: Optional[Union[Operation, List[Operation]]] = None,
     ) -> "BasePacker":
         """
@@ -94,12 +97,27 @@ class BasePacker(ABC):
         Args:
             content: Text content to add
             role: Optional role for message APIs (system, user, assistant)
-            priority: Priority level (use PRIORITY_* constants)
+            priority: Priority level (use PRIORITY_* constants). If None, infers from role:
+                - role="system" → PRIORITY_SYSTEM (0)
+                - role="user" → PRIORITY_USER (10)
+                - role=None → PRIORITY_HIGH (20) - for RAG documents
+                - role="assistant" or other → PRIORITY_MEDIUM (30)
             refine_with: Optional operation(s) to apply before adding
 
         Returns:
             Self for method chaining
         """
+        # Smart priority defaults based on role
+        if priority is None:
+            if role == "system":
+                priority = PRIORITY_SYSTEM  # 0 - Highest priority
+            elif role == "user":
+                priority = PRIORITY_USER  # 10 - User queries are critical
+            elif role is None:
+                priority = PRIORITY_HIGH  # 20 - RAG documents (no role)
+            else:
+                priority = PRIORITY_MEDIUM  # 30 - Assistant and other roles
+
         # JIT refinement
         if refine_with:
             if isinstance(refine_with, list):
@@ -128,14 +146,17 @@ class BasePacker(ABC):
     def add_messages(
         self,
         messages: List[Dict[str, str]],
-        priority: int = PRIORITY_MEDIUM,
+        priority: int = PRIORITY_LOW,
     ) -> "BasePacker":
         """
         Batch add messages (convenience method).
 
+        Defaults to PRIORITY_LOW because conversation history is usually the first
+        to be dropped in favor of RAG context and current queries.
+
         Args:
             messages: List of message dicts with 'role' and 'content' keys
-            priority: Priority level for all messages
+            priority: Priority level for all messages (default: PRIORITY_LOW for history)
 
         Returns:
             Self for method chaining
@@ -167,14 +188,20 @@ class BasePacker(ABC):
 
         Algorithm:
         1. Sort items by priority (lower value = higher priority)
-        2. Greedily select items that fit within budget (including overhead)
-        3. Restore insertion order for natural reading flow
+        2. If max_tokens is None, include all items
+        3. Otherwise, greedily select items that fit within budget (including overhead)
+        4. Restore insertion order for natural reading flow
 
         Returns:
             List of selected items in insertion order
         """
         if not self._items:
             return []
+
+        # Unlimited mode: include all items
+        if self.effective_max_tokens is None:
+            logger.info(f"Unlimited mode: packed all {len(self._items)} items")
+            return list(self._items)
 
         # Sort by priority (stable sort preserves insertion order for equal priorities)
         sorted_items = sorted(self._items, key=lambda x: (x.priority, x.insertion_index))

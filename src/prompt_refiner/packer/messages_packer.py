@@ -26,33 +26,40 @@ class MessagesPacker(BasePacker):
 
     Example:
         >>> from prompt_refiner import MessagesPacker, PRIORITY_SYSTEM, PRIORITY_USER
+        >>> # With token budget
         >>> packer = MessagesPacker(max_tokens=1000)
         >>> packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
         >>> packer.add("Hello!", role="user", priority=PRIORITY_USER)
         >>> messages = packer.pack()
-        >>> # messages = [{"role": "system", "content": "..."}, {"role": "user", "content": "..."}]
         >>> # Use directly: openai.chat.completions.create(messages=messages)
+        >>>
+        >>> # Without token budget (unlimited mode)
+        >>> packer = MessagesPacker()  # All items included
+        >>> packer.add("System prompt", role="system", priority=PRIORITY_SYSTEM)
+        >>> packer.add("User query", role="user", priority=PRIORITY_USER)
+        >>> messages = packer.pack()
     """
 
-    def __init__(self, max_tokens: int, model: Optional[str] = None):
+    def __init__(self, max_tokens: Optional[int] = None, model: Optional[str] = None):
         """
         Initialize messages packer.
 
         Args:
-            max_tokens: Maximum token budget
+            max_tokens: Maximum token budget. If None, includes all items without limit.
             model: Optional model name for precise token counting
         """
         super().__init__(max_tokens, model)
 
-        # Pre-deduct request-level overhead (priming tokens)
-        # This ensures we never exceed the budget in edge cases
-        self.effective_max_tokens -= PER_REQUEST_OVERHEAD
-
-        logger.debug(
-            f"MessagesPacker initialized with {max_tokens} tokens "
-            f"(effective: {self.effective_max_tokens} after {PER_REQUEST_OVERHEAD} "
-            f"token request overhead)"
-        )
+        # Pre-deduct request-level overhead (priming tokens) if budget is limited
+        if self.effective_max_tokens is not None:
+            self.effective_max_tokens -= PER_REQUEST_OVERHEAD
+            logger.debug(
+                f"MessagesPacker initialized with {max_tokens} tokens "
+                f"(effective: {self.effective_max_tokens} after {PER_REQUEST_OVERHEAD} "
+                f"token request overhead)"
+            )
+        else:
+            logger.debug("MessagesPacker initialized in unlimited mode")
 
     def _calculate_overhead(self, item: PackableItem) -> int:
         """
