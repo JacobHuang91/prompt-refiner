@@ -612,6 +612,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pattern-5-advanced-rag-with-context-budget-v013" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 5: Advanced - RAG with Context Budget (v0.1.3+)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -636,6 +647,34 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Exploring Modules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1623,6 +1662,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#pattern-5-advanced-rag-with-context-budget-v013" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 5: Advanced - RAG with Context Budget (v0.1.3+)
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1647,6 +1697,34 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Exploring Modules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1696,10 +1774,10 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>llm-prompt-refiner<span class="o">[</span>token<span class="o">]</span>
 </code></pre></div>
 <p>Then opt-in by passing a <code>model</code> parameter:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">CountTokens</span><span class="p">,</span> <span class="n">ContextPacker</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">CountTokens</span><span class="p">,</span> <span class="n">MessagesPacker</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">counter</span> <span class="o">=</span> <span class="n">CountTokens</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">packer</span> <span class="o">=</span> <span class="n">ContextPacker</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">packer</span> <span class="o">=</span> <span class="n">MessagesPacker</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4&quot;</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1807,6 +1885,41 @@
 <a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="n">result</span> <span class="o">=</span> <span class="n">full_pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">original_text</span><span class="p">)</span>
 <a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="nb">print</span><span class="p">(</span><span class="n">counter</span><span class="o">.</span><span class="n">format_stats</span><span class="p">())</span>
 </code></pre></div>
+<h3 id="pattern-5-advanced-rag-with-context-budget-v013">Pattern 5: Advanced - RAG with Context Budget (v0.1.3+)</h3>
+<p>For RAG applications, manage context budgets with priority-based packing:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">MessagesPacker</span><span class="p">,</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">PRIORITY_SYSTEM</span><span class="p">,</span> <span class="n">PRIORITY_USER</span><span class="p">,</span> <span class="n">PRIORITY_HIGH</span><span class="p">,</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">StripHTML</span><span class="p">,</span> <span class="n">NormalizeWhitespace</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="p">)</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="n">packer</span> <span class="o">=</span> <span class="n">MessagesPacker</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1"># System prompt (must include)</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="n">packer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>    <span class="s2">&quot;Answer based on provided context.&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>    <span class="n">role</span><span class="o">=</span><span class="s2">&quot;system&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="n">priority</span><span class="o">=</span><span class="n">PRIORITY_SYSTEM</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="p">)</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="c1"># RAG documents with JIT cleaning</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="n">packer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>    <span class="s2">&quot;&lt;div&gt;Document 1...&lt;/div&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>    <span class="n">role</span><span class="o">=</span><span class="s2">&quot;system&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>    <span class="n">priority</span><span class="o">=</span><span class="n">PRIORITY_HIGH</span><span class="p">,</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>    <span class="n">refine_with</span><span class="o">=</span><span class="p">[</span><span class="n">StripHTML</span><span class="p">(),</span> <span class="n">NormalizeWhitespace</span><span class="p">()]</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="p">)</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="c1"># Current user query (must include)</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="n">packer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>    <span class="s2">&quot;What is the answer?&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>    <span class="n">role</span><span class="o">=</span><span class="s2">&quot;user&quot;</span><span class="p">,</span>
+<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>    <span class="n">priority</span><span class="o">=</span><span class="n">PRIORITY_USER</span>
+<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="p">)</span>
+<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>
+<a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="n">messages</span> <span class="o">=</span> <span class="n">packer</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>  <span class="c1"># Ready for chat APIs</span>
+<a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="c1"># response = client.chat.completions.create(messages=messages)</span>
+</code></pre></div>
 <h2 id="proven-results">Proven Results</h2>
 <p>Curious about the real-world effectiveness? Check out our comprehensive benchmark results:</p>
 <div class="admonition success">
@@ -1819,12 +1932,17 @@
 </div>
 <p><a class="md-button md-button--primary" href="../benchmark/">View Full Benchmark →</a></p>
 <h2 id="exploring-modules">Exploring Modules</h2>
-<p>Prompt Refiner has 4 specialized modules:</p>
+<p>Prompt Refiner has 5 specialized modules:</p>
+<h3 id="basic-operations">Basic Operations</h3>
 <ul>
 <li><strong><a href="../modules/cleaner/">Cleaner</a></strong> - Clean dirty data (HTML, whitespace, Unicode)</li>
 <li><strong><a href="../modules/compressor/">Compressor</a></strong> - Reduce size (truncation, deduplication)</li>
 <li><strong><a href="../modules/scrubber/">Scrubber</a></strong> - Security and privacy (PII redaction)</li>
 <li><strong><a href="../modules/analyzer/">Analyzer</a></strong> - Metrics and analysis (token counting)</li>
+</ul>
+<h3 id="advanced-usage">Advanced Usage</h3>
+<ul>
+<li><strong><a href="../modules/packer/">Packer</a></strong> - Context budget management for RAG and chatbots (v0.1.3+)</li>
 </ul>
 <h2 id="next-steps">Next Steps</h2>
 <div class="grid cards">
