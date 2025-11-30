@@ -50,33 +50,71 @@ clean_prompt = pipeline.run(raw_input)
     pipeline = Refiner().pipe(StripHTML()).pipe(NormalizeWhitespace())
     ```
 
-## 4 Core Modules
+## 5 Core Modules
 
-Prompt Refiner is organized into 4 specialized modules:
+Prompt Refiner is organized into 5 specialized modules:
 
-### 1. Cleaner - Clean Dirty Data
+### Basic Operations
+
+The first 4 modules provide core text processing operations:
+
+#### 1. Cleaner - Clean Dirty Data
 - **StripHTML()** - Remove HTML tags, convert to Markdown
 - **NormalizeWhitespace()** - Collapse excessive whitespace
 - **FixUnicode()** - Remove zero-width spaces and problematic Unicode
 
 [Learn more about Cleaner →](modules/cleaner.md){ .md-button }
 
-### 2. Compressor - Reduce Size
+#### 2. Compressor - Reduce Size
 - **TruncateTokens()** - Smart truncation with sentence boundaries
     - Strategies: `"head"`, `"tail"`, `"middle_out"`
 - **Deduplicate()** - Remove similar content (great for RAG)
 
 [Learn more about Compressor →](modules/compressor.md){ .md-button }
 
-### 3. Scrubber - Security & Privacy
+#### 3. Scrubber - Security & Privacy
 - **RedactPII()** - Automatically redact emails, phones, IPs, credit cards, URLs, SSNs
 
 [Learn more about Scrubber →](modules/scrubber.md){ .md-button }
 
-### 4. Analyzer - Show Value
+#### 4. Analyzer - Show Value
 - **CountTokens()** - Track token savings and optimization impact
 
 [Learn more about Analyzer →](modules/analyzer.md){ .md-button }
+
+### Advanced: Context Budget Management
+
+#### 5. Packer - Intelligent Context Packing (v0.1.3+)
+
+For RAG applications and chatbots, the Packer module manages context budgets with priority-based selection:
+
+- **MessagesPacker()** - For chat completion APIs (OpenAI, Anthropic)
+- **TextPacker()** - For text completion APIs (Llama Base, GPT-3)
+
+**Key Features:**
+- Priority-based greedy packing algorithm
+- JIT refinement with `refine_with` parameter
+- Automatic format overhead calculation
+- Perfect for RAG with conversation history
+
+```python
+from prompt_refiner import MessagesPacker, PRIORITY_SYSTEM, PRIORITY_HIGH, StripHTML
+
+packer = MessagesPacker(max_tokens=1000)
+packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
+
+# Clean RAG documents on-the-fly
+packer.add(
+    "<div>RAG doc...</div>",
+    role="system",
+    priority=PRIORITY_HIGH,
+    refine_with=StripHTML()
+)
+
+messages = packer.pack()  # Returns List[Dict] ready for chat APIs
+```
+
+[Learn more about Packer →](modules/packer.md){ .md-button }
 
 ## Complete Example
 

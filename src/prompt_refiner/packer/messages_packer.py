@@ -43,9 +43,15 @@ class MessagesPacker(BasePacker):
             model: Optional model name for precise token counting
         """
         super().__init__(max_tokens, model)
+
+        # Pre-deduct request-level overhead (priming tokens)
+        # This ensures we never exceed the budget in edge cases
+        self.effective_max_tokens -= PER_REQUEST_OVERHEAD
+
         logger.debug(
             f"MessagesPacker initialized with {max_tokens} tokens "
-            f"(effective: {self.effective_max_tokens})"
+            f"(effective: {self.effective_max_tokens} after {PER_REQUEST_OVERHEAD} "
+            f"token request overhead)"
         )
 
     def _calculate_overhead(self, item: PackableItem) -> int:
@@ -55,15 +61,15 @@ class MessagesPacker(BasePacker):
         Each message in ChatML format consumes ~4 tokens for formatting:
         <|im_start|>role\n{content}\n<|im_end|>
 
+        Note: PER_REQUEST_OVERHEAD (3 tokens) is pre-deducted in __init__,
+        so we only return per-message overhead here.
+
         Args:
             item: Item to calculate overhead for
 
         Returns:
-            Number of overhead tokens (4 tokens per message + 3 for request)
+            Number of overhead tokens (4 tokens per message)
         """
-        # Every item becomes a message, so it has ChatML overhead
-        # We add PER_REQUEST_OVERHEAD only once in the first calculation
-        # For simplicity, we distribute it across all messages
         return PER_MESSAGE_OVERHEAD
 
     def pack(self) -> List[Dict[str, str]]:

@@ -24,6 +24,11 @@ Practical examples for each module in Prompt Refiner.
 - **[Token Analysis](token-analysis.md)** - Calculate token savings and ROI
 - See more in: [Analyzer Module](../modules/analyzer.md)
 
+### Packer Examples (Advanced)
+
+- **[Context Budget Management](packer.md)** - RAG applications, chatbots, and conversation history
+- See more in: [Packer Module](../modules/packer.md)
+
 ### Complete Examples
 
 - **[Complete Pipeline](complete-pipeline.md)** - Full optimization with all modules
