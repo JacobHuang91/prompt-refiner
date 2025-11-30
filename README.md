@@ -122,10 +122,23 @@ We've refactored the packer architecture following the Single Responsibility Pri
 
 ```python
 # MessagesPacker for Chat APIs (OpenAI, Anthropic)
-from prompt_refiner import MessagesPacker, PRIORITY_SYSTEM, PRIORITY_USER
+from prompt_refiner import (
+    MessagesPacker,
+    PRIORITY_SYSTEM, PRIORITY_USER, PRIORITY_HIGH,
+    StripHTML, NormalizeWhitespace  # For JIT refinement
+)
 
 packer = MessagesPacker(max_tokens=1000)
 packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
+
+# Clean RAG documents on-the-fly with refine_with
+packer.add(
+    "<div>RAG document with <b>HTML</b>...</div>",
+    role="system",
+    priority=PRIORITY_HIGH,
+    refine_with=StripHTML()  # Auto-clean before packing!
+)
+
 packer.add("Hello!", role="user", priority=PRIORITY_USER)
 
 messages = packer.pack()  # Returns List[Dict] directly!
@@ -136,7 +149,13 @@ from prompt_refiner import TextPacker, TextFormat
 
 packer = TextPacker(max_tokens=1000, text_format=TextFormat.MARKDOWN)
 packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
-packer.add("Context doc", priority=PRIORITY_HIGH)
+
+# Chain multiple operations for dirty documents
+packer.add(
+    "<p>  Messy   HTML  </p>",
+    priority=PRIORITY_HIGH,
+    refine_with=[StripHTML(), NormalizeWhitespace()]  # Clean + normalize!
+)
 
 prompt = packer.pack()  # Returns str directly!
 # Use directly: completion.create(prompt=prompt)
@@ -303,7 +322,13 @@ Prompt Refiner is organized into 5 specialized modules:
 
 - **Common features**:
   - Priority-based greedy selection: `PRIORITY_SYSTEM`, `PRIORITY_USER`, `PRIORITY_HIGH`, `PRIORITY_MEDIUM`, `PRIORITY_LOW`
-  - JIT refinement with `refine_with` parameter
+  - **JIT refinement** with `refine_with` parameter - clean documents on-the-fly:
+    ```python
+    # Single operation
+    packer.add(content, priority=PRIORITY_HIGH, refine_with=StripHTML())
+    # Multiple operations
+    packer.add(content, priority=PRIORITY_HIGH, refine_with=[StripHTML(), NormalizeWhitespace()])
+    ```
   - **Estimation mode**: 10% safety buffer (default)
   - **Precise mode**: 100% budget utilization (with tiktoken)
 
@@ -342,10 +367,26 @@ result = pipeline.run(original_text)
 counter.process(result)
 print(counter.format_stats())
 
-# Example 2: Pack messages for chat API
+# Example 2: Pack messages for chat API with JIT refinement
 packer = MessagesPacker(max_tokens=1000)
 packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
-packer.add("Context from RAG...", priority=PRIORITY_HIGH, refine_with=StripHTML())
+
+# Clean RAG documents on-the-fly (single operation)
+packer.add(
+    "<div>RAG doc with HTML...</div>",
+    role="system",
+    priority=PRIORITY_HIGH,
+    refine_with=StripHTML()
+)
+
+# Chain multiple cleaning operations for dirty documents
+packer.add(
+    "<p>  Another   doc with  HTML   and   whitespace  </p>",
+    role="system",
+    priority=PRIORITY_HIGH,
+    refine_with=[StripHTML(), NormalizeWhitespace()]
+)
+
 packer.add("User question", role="user", priority=PRIORITY_USER)
 
 messages = packer.pack()  # Returns List[Dict]
