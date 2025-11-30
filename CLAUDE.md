@@ -18,9 +18,16 @@ The library is organized into 5 core modules:
 - **Compressor**: Operations for reducing prompt size (truncation, deduplication)
 - **Scrubber**: Operations for security and privacy (PII redaction)
 - **Analyzer**: Operations for analyzing and reporting on optimization (token counting)
-- **Packer**: High-level context budget management (context window packing with priorities for RAG)
+- **Packer**: Context budget management with specialized packers (v0.1.3+)
+  - **MessagesPacker**: For chat completion APIs (OpenAI, Anthropic)
+  - **TextPacker**: For text completion APIs (Llama Base, GPT-3)
+  - Priority-based greedy packing algorithm
+  - Automatic ChatML format overhead accounting (~4 tokens per message)
+  - Grouped MARKDOWN sections for base models
+  - "Entrance fee" strategy for maximum token utilization
+  - Context window management for RAG applications, chatbots, and conversation history
 
-Each module contains specialized operations that can be composed into pipelines using the `Refiner` class. The `Packer` module provides higher-level functionality for managing complex context budgets with priority-based selection.
+Each module contains specialized operations that can be composed into pipelines using the `Refiner` class. The `Packer` module provides higher-level functionality for managing complex context budgets with support for both plain text and structured message formats.
 
 ## Development Philosophy
 
@@ -30,12 +37,41 @@ Each module contains specialized operations that can be composed into pipelines 
 - Start simple - add features incrementally
 - Graceful degradation - advanced features degrade gracefully when optional dependencies unavailable
 
+## Version History
+
+### v0.1.3 (Current) - Separated Packer Architecture
+**New Architecture:**
+- **`MessagesPacker`**: For chat completion APIs (OpenAI, Anthropic)
+  - Returns `List[Dict[str, str]]` directly
+  - Accurate ChatML overhead (4 tokens per message)
+  - 100% token budget utilization with precise mode
+
+- **`TextPacker`**: For text completion APIs (Llama Base, GPT-3)
+  - Returns `str` directly
+  - Multiple text formats: RAW, MARKDOWN, XML
+  - Grouped MARKDOWN sections (INSTRUCTIONS, CONTEXT, CONVERSATION, INPUT)
+  - "Entrance fee" overhead strategy for maximum token utilization
+
+**Key Benefits:**
+- Single Responsibility Principle: Each packer handles only its format
+- Better type safety: Direct return types (no wrapper)
+- More accurate: Each packer calculates only its overhead
+- Better capacity: Grouped format + entrance fee strategy fits more content
+
+### v0.1.2 - Optional Tiktoken Support
+- Added optional tiktoken dependency for precise token counting
+- Graceful degradation to character-based estimation
+- 10% safety buffer in estimation mode
+
+### v0.1.1 - ContextPacker Module
+- Initial release of ContextPacker for priority-based token budget management
+
 ## Key Considerations
 
 1. **Unicode handling**: Be careful with non-ASCII characters
 2. **Whitespace**: Different types (spaces, tabs, newlines) need different handling
 3. **Performance**: Process large prompts efficiently (target: < 0.5ms per 1k tokens)
-4. **Backward compatibility**: Don't break existing functionality when adding features
+4. **API stability**: v0.1.3 enhanced ContextPacker API. Keep API stable in patch versions.
 
 ## Technology Stack
 
@@ -76,8 +112,10 @@ src/prompt_refiner/
 │   └── pii.py
 ├── analyzer/            # Analyzer module
 │   └── counter.py
-└── packer/              # Packer module
-    └── context_packer.py
+└── packer/              # Packer module (v0.1.3+)
+    ├── base.py          # Abstract base class
+    ├── messages_packer.py  # Chat completion APIs
+    └── text_packer.py   # Text completion APIs
 
 tests/
 ├── test_refiner.py      # Pipeline tests
@@ -85,7 +123,8 @@ tests/
 ├── test_compressor.py   # Compressor module tests
 ├── test_scrubber.py     # Scrubber module tests
 ├── test_analyzer.py     # Analyzer module tests
-└── test_packer.py       # Packer module tests
+├── test_messages_packer.py  # MessagesPacker tests
+└── test_text_packer.py  # TextPacker tests
 
 examples/
 ├── cleaner/             # Cleaner examples

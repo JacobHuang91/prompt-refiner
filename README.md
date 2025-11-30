@@ -101,6 +101,48 @@ counter = CountTokens(model="gpt-4")
 packer = ContextPacker(max_tokens=1000, model="gpt-4")
 ```
 
+## 🎉 What's New in v0.1.3
+
+**New Architecture: Separated MessagesPacker and TextPacker**
+
+We've refactored the packer architecture following the Single Responsibility Principle:
+
+- **`MessagesPacker`**: Optimized for chat completion APIs (OpenAI, Anthropic)
+  - Returns `List[Dict[str, str]]` directly - no wrapper needed!
+  - Accurate ChatML overhead calculation (4 tokens per message)
+  - 100% token budget utilization with precise mode
+
+- **`TextPacker`**: Optimized for text completion APIs (Llama Base, GPT-3)
+  - Returns `str` directly - no wrapper needed!
+  - Multiple text formats: RAW, MARKDOWN, XML
+  - Accurate delimiter overhead calculation
+
+- **Better Type Safety**: Clear return types, no complex `PackedResult` wrapper
+- **Better Accuracy**: Each packer only calculates its own overhead
+
+```python
+# MessagesPacker for Chat APIs (OpenAI, Anthropic)
+from prompt_refiner import MessagesPacker, PRIORITY_SYSTEM, PRIORITY_USER
+
+packer = MessagesPacker(max_tokens=1000)
+packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
+packer.add("Hello!", role="user", priority=PRIORITY_USER)
+
+messages = packer.pack()  # Returns List[Dict] directly!
+# Use directly: openai.chat.completions.create(messages=messages)
+
+# TextPacker for Completion APIs (Llama Base, GPT-3)
+from prompt_refiner import TextPacker, TextFormat
+
+packer = TextPacker(max_tokens=1000, text_format=TextFormat.MARKDOWN)
+packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
+packer.add("Context doc", priority=PRIORITY_HIGH)
+
+prompt = packer.pack()  # Returns str directly!
+# Use directly: completion.create(prompt=prompt)
+```
+
+
 ## Quick Start
 
 ```python
@@ -248,12 +290,22 @@ Prompt Refiner is organized into 5 specialized modules:
   - **Estimation mode** (default): Character-based approximation (1 token ≈ 4 chars)
   - **Precise mode** (with tiktoken): Exact token counts using OpenAI's tokenizer
 
-### 5. **Packer** - Context Budget Management
-- `ContextPacker()` - Intelligently pack items into token budgets with priority-based selection
-  - Perfect for RAG applications and context window management
-  - Priority constants: `PRIORITY_SYSTEM`, `PRIORITY_USER`, `PRIORITY_HIGH`, `PRIORITY_MEDIUM`, `PRIORITY_LOW`
-  - **Estimation mode**: Applies 10% safety buffer to prevent context overflow
-  - **Precise mode**: Uses 100% of token budget with accurate counting
+### 5. **Packer** - Context Budget Management (v0.1.3+)
+- **`MessagesPacker()`** - For chat completion APIs (OpenAI, Anthropic)
+  - Returns `List[Dict[str, str]]` ready for chat APIs
+  - Accurate ChatML overhead (4 tokens per message)
+  - Perfect for RAG chatbots and conversation history
+
+- **`TextPacker()`** - For text completion APIs (Llama Base, GPT-3)
+  - Returns `str` ready for completion APIs
+  - Multiple text formats: `TextFormat.RAW`, `TextFormat.MARKDOWN`, `TextFormat.XML`
+  - Accurate delimiter overhead calculation
+
+- **Common features**:
+  - Priority-based greedy selection: `PRIORITY_SYSTEM`, `PRIORITY_USER`, `PRIORITY_HIGH`, `PRIORITY_MEDIUM`, `PRIORITY_LOW`
+  - JIT refinement with `refine_with` parameter
+  - **Estimation mode**: 10% safety buffer (default)
+  - **Precise mode**: 100% budget utilization (with tiktoken)
 
 ## Complete Example
 
@@ -267,16 +319,16 @@ from prompt_refiner import (
     RedactPII,
     # Analyzer
     CountTokens,
-    # Packer
-    ContextPacker, PRIORITY_SYSTEM, PRIORITY_USER, PRIORITY_HIGH
+    # Packer (v0.1.3+)
+    MessagesPacker, PRIORITY_SYSTEM, PRIORITY_USER, PRIORITY_HIGH
 )
 
+# Example 1: Clean and optimize text
 original_text = """<div>Your messy input here...</div>"""
 
-# Create token counter to track savings
 counter = CountTokens(original_text=original_text)
 
-# Build the complete pipeline with all 4 modules
+# Build pipeline with all modules
 pipeline = (
     StripHTML(to_markdown=True)
     | NormalizeWhitespace()
@@ -286,15 +338,18 @@ pipeline = (
     | RedactPII(redact_types={"email", "phone"})
 )
 
-# Run and analyze
 result = pipeline.run(original_text)
 counter.process(result)
-
 print(counter.format_stats())
-# Output:
-# Original: 8 tokens
-# Cleaned: 5 tokens
-# Saved: 3 tokens (37.5%)
+
+# Example 2: Pack messages for chat API
+packer = MessagesPacker(max_tokens=1000)
+packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
+packer.add("Context from RAG...", priority=PRIORITY_HIGH, refine_with=StripHTML())
+packer.add("User question", role="user", priority=PRIORITY_USER)
+
+messages = packer.pack()  # Returns List[Dict]
+# Use with: openai.chat.completions.create(messages=messages)
 ```
 
 ## Examples
