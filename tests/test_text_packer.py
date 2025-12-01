@@ -381,3 +381,20 @@ def test_text_packer_smart_defaults():
     assert "System instruction" in text
     assert "Current query" in text
     assert "RAG document 1" in text or "RAG document 2" in text
+
+
+def test_text_packer_unknown_role():
+    """Test that unknown roles default to PRIORITY_MEDIUM."""
+    packer = TextPacker(max_tokens=500, text_format=TextFormat.RAW)
+
+    # Add item with unknown role (not one of the semantic constants)
+    packer.add("Custom content", role="custom_role")
+
+    # Check that priority defaults to PRIORITY_MEDIUM (30)
+    items = packer.get_items()
+    assert len(items) == 1
+    assert items[0]["priority"] == PRIORITY_MEDIUM
+    assert items[0]["role"] == "custom_role"
+
+    text = packer.pack()
+    assert "Custom content" in text

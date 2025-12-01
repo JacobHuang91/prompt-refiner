@@ -309,3 +309,22 @@ def test_messages_packer_smart_defaults():
     assert any(msg["content"] == "System instruction" for msg in messages)
     assert any(msg["content"] == "Current query" for msg in messages)
     assert any(msg["content"] == "RAG document" for msg in messages)
+
+
+def test_messages_packer_unknown_role():
+    """Test that unknown roles default to PRIORITY_MEDIUM."""
+    packer = MessagesPacker(max_tokens=500)
+
+    # Add item with unknown role (not one of the semantic constants)
+    packer.add("Custom content", role="custom_role")
+
+    # Check that priority defaults to PRIORITY_MEDIUM (30)
+    items = packer.get_items()
+    assert len(items) == 1
+    assert items[0]["priority"] == PRIORITY_MEDIUM
+    assert items[0]["role"] == "custom_role"
+
+    messages = packer.pack()
+    assert len(messages) == 1
+    assert messages[0]["content"] == "Custom content"
+    assert messages[0]["role"] == "custom_role"
