@@ -7,6 +7,7 @@ Practical examples for each module in Prompt Refiner.
 ### Cleaner Examples
 
 - **[HTML Cleaning](html-cleaning.md)** - Strip HTML tags and convert to Markdown
+- **[JSON Cleaning](json-cleaning.md)** - Strip nulls/empties from JSON for RAG APIs
 - See more in: [Cleaner Module](../modules/cleaner.md)
 
 ### Compressor Examples

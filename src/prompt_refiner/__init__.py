@@ -5,7 +5,7 @@ __version__ = "0.1.3"
 from .analyzer import CountTokens
 
 # Import all operations for convenience
-from .cleaner import FixUnicode, NormalizeWhitespace, StripHTML
+from .cleaner import FixUnicode, JsonCleaner, NormalizeWhitespace, StripHTML
 from .compressor import Deduplicate, TruncateTokens
 from .packer import (
     PER_MESSAGE_OVERHEAD,
@@ -35,6 +35,7 @@ __all__ = [
     "StripHTML",
     "NormalizeWhitespace",
     "FixUnicode",
+    "JsonCleaner",
     # Compressor operations
     "TruncateTokens",
     "Deduplicate",

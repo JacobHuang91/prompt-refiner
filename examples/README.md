@@ -1,8 +1,8 @@
 # Prompt Refiner Examples
 
-This directory contains examples demonstrating the 5 core modules of Prompt Refiner.
+This directory contains examples demonstrating the 4 core transformation modules plus measurement utilities of Prompt Refiner.
 
-## Module Examples
+## Core Module Examples
 
 ### 1. Cleaner Module
 
@@ -40,6 +40,18 @@ python examples/cleaner/unicode_fixing.py
 - Zero-width space removal
 - Control character cleanup
 - Unicode normalization
+
+#### `cleaner/json_cleaning.py`
+Clean and compress JSON from API responses.
+```bash
+python examples/cleaner/json_cleaning.py
+```
+
+**What it shows:**
+- Strip null values from JSON
+- Remove empty containers (dicts, lists, strings)
+- JSON minification
+- RAG API response compression (50-60% token savings)
 
 ---
 
@@ -91,9 +103,11 @@ python examples/scrubber/pii_redaction.py
 
 ---
 
-### 4. Analyzer Module
+## Measurement Utilities
 
-Measure and demonstrate optimization value.
+### Analyzer Module
+
+**Note:** The Analyzer module measures optimization impact but does not transform prompts.
 
 #### `analyzer/token_counting.py`
 Shows token counting and cost savings calculation.
@@ -125,7 +139,7 @@ python examples/custom_operation.py
 
 ---
 
-### 5. Packer Module
+### 4. Packer Module
 
 Intelligently manage context budgets for RAG applications and chatbots.
 
@@ -163,6 +177,7 @@ All examples can be run from the project root:
 ```bash
 # Run module examples
 python examples/cleaner/html_cleaning.py
+python examples/cleaner/json_cleaning.py
 python examples/compressor/smart_truncation.py
 python examples/scrubber/pii_redaction.py
 python examples/analyzer/token_counting.py
@@ -197,6 +212,17 @@ refiner = (
 )
 ```
 
+### RAG JSON API Compression
+```python
+from prompt_refiner import Refiner, JsonCleaner, TruncateTokens
+
+refiner = (
+    Refiner()
+    .pipe(JsonCleaner(strip_nulls=True, strip_empty=True))
+    .pipe(TruncateTokens(max_tokens=500, strategy="head"))
+)
+```
+
 ### Enterprise Data Protection
 ```python
 from prompt_refiner import Refiner, RedactPII, CountTokens
@@ -213,10 +239,10 @@ refiner = (
 
 ## Tips
 
-1. **Order matters**: Run Cleaner operations first, then Compressor, then Scrubber, with Analyzer last
-2. **Test with real data**: These examples use simplified data - test with your actual use case
-3. **Tune parameters**: Adjust thresholds and strategies based on your specific needs
-4. **Monitor savings**: Use CountTokens to track actual token reduction
+1. **Order matters**: Run Cleaner operations first, then Compressor, then Scrubber
+2. **Measurement vs transformation**: Analyzer measures but doesn't transform - use it to track savings
+3. **Test with real data**: These examples use simplified data - test with your actual use case
+4. **Tune parameters**: Adjust thresholds and strategies based on your specific needs
 5. **Combine strategically**: Not every operation is needed for every use case
 
 ---

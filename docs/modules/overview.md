@@ -1,8 +1,8 @@
 # Modules Overview
 
-Prompt Refiner is organized into 5 specialized modules, each designed to handle a specific aspect of prompt optimization.
+Prompt Refiner is organized into 4 core transformation modules plus measurement utilities.
 
-## The 5 Core Modules
+## The 4 Core Modules
 
 ### 1. Cleaner - Clean Dirty Data
 
@@ -13,11 +13,13 @@ The Cleaner module removes unwanted artifacts from your text.
 - **[StripHTML](../api-reference/cleaner.md#striphtml)** - Remove or convert HTML tags
 - **[NormalizeWhitespace](../api-reference/cleaner.md#normalizewhitespace)** - Collapse excessive whitespace
 - **[FixUnicode](../api-reference/cleaner.md#fixunicode)** - Remove problematic Unicode characters
+- **[JsonCleaner](../api-reference/cleaner.md#jsoncleaner)** - Strip nulls/empties from JSON, minify
 
 **When to use:**
 
 - Processing web-scraped content
 - Cleaning user-generated text
+- Compressing JSON from RAG APIs
 - Normalizing text from various sources
 
 [Learn more →](cleaner.md){ .md-button }
@@ -55,23 +57,7 @@ The Scrubber module protects sensitive information.
 
 [Learn more →](scrubber.md){ .md-button }
 
-### 4. Analyzer - Show Value
-
-The Analyzer module tracks optimization impact.
-
-**Operations:**
-
-- **[CountTokens](../api-reference/analyzer.md#counttokens)** - Measure token savings and calculate ROI
-
-**When to use:**
-
-- Demonstrating cost savings
-- A/B testing optimization strategies
-- Monitoring optimization impact
-
-[Learn more →](analyzer.md){ .md-button }
-
-### 5. Packer - Context Budget Management
+### 4. Packer - Context Budget Management
 
 The Packer module manages context budgets with intelligent priority-based item selection.
 
@@ -88,6 +74,29 @@ The Packer module manages context budgets with intelligent priority-based item s
 - Combining system prompts, user input, and documents
 
 [Learn more →](packer.md){ .md-button }
+
+---
+
+## Measurement Utilities
+
+### Analyzer - Measure Impact
+
+The Analyzer module **measures optimization impact but does not transform prompts**. Use it to track token savings and demonstrate ROI.
+
+**Operations:**
+
+- **[CountTokens](../api-reference/analyzer.md#counttokens)** - Measure token savings and calculate ROI
+
+**When to use:**
+
+- Demonstrating cost savings to stakeholders
+- A/B testing optimization strategies
+- Monitoring optimization impact over time
+- Calculating ROI for prompt optimization
+
+[Learn more →](analyzer.md){ .md-button }
+
+---
 
 ## Combining Modules
 
@@ -169,17 +178,19 @@ graph LR
     A[Raw Input] --> B[Cleaner]
     B --> C[Compressor]
     C --> D[Scrubber]
-    D --> E[Analyzer]
-    E --> F[Optimized Output]
+    D --> E[Optimized Output]
+    E -.-> F[Analyzer<br/>Measurement Only]
 
     G[Multiple Items] --> H[Packer]
     H --> I[Packed Context]
 ```
+
+**Note:** Analyzer (dotted line) measures but doesn't transform the output.
 
 ## Best Practices
 
 1. **Order matters**: Clean before compressing, compress before redacting
 2. **Use Packer for RAG**: When managing multiple documents with priorities
 3. **Test your pipeline**: Different inputs may need different operations
-4. **Measure impact**: Use CountTokens to track savings
+4. **Measure, don't transform**: Use CountTokens to track savings without changing output
 5. **Start simple**: Begin with one module and add more as needed

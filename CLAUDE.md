@@ -13,12 +13,12 @@ Perfect for RAG applications, chatbots, and any production system that needs to 
 
 ## Architecture
 
-The library is organized into 5 core modules:
+The library is organized into 4 core transformation modules plus measurement utilities:
 
-- **Cleaner**: Operations for cleaning dirty data (HTML, whitespace, Unicode)
+**Core Modules (Transform prompts):**
+- **Cleaner**: Operations for cleaning dirty data (HTML, whitespace, Unicode, JSON)
 - **Compressor**: Operations for reducing prompt size (truncation, deduplication)
 - **Scrubber**: Operations for security and privacy (PII redaction)
-- **Analyzer**: Operations for analyzing and reporting on optimization (token counting)
 - **Packer**: Context budget management with specialized packers (v0.1.3+)
   - **MessagesPacker**: For chat completion APIs (OpenAI, Anthropic)
   - **TextPacker**: For text completion APIs (Llama Base, GPT-3)
@@ -30,7 +30,10 @@ The library is organized into 5 core modules:
   - "Entrance fee" strategy for maximum token utilization
   - Context window management for RAG applications, chatbots, and conversation history
 
-Each module contains specialized operations that can be composed into pipelines using the `Refiner` class. The `Packer` module provides higher-level functionality for managing complex context budgets with support for both plain text and structured message formats.
+**Measurement Utilities (Analyze, don't transform):**
+- **Analyzer**: Operations for measuring optimization impact (token counting, cost savings)
+
+Each core module contains specialized operations that can be composed into pipelines using the `Refiner` class. The `Packer` module provides higher-level functionality for managing complex context budgets with support for both plain text and structured message formats. The Analyzer module provides measurement tools to track token savings and demonstrate ROI, but does not transform prompts.
 
 ## Development Philosophy
 
@@ -114,7 +117,8 @@ src/prompt_refiner/
 ├── cleaner/             # Cleaner module
 │   ├── html.py
 │   ├── whitespace.py
-│   └── unicode.py
+│   ├── unicode.py
+│   └── json.py
 ├── compressor/          # Compressor module
 │   ├── truncate.py
 │   └── deduplicate.py

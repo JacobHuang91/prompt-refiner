@@ -9,6 +9,7 @@ When working with real-world text data, you often encounter:
 - HTML tags from web scraping
 - Excessive whitespace and formatting issues
 - Problematic Unicode characters
+- JSON with null values and empty containers
 
 The Cleaner module addresses these issues efficiently.
 
@@ -86,6 +87,45 @@ result = cleaner.run("Hello\u200bWorld")
 
 [Full API Reference →](../api-reference/cleaner.md#fixunicode){ .md-button }
 
+### JsonCleaner
+
+Clean and minify JSON by removing null values and empty containers.
+
+**Use cases:**
+
+- RAG API responses with null/empty fields
+- Compressing JSON context before LLM input
+- Normalizing inconsistent API data
+- Token optimization for JSON-heavy prompts
+
+**Example:**
+
+```python
+from prompt_refiner import JsonCleaner
+
+# Strip nulls and empty containers
+cleaner = JsonCleaner(strip_nulls=True, strip_empty=True)
+dirty_json = """
+{
+    "name": "Alice",
+    "age": null,
+    "address": {},
+    "tags": []
+}
+"""
+result = cleaner.run(dirty_json)
+# Output: {"name":"Alice"}
+
+# Only minify (keep all data)
+cleaner = JsonCleaner(strip_nulls=False, strip_empty=False)
+result = cleaner.run(dirty_json)
+# Output: {"name":"Alice","age":null,"address":{},"tags":[]}
+```
+
+**Token savings:** 50-60% reduction in typical RAG API responses!
+
+[Full API Reference →](../api-reference/cleaner.md#jsoncleaner){ .md-button }
+
 ## Common Patterns
 
 ### Web Content Pipeline
@@ -108,6 +148,17 @@ from prompt_refiner import FixUnicode, NormalizeWhitespace
 normalizer = (
     FixUnicode()
     | NormalizeWhitespace()
+)
+```
+
+### RAG Context Compression
+
+```python
+from prompt_refiner import JsonCleaner, TruncateTokens
+
+rag_compressor = (
+    JsonCleaner(strip_nulls=True, strip_empty=True)
+    | TruncateTokens(max_tokens=500, strategy="head")
 )
 ```
 

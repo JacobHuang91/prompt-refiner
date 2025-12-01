@@ -224,14 +224,15 @@ Play with different strategies, see real-time token savings, and find the perfec
 - 🔧 All 7 operations configurable
 - 📊 Visual metrics dashboard
 
-## 5 Core Modules
+## 4 Core Modules
 
-Prompt Refiner is organized into 5 specialized modules:
+Prompt Refiner is organized into 4 specialized transformation modules:
 
 ### 1. **Cleaner** - Clean Dirty Data
 - `StripHTML()` - Remove HTML tags, convert to Markdown
 - `NormalizeWhitespace()` - Collapse excessive whitespace
 - `FixUnicode()` - Remove zero-width spaces and problematic Unicode
+- `JsonCleaner()` - Strip nulls/empties from JSON, minify (great for RAG APIs)
 
 ### 2. **Compressor** - Reduce Size
 - `TruncateTokens()` - Smart truncation with sentence boundaries
@@ -241,32 +242,32 @@ Prompt Refiner is organized into 5 specialized modules:
 ### 3. **Scrubber** - Security & Privacy
 - `RedactPII()` - Automatically redact emails, phones, IPs, credit cards, URLs, SSNs
 
-### 4. **Analyzer** - Show Value
-- `CountTokens()` - Track token savings and optimization impact
-  - **Estimation mode** (default): Character-based approximation (1 token ≈ 4 chars)
-  - **Precise mode** (with tiktoken): Exact token counts using OpenAI's tokenizer
-
-### 5. **Packer** - Context Budget Management
+### 4. **Packer** - Context Budget Management
 - **`MessagesPacker`** - For chat APIs (OpenAI, Anthropic). Returns `List[Dict]`
 - **`TextPacker`** - For completion APIs (Llama Base, GPT-3). Returns `str`
 - **Semantic roles** - Use `ROLE_SYSTEM`, `ROLE_QUERY`, `ROLE_CONTEXT` (auto-prioritized)
 - **JIT refinement** - Clean documents on-the-fly with `refine_with=StripHTML()`
 - **Priority-based selection** - Automatically drops low-priority items when over budget
 
+## Measurement & Analysis
+
+Track and measure your optimization impact:
+
+- **`CountTokens()`** - Calculate token savings and ROI
+  - **Estimation mode** (default): Character-based approximation (1 token ≈ 4 chars)
+  - **Precise mode** (with tiktoken): Exact token counts using OpenAI's tokenizer
+
 ## Complete Example
 
 ```python
 from prompt_refiner import (
-    # Cleaner
-    StripHTML, NormalizeWhitespace, FixUnicode,
-    # Compressor
-    Deduplicate, TruncateTokens,
-    # Scrubber
-    RedactPII,
-    # Analyzer
+    # Core Modules
+    StripHTML, NormalizeWhitespace, FixUnicode, JsonCleaner,  # Cleaner
+    Deduplicate, TruncateTokens,  # Compressor
+    RedactPII,  # Scrubber
+    MessagesPacker, ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT,  # Packer
+    # Measurement
     CountTokens,
-    # Packer (v0.1.3+) - Semantic roles
-    MessagesPacker, ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT
 )
 
 # Example 1: Clean and optimize text
@@ -314,12 +315,16 @@ messages = packer.pack()  # Returns List[Dict]
 
 ## Examples
 
-Check out the [`examples/`](examples/) folder for detailed examples organized by module:
-- `cleaner/` - HTML cleaning, whitespace normalization, Unicode fixing
+Check out the [`examples/`](examples/) folder for detailed examples:
+
+**Core Modules:**
+- `cleaner/` - HTML cleaning, JSON compression, whitespace normalization, Unicode fixing
 - `compressor/` - Smart truncation, deduplication
 - `scrubber/` - PII redaction
-- `analyzer/` - Token counting and cost savings
 - `packer/` - Context budget management with priorities for RAG
+
+**Measurement:**
+- `analyzer/` - Token counting and cost savings analysis
 
 ## Development
 
@@ -335,6 +340,14 @@ make test
 # Format code
 make format
 ```
+
+## Star History
+
+<div align="center">
+
+[![Star History Chart](https://api.star-history.com/svg?repos=JacobHuang91/prompt-refiner&type=Date)](https://star-history.com/#JacobHuang91/prompt-refiner&Date)
+
+</div>
 
 ## License
 

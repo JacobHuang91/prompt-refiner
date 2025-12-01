@@ -45,18 +45,17 @@ clean_prompt = pipeline.run(raw_input)
     pipeline = Refiner().pipe(StripHTML()).pipe(NormalizeWhitespace())
     ```
 
-## 5 Core Modules
+## 4 Core Modules
 
-Prompt Refiner is organized into 5 specialized modules:
+Prompt Refiner is organized into 4 specialized transformation modules:
 
-### Basic Operations
-
-The first 4 modules provide core text processing operations:
+### Text Processing Operations
 
 #### 1. Cleaner - Clean Dirty Data
 - **StripHTML()** - Remove HTML tags, convert to Markdown
 - **NormalizeWhitespace()** - Collapse excessive whitespace
 - **FixUnicode()** - Remove zero-width spaces and problematic Unicode
+- **JsonCleaner()** - Strip nulls/empties from JSON, minify
 
 [Learn more about Cleaner →](modules/cleaner.md){ .md-button }
 
@@ -72,14 +71,9 @@ The first 4 modules provide core text processing operations:
 
 [Learn more about Scrubber →](modules/scrubber.md){ .md-button }
 
-#### 4. Analyzer - Show Value
-- **CountTokens()** - Track token savings and optimization impact
+### Context Budget Management
 
-[Learn more about Analyzer →](modules/analyzer.md){ .md-button }
-
-### Advanced: Context Budget Management
-
-#### 5. Packer - Intelligent Context Packing (v0.1.3+)
+#### 4. Packer - Intelligent Context Packing (v0.1.3+)
 
 For RAG applications and chatbots, the Packer module manages context budgets with priority-based selection:
 
@@ -112,17 +106,29 @@ messages = packer.pack()  # Returns List[Dict] ready for chat APIs
 
 [Learn more about Packer →](modules/packer.md){ .md-button }
 
+---
+
+## Measurement & Analysis
+
+Track optimization impact without transforming prompts:
+
+- **CountTokens()** - Calculate token savings and ROI
+  - **Estimation mode** (default): Character-based approximation
+  - **Precise mode** (with tiktoken): Exact token counts
+
+[Learn more about Analyzer →](modules/analyzer.md){ .md-button }
+
+---
+
 ## Complete Example
 
 ```python
 from prompt_refiner import (
-    # Cleaner
-    StripHTML, NormalizeWhitespace, FixUnicode,
-    # Compressor
-    Deduplicate, TruncateTokens,
-    # Scrubber
-    RedactPII,
-    # Analyzer
+    # Core Modules
+    StripHTML, NormalizeWhitespace, FixUnicode, JsonCleaner,  # Cleaner
+    Deduplicate, TruncateTokens,  # Compressor
+    RedactPII,  # Scrubber
+    # Measurement
     CountTokens
 )
 
