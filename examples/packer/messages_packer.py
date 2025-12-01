@@ -20,8 +20,13 @@ from prompt_refiner import (
     PRIORITY_HIGH,
     PRIORITY_LOW,
     PRIORITY_MEDIUM,
+    PRIORITY_QUERY,
     PRIORITY_SYSTEM,
-    PRIORITY_USER,
+    ROLE_ASSISTANT,
+    ROLE_CONTEXT,
+    ROLE_QUERY,
+    ROLE_SYSTEM,
+    ROLE_USER,
     MessagesPacker,
     StripHTML,
 )
@@ -38,17 +43,17 @@ def main():
     logger.info("=" * 80)
 
     # Initialize packer for chat APIs
-    packer = MessagesPacker(max_tokens=400)
+    # max_tokens is optional - omit it to include all items without limit
+    packer = MessagesPacker(max_tokens=400)  # Or MessagesPacker() for unlimited
 
-    # 1. System prompt (PRIORITY_SYSTEM - always included)
+    # 1. System prompt (auto priority=0 for ROLE_SYSTEM)
     packer.add(
         "You are a helpful AI assistant. Answer questions based on the provided "
         "documentation and conversation context.",
-        role="system",
-        priority=PRIORITY_SYSTEM,
+        role=ROLE_SYSTEM,  # Auto: PRIORITY_SYSTEM (0)
     )
 
-    # 2. RAG documents with JIT HTML cleaning (PRIORITY_HIGH/MEDIUM)
+    # 2. RAG documents with JIT HTML cleaning (auto priority=20 for ROLE_CONTEXT)
     doc_html = """
     <div class="doc">
         <h2>MessagesPacker</h2>
@@ -58,38 +63,34 @@ def main():
     """
     packer.add(
         doc_html,
-        role="system",
-        priority=PRIORITY_HIGH,
+        role=ROLE_CONTEXT,  # RAG document, auto: PRIORITY_HIGH (20)
         refine_with=StripHTML(),  # Clean HTML before packing
     )
 
     packer.add(
         "The library includes MessagesPacker for chat APIs and TextPacker for completion APIs.",
-        role="system",
-        priority=PRIORITY_MEDIUM,
+        role=ROLE_CONTEXT,  # RAG document, auto: PRIORITY_HIGH (20)
     )
 
-    # 3. Old conversation history (PRIORITY_LOW - can be dropped if needed)
+    # 3. Old conversation history (auto priority=40 for history)
     old_conversation = [
-        {"role": "user", "content": "What is prompt-refiner?"},
-        {"role": "assistant", "content": "Prompt-refiner is a Python library for optimizing LLM inputs."},
-        {"role": "user", "content": "Does it support token counting?"},
-        {"role": "assistant", "content": "Yes, it has precise token counting with tiktoken."},
+        {"role": ROLE_USER, "content": "What is prompt-refiner?"},
+        {"role": ROLE_ASSISTANT, "content": "Prompt-refiner is a Python library for optimizing LLM inputs."},
+        {"role": ROLE_USER, "content": "Does it support token counting?"},
+        {"role": ROLE_ASSISTANT, "content": "Yes, it has precise token counting with tiktoken."},
     ]
-    packer.add_messages(old_conversation, priority=PRIORITY_LOW)
+    packer.add_messages(old_conversation)  # Auto: PRIORITY_LOW (40) for history
 
-    # 4. Recent context (PRIORITY_HIGH - important to keep)
+    # 4. Recent context (ROLE_USER from history = auto priority=40)
     packer.add(
         "I'm building a chatbot and need to manage context window efficiently.",
-        role="user",
-        priority=PRIORITY_HIGH,
+        role=ROLE_USER,  # Conversation history, auto: PRIORITY_LOW (40)
     )
 
-    # 5. Current query (PRIORITY_USER - must include)
+    # 5. Current query (ROLE_QUERY = auto priority=10)
     packer.add(
         "How does MessagesPacker handle conversation history?",
-        role="user",
-        priority=PRIORITY_USER,
+        role=ROLE_QUERY,  # Current user query, auto: PRIORITY_QUERY (10)
     )
 
     # Pack into messages format

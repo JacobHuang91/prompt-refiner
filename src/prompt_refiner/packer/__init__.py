@@ -5,8 +5,13 @@ from .base import (
     PRIORITY_HIGH,
     PRIORITY_LOW,
     PRIORITY_MEDIUM,
+    PRIORITY_QUERY,
     PRIORITY_SYSTEM,
-    PRIORITY_USER,
+    ROLE_ASSISTANT,
+    ROLE_CONTEXT,
+    ROLE_QUERY,
+    ROLE_SYSTEM,
+    ROLE_USER,
     BasePacker,
     PackableItem,
 )
@@ -22,10 +27,16 @@ __all__ = [
     "PackableItem",
     # Priority constants
     "PRIORITY_SYSTEM",
-    "PRIORITY_USER",
+    "PRIORITY_QUERY",
     "PRIORITY_HIGH",
     "PRIORITY_MEDIUM",
     "PRIORITY_LOW",
+    # Role constants
+    "ROLE_SYSTEM",
+    "ROLE_QUERY",
+    "ROLE_CONTEXT",
+    "ROLE_USER",
+    "ROLE_ASSISTANT",
     # Message overhead constants
     "PER_MESSAGE_OVERHEAD",
     "PER_REQUEST_OVERHEAD",

@@ -1,15 +1,15 @@
 # Prompt Refiner
 
-A lightweight Python library for optimizing and cleaning LLM inputs. Reduce token usage, improve prompt quality, and lower API costs.
+A lightweight Python library for building production LLM applications. Save 10-20% on API costs and manage context windows intelligently.
 
 ## Overview
 
-Prompt Refiner helps you clean and optimize prompts before sending them to LLM APIs. By removing unnecessary whitespace, duplicate characters, and other inefficiencies, you can:
+Prompt Refiner solves two core problems for production LLM applications:
 
-- **Reduce token usage and API costs** - Remove unnecessary characters and content
-- **Improve prompt quality** - Clean HTML, fix Unicode issues, normalize whitespace
-- **Enhance security** - Redact PII automatically before sending to APIs
-- **Track optimization value** - Measure token savings and cost reductions
+1. **Token Optimization** - Clean dirty inputs (HTML, whitespace, PII) to reduce API costs by 10-20%
+2. **Context Management** - Pack system prompts, RAG docs, and chat history into token budgets with smart priority-based selection
+
+Perfect for RAG applications, chatbots, and any production system that needs to manage LLM context windows efficiently.
 
 !!! success "Proven Effectiveness"
     Benchmarked on 30 real-world test cases, Prompt Refiner achieves **4-15% token reduction** while maintaining 96-99% quality. Aggressive optimization can save up to **~$54/month** on GPT-4 at scale (1M tokens/month).
@@ -17,11 +17,6 @@ Prompt Refiner helps you clean and optimize prompts before sending them to LLM A
     Processing overhead is **< 0.5ms per 1k tokens** - negligible compared to network and LLM latency.
 
     [See benchmark results →](benchmark.md)
-
-## Status
-
-!!! info "Early Development"
-    This project is in early development. Features are being added iteratively.
 
 ## Quick Start
 
@@ -88,28 +83,29 @@ The first 4 modules provide core text processing operations:
 
 For RAG applications and chatbots, the Packer module manages context budgets with priority-based selection:
 
-- **MessagesPacker()** - For chat completion APIs (OpenAI, Anthropic)
-- **TextPacker()** - For text completion APIs (Llama Base, GPT-3)
+- **MessagesPacker()** - For chat completion APIs (OpenAI, Anthropic). Returns `List[Dict]`
+- **TextPacker()** - For text completion APIs (Llama Base, GPT-3). Returns `str`
 
 **Key Features:**
-- Priority-based greedy packing algorithm
+- Smart priority-based selection (auto-prioritizes: system > query > context > history)
 - JIT refinement with `refine_with` parameter
 - Automatic format overhead calculation
-- Perfect for RAG with conversation history
+- Semantic roles for clear intent
 
 ```python
-from prompt_refiner import MessagesPacker, PRIORITY_SYSTEM, PRIORITY_HIGH, StripHTML
+from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY, StripHTML
 
 packer = MessagesPacker(max_tokens=1000)
-packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
+packer.add("You are helpful.", role=ROLE_SYSTEM)
 
 # Clean RAG documents on-the-fly
 packer.add(
     "<div>RAG doc...</div>",
-    role="system",
-    priority=PRIORITY_HIGH,
+    role=ROLE_CONTEXT,
     refine_with=StripHTML()
 )
+
+packer.add("User question?", role=ROLE_QUERY)
 
 messages = packer.pack()  # Returns List[Dict] ready for chat APIs
 ```

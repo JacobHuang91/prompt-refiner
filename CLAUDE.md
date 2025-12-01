@@ -4,11 +4,12 @@ This document provides context for Claude Code and developers working on this pr
 
 ## Project Purpose
 
-Prompt Refiner is a Python library designed to optimize LLM prompts by cleaning and reducing unnecessary tokens. This helps users:
+Prompt Refiner is a Python library for building production LLM applications. It solves two core problems:
 
-- Lower API costs by reducing token count
-- Improve prompt quality through normalization
-- Maintain consistent input formatting
+1. **Token Optimization** - Clean dirty inputs (HTML, whitespace, PII) to reduce API costs by 10-20%
+2. **Context Management** - Pack system prompts, RAG docs, and chat history into token budgets with smart priority-based selection
+
+Perfect for RAG applications, chatbots, and any production system that needs to manage LLM context windows efficiently.
 
 ## Architecture
 
@@ -21,6 +22,8 @@ The library is organized into 5 core modules:
 - **Packer**: Context budget management with specialized packers (v0.1.3+)
   - **MessagesPacker**: For chat completion APIs (OpenAI, Anthropic)
   - **TextPacker**: For text completion APIs (Llama Base, GPT-3)
+  - **Semantic roles for RAG**: ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT, ROLE_USER, ROLE_ASSISTANT
+  - **Smart priority defaults**: Role automatically infers priority (PRIORITY_SYSTEM, PRIORITY_QUERY, PRIORITY_HIGH, PRIORITY_LOW)
   - Priority-based greedy packing algorithm
   - Automatic ChatML format overhead accounting (~4 tokens per message)
   - Grouped MARKDOWN sections for base models
@@ -39,7 +42,14 @@ Each module contains specialized operations that can be composed into pipelines 
 
 ## Version History
 
-### v0.1.3 (Current) - Separated Packer Architecture
+### v0.1.4 (Current) - Semantic Roles & Documentation Polish
+**Enhancements:**
+- **Semantic Roles**: Renamed `PRIORITY_USER` to `PRIORITY_QUERY` for clarity
+- **Smart Defaults**: All examples now use semantic roles (ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT) with auto-inferred priorities
+- **Documentation**: Polished README, removed duplicate sections, emphasized both token optimization AND context management use cases
+- **Bug Fix**: Unlimited mode now correctly sorts by priority (system > query > context > history)
+
+### v0.1.3 - Separated Packer Architecture
 **New Architecture:**
 - **`MessagesPacker`**: For chat completion APIs (OpenAI, Anthropic)
   - Returns `List[Dict[str, str]]` directly
@@ -131,8 +141,7 @@ examples/
 ├── compressor/          # Compressor examples
 ├── scrubber/            # Scrubber examples
 ├── analyzer/            # Analyzer examples
-├── packer/              # Packer examples
-└── all_modules_demo.py  # Complete demo
+└── packer/              # Packer examples
 
 benchmark/
 ├── README.md            # Index of all benchmarks

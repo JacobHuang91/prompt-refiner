@@ -1,13 +1,6 @@
 # Prompt Refiner Examples
 
-This directory contains examples demonstrating the 4 core modules of Prompt Refiner.
-
-## Quick Start
-
-Run the all-in-one demo:
-```bash
-python examples/all_modules_demo.py
-```
+This directory contains examples demonstrating the 5 core modules of Prompt Refiner.
 
 ## Module Examples
 
@@ -132,19 +125,34 @@ python examples/custom_operation.py
 
 ---
 
-## Complete Pipeline Demo
+### 5. Packer Module
 
-### `all_modules_demo.py`
-Comprehensive demonstration of all 4 modules working together.
+Intelligently manage context budgets for RAG applications and chatbots.
+
+#### `packer/messages_packer.py`
+Demonstrates MessagesPacker for chat completion APIs.
 ```bash
-python examples/all_modules_demo.py
+python examples/packer/messages_packer.py
 ```
 
 **What it shows:**
-- Each module in isolation
-- Complete pipeline combining all modules
-- Real-world use cases
-- Performance metrics
+- Priority-based selection
+- Semantic roles (ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT)
+- RAG document integration with JIT cleaning
+- Conversation history management
+- Returns List[Dict] ready for OpenAI/Anthropic
+
+#### `packer/text_packer.py`
+Demonstrates TextPacker for text completion APIs.
+```bash
+python examples/packer/text_packer.py
+```
+
+**What it shows:**
+- MARKDOWN format with grouped sections
+- Multiple conversation history messages
+- Budget-based message dropping
+- Returns str ready for Llama/GPT-3 base models
 
 ---
 
@@ -153,14 +161,13 @@ python examples/all_modules_demo.py
 All examples can be run from the project root:
 
 ```bash
-# Run all module examples
+# Run module examples
 python examples/cleaner/html_cleaning.py
 python examples/compressor/smart_truncation.py
 python examples/scrubber/pii_redaction.py
 python examples/analyzer/token_counting.py
-
-# Run complete demo
-python examples/all_modules_demo.py
+python examples/packer/messages_packer.py
+python examples/packer/text_packer.py
 ```
 
 ---

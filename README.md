@@ -34,44 +34,95 @@
 
 ## Why use Prompt Refiner?
 
+**Two core problems solved:**
+
+### 1. 🧹 Save 10-20% on API Costs - Clean & Optimize Prompts
+
 Stop paying for invisible tokens and dirty data.
-
-| Feature | Before (Dirty Input) | After (Refined) |
-| :--- | :--- | :--- |
-| **HTML Cleaning** | `<div><b>Hello</b> world</div>` | `Hello world` |
-| **Whitespace** | `User    input\n\n\n  here` | `User input here` |
-| **PII Redaction** | `Call me at 555-0199` | `Call me at [PHONE]` |
-| **Deduplication** | `Same text.\n\nSame text.\n\nDifferent.` | `Same text.\n\nDifferent.` |
-| **Token Cost** | ❌ **150 Tokens** | ✅ **85 Tokens** (Saved 43%) |
-
-### 📦 It's this easy:
 
 ```python
 from prompt_refiner import StripHTML, NormalizeWhitespace
 
+# Before: "<div>  User    input\n\n\n  here  </div>" (150 tokens)
+# After: "User input here" (85 tokens) → 43% savings
 cleaned = (StripHTML() | NormalizeWhitespace()).run(dirty_input)
+```
+
+### 2. 🤖 Build Smart Chatbots - Manage Context Windows
+
+Pack system prompts, RAG docs, and chat history into your token budget. Auto-clean HTML on-the-fly.
+
+**For Chat APIs (OpenAI, Anthropic):**
+
+```python
+from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY, ROLE_USER, StripHTML
+
+packer = MessagesPacker(max_tokens=1000)
+packer.add("You are helpful.", role=ROLE_SYSTEM)
+packer.add("<p>RAG doc with HTML...</p>", role=ROLE_CONTEXT, refine_with=StripHTML())
+packer.add("Old chat msg...", role=ROLE_USER)
+packer.add("User question?", role=ROLE_QUERY)
+
+messages = packer.pack()
+# Output: List[Dict] ready for openai.chat.completions.create()
+# [
+#   {"role": "system", "content": "You are helpful."},
+#   {"role": "user", "content": "User question?"},
+#   {"role": "context", "content": "RAG doc with HTML..."}  # HTML cleaned!
+# ]
+# Note: "Old chat msg..." dropped to fit budget
+```
+
+**For Completion APIs (Llama, GPT-3):**
+
+```python
+from prompt_refiner import TextPacker, TextFormat, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY, ROLE_USER, ROLE_ASSISTANT, StripHTML
+
+packer = TextPacker(max_tokens=500, text_format=TextFormat.MARKDOWN)
+packer.add("You are a QA assistant.", role=ROLE_SYSTEM)
+packer.add("<div>RAG doc...</div>", role=ROLE_CONTEXT, refine_with=StripHTML())
+packer.add("What is X?", role=ROLE_USER)
+packer.add("X is a library.", role=ROLE_ASSISTANT)
+packer.add("How to install?", role=ROLE_USER)
+packer.add("Use pip install.", role=ROLE_ASSISTANT)
+packer.add("What is this?", role=ROLE_QUERY)
+
+prompt = packer.pack()
+# Output: str ready for completion APIs
+# ### INSTRUCTIONS:
+# You are a QA assistant.
+#
+# ### CONTEXT:
+# - RAG doc...
+#
+# ### CONVERSATION:
+# - What is X?
+# - X is a library.
+#
+# ### INPUT:
+# What is this?
+#
+# Note: Last 2 history messages dropped to fit budget (auto-prioritized)
 ```
 
 ### ✨ Key Features
 
-- **🪶 Zero Dependencies** - Lightweight core with no external dependencies
-- **⚡ Blazing Fast** - < 0.5ms per 1k tokens overhead, negligible impact on API latency
-- **🔧 Modular Design** - 5 focused modules: Cleaner, Compressor, Scrubber, Analyzer, Packer
-- **🚀 Production Ready** - Battle-tested operations with comprehensive test coverage
-- **🎯 Type Safe** - Full type hints for better IDE support and fewer bugs
-- **📦 Easy to Use** - Modern pipe operator syntax (`|`), compose operations like LEGO blocks
+**Token Optimization:**
+- **🧹 Clean Dirty Data** - Strip HTML, normalize whitespace, fix Unicode, redact PII
+- **📉 Reduce Costs** - Save 10-20% on API costs by removing unnecessary tokens
+- **📦 Pipe Syntax** - Compose operations like LEGO blocks: `StripHTML() | NormalizeWhitespace()`
 
-## Overview
+**Context Management:**
+- **🤖 Smart Packers** - MessagesPacker for chat APIs, TextPacker for completion APIs
+- **🎯 Priority-Based** - Auto-prioritizes: system > query > context > history
+- **✂️ Budget Control** - Fits content within token limits, drops low-priority items
+- **🔄 JIT Cleaning** - Clean RAG docs on-the-fly with `refine_with=StripHTML()`
 
-Prompt Refiner helps you clean and optimize prompts before sending them to LLM APIs. By removing unnecessary whitespace, duplicate characters, and other inefficiencies, you can:
-
-- Reduce token usage and API costs
-- Improve prompt quality and consistency
-- Process inputs more efficiently
-
-## Status
-
-This project is in early development. Features are being added iteratively.
+**Developer Experience:**
+- **🪶 Zero Dependencies** - Lightweight core, optional tiktoken for precise counting
+- **⚡ Blazing Fast** - < 0.5ms per 1k tokens overhead
+- **🎯 Type Safe** - Full type hints for better IDE support
+- **🚀 Production Ready** - Battle-tested with comprehensive test coverage
 
 ## Installation
 
@@ -83,123 +134,9 @@ pip install llm-prompt-refiner
 pip install llm-prompt-refiner[token]
 ```
 
-### Installation Modes
-
+**Installation Modes:**
 - **Default (Lightweight)**: Zero dependencies, uses character-based token estimation
-- **Precise Mode**: Installs `tiktoken` for accurate token counting with no safety buffer
-
-To use precise mode, pass a `model` parameter:
-```python
-from prompt_refiner import CountTokens, ContextPacker
-
-# Default: estimation mode (no model parameter)
-counter = CountTokens()
-packer = ContextPacker(max_tokens=1000)
-
-# Opt-in: precise mode with tiktoken
-counter = CountTokens(model="gpt-4")
-packer = ContextPacker(max_tokens=1000, model="gpt-4")
-```
-
-## 🎉 What's New in v0.1.3
-
-**New Architecture: Separated MessagesPacker and TextPacker**
-
-We've refactored the packer architecture following the Single Responsibility Principle:
-
-- **`MessagesPacker`**: Optimized for chat completion APIs (OpenAI, Anthropic)
-  - Returns `List[Dict[str, str]]` directly - no wrapper needed!
-  - Accurate ChatML overhead calculation (4 tokens per message)
-  - 100% token budget utilization with precise mode
-
-- **`TextPacker`**: Optimized for text completion APIs (Llama Base, GPT-3)
-  - Returns `str` directly - no wrapper needed!
-  - Multiple text formats: RAW, MARKDOWN, XML
-  - Accurate delimiter overhead calculation
-
-- **Better Type Safety**: Clear return types, no complex `PackedResult` wrapper
-- **Better Accuracy**: Each packer only calculates its own overhead
-
-```python
-# MessagesPacker for Chat APIs (OpenAI, Anthropic)
-from prompt_refiner import (
-    MessagesPacker,
-    PRIORITY_SYSTEM, PRIORITY_USER, PRIORITY_HIGH,
-    StripHTML, NormalizeWhitespace  # For JIT refinement
-)
-
-packer = MessagesPacker(max_tokens=1000)
-packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
-
-# Clean RAG documents on-the-fly with refine_with
-packer.add(
-    "<div>RAG document with <b>HTML</b>...</div>",
-    role="system",
-    priority=PRIORITY_HIGH,
-    refine_with=StripHTML()  # Auto-clean before packing!
-)
-
-packer.add("Hello!", role="user", priority=PRIORITY_USER)
-
-messages = packer.pack()  # Returns List[Dict] directly!
-# Use directly: openai.chat.completions.create(messages=messages)
-
-# TextPacker for Completion APIs (Llama Base, GPT-3)
-from prompt_refiner import TextPacker, TextFormat
-
-packer = TextPacker(max_tokens=1000, text_format=TextFormat.MARKDOWN)
-packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
-
-# Chain multiple operations for dirty documents
-packer.add(
-    "<p>  Messy   HTML  </p>",
-    priority=PRIORITY_HIGH,
-    refine_with=[StripHTML(), NormalizeWhitespace()]  # Clean + normalize!
-)
-
-prompt = packer.pack()  # Returns str directly!
-# Use directly: completion.create(prompt=prompt)
-```
-
-
-## Quick Start
-
-```python
-from prompt_refiner import StripHTML, NormalizeWhitespace, TruncateTokens
-
-# ✨ The Pythonic "Pipe" Syntax (Recommended)
-pipeline = (
-    StripHTML()
-    | NormalizeWhitespace()
-    | TruncateTokens(max_tokens=1000)
-)
-
-raw_input = "<div>  User input with <b>lots</b> of   spaces... </div>"
-clean_prompt = pipeline.run(raw_input)
-# Output: "User input with lots of spaces..."
-```
-
-<details>
-<summary><b>Alternative: Fluent API</b></summary>
-
-Prefer method chaining? Use the traditional fluent API:
-
-```python
-from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, TruncateTokens
-
-pipeline = (
-    Refiner()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
-    .pipe(TruncateTokens(max_tokens=1000))
-)
-
-clean_prompt = pipeline.run(raw_input)
-```
-
-</details>
-
-> 💡 **Why pipe operator?** More concise, Pythonic, and familiar to LangChain/LangGraph users.
+- **Precise Mode**: Installs `tiktoken` for accurate token counting with no safety buffer. Pass a `model` parameter to CountTokens or MessagesPacker/TextPacker to enable.
 
 ## 📊 Proven Effectiveness
 
@@ -309,28 +246,12 @@ Prompt Refiner is organized into 5 specialized modules:
   - **Estimation mode** (default): Character-based approximation (1 token ≈ 4 chars)
   - **Precise mode** (with tiktoken): Exact token counts using OpenAI's tokenizer
 
-### 5. **Packer** - Context Budget Management (v0.1.3+)
-- **`MessagesPacker()`** - For chat completion APIs (OpenAI, Anthropic)
-  - Returns `List[Dict[str, str]]` ready for chat APIs
-  - Accurate ChatML overhead (4 tokens per message)
-  - Perfect for RAG chatbots and conversation history
-
-- **`TextPacker()`** - For text completion APIs (Llama Base, GPT-3)
-  - Returns `str` ready for completion APIs
-  - Multiple text formats: `TextFormat.RAW`, `TextFormat.MARKDOWN`, `TextFormat.XML`
-  - Accurate delimiter overhead calculation
-
-- **Common features**:
-  - Priority-based greedy selection: `PRIORITY_SYSTEM`, `PRIORITY_USER`, `PRIORITY_HIGH`, `PRIORITY_MEDIUM`, `PRIORITY_LOW`
-  - **JIT refinement** with `refine_with` parameter - clean documents on-the-fly:
-    ```python
-    # Single operation
-    packer.add(content, priority=PRIORITY_HIGH, refine_with=StripHTML())
-    # Multiple operations
-    packer.add(content, priority=PRIORITY_HIGH, refine_with=[StripHTML(), NormalizeWhitespace()])
-    ```
-  - **Estimation mode**: 10% safety buffer (default)
-  - **Precise mode**: 100% budget utilization (with tiktoken)
+### 5. **Packer** - Context Budget Management
+- **`MessagesPacker`** - For chat APIs (OpenAI, Anthropic). Returns `List[Dict]`
+- **`TextPacker`** - For completion APIs (Llama Base, GPT-3). Returns `str`
+- **Semantic roles** - Use `ROLE_SYSTEM`, `ROLE_QUERY`, `ROLE_CONTEXT` (auto-prioritized)
+- **JIT refinement** - Clean documents on-the-fly with `refine_with=StripHTML()`
+- **Priority-based selection** - Automatically drops low-priority items when over budget
 
 ## Complete Example
 
@@ -344,8 +265,8 @@ from prompt_refiner import (
     RedactPII,
     # Analyzer
     CountTokens,
-    # Packer (v0.1.3+)
-    MessagesPacker, PRIORITY_SYSTEM, PRIORITY_USER, PRIORITY_HIGH
+    # Packer (v0.1.3+) - Semantic roles
+    MessagesPacker, ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT
 )
 
 # Example 1: Clean and optimize text
@@ -369,25 +290,23 @@ print(counter.format_stats())
 
 # Example 2: Pack messages for chat API with JIT refinement
 packer = MessagesPacker(max_tokens=1000)
-packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
+packer.add("You are helpful.", role=ROLE_SYSTEM)  # Auto: PRIORITY_SYSTEM (0)
 
 # Clean RAG documents on-the-fly (single operation)
 packer.add(
     "<div>RAG doc with HTML...</div>",
-    role="system",
-    priority=PRIORITY_HIGH,
+    role=ROLE_CONTEXT,  # Auto: PRIORITY_HIGH (20)
     refine_with=StripHTML()
 )
 
 # Chain multiple cleaning operations for dirty documents
 packer.add(
     "<p>  Another   doc with  HTML   and   whitespace  </p>",
-    role="system",
-    priority=PRIORITY_HIGH,
+    role=ROLE_CONTEXT,  # Auto: PRIORITY_HIGH (20)
     refine_with=[StripHTML(), NormalizeWhitespace()]
 )
 
-packer.add("User question", role="user", priority=PRIORITY_USER)
+packer.add("User question", role=ROLE_QUERY)  # Auto: PRIORITY_QUERY (10)
 
 messages = packer.pack()  # Returns List[Dict]
 # Use with: openai.chat.completions.create(messages=messages)
@@ -401,7 +320,6 @@ Check out the [`examples/`](examples/) folder for detailed examples organized by
 - `scrubber/` - PII redaction
 - `analyzer/` - Token counting and cost savings
 - `packer/` - Context budget management with priorities for RAG
-- `all_modules_demo.py` - Complete demonstration
 
 ## Development
 

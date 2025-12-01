@@ -4,7 +4,15 @@ import logging
 from enum import Enum
 from typing import Optional
 
-from .base import BasePacker, PackableItem
+from .base import (
+    ROLE_ASSISTANT,
+    ROLE_CONTEXT,
+    ROLE_QUERY,
+    ROLE_SYSTEM,
+    ROLE_USER,
+    BasePacker,
+    PackableItem,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -43,17 +51,22 @@ class TextPacker(BasePacker):
 
     Example:
         >>> from prompt_refiner import TextPacker, TextFormat, PRIORITY_SYSTEM, PRIORITY_HIGH
+        >>> # With token budget
         >>> packer = TextPacker(max_tokens=1000, text_format=TextFormat.MARKDOWN)
         >>> packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
         >>> packer.add("Context document", priority=PRIORITY_HIGH)
         >>> prompt = packer.pack()
-        >>> # prompt = "### INSTRUCTIONS:\\nYou are helpful.\\n\\n### CONTEXT:\\nContext document"
         >>> # Use directly: completion.create(prompt=prompt)
+        >>>
+        >>> # Without token budget (unlimited mode)
+        >>> packer = TextPacker()  # All items included
+        >>> packer.add("System prompt", role="system", priority=PRIORITY_SYSTEM)
+        >>> prompt = packer.pack()
     """
 
     def __init__(
         self,
-        max_tokens: int,
+        max_tokens: Optional[int] = None,
         model: Optional[str] = None,
         text_format: TextFormat = TextFormat.RAW,
         separator: Optional[str] = None,
@@ -62,7 +75,7 @@ class TextPacker(BasePacker):
         Initialize text packer.
 
         Args:
-            max_tokens: Maximum token budget
+            max_tokens: Maximum token budget. If None, includes all items without limit.
             model: Optional model name for precise token counting
             text_format: Text formatting strategy (RAW, MARKDOWN, XML)
             separator: String to join items (default: "\\n\\n" for clarity)
@@ -73,12 +86,13 @@ class TextPacker(BasePacker):
 
         # For MARKDOWN grouped format: Pre-deduct fixed header costs ("entrance fee")
         # This prevents overestimating overhead for each item
-        if self.text_format == TextFormat.MARKDOWN:
+        if self.text_format == TextFormat.MARKDOWN and self.effective_max_tokens is not None:
             self._reserve_fixed_headers()
 
         logger.debug(
             f"TextPacker initialized with format={text_format.value}, "
-            f"separator={repr(self.separator)}"
+            f"separator={repr(self.separator)}, "
+            f"unlimited={self.effective_max_tokens is None}"
         )
 
     def _reserve_fixed_headers(self) -> None:
@@ -183,10 +197,10 @@ class TextPacker(BasePacker):
         Pack items into formatted text for completion APIs.
 
         MARKDOWN format uses grouped sections to reduce token overhead:
-        - INSTRUCTIONS: System prompts
-        - CONTEXT: RAG documents (items without role)
-        - CONVERSATION: User/assistant history
-        - INPUT: Final user query
+        - INSTRUCTIONS: System prompts (ROLE_SYSTEM)
+        - CONTEXT: RAG documents (ROLE_CONTEXT)
+        - CONVERSATION: User/assistant history (ROLE_USER, ROLE_ASSISTANT)
+        - INPUT: Current user query (ROLE_QUERY)
 
         Returns:
             Formatted text string ready for completion API
@@ -232,19 +246,24 @@ class TextPacker(BasePacker):
         Returns:
             Formatted text with grouped sections
         """
-        # Group items by role/type
+        # Group items by semantic role
         system_items = []
         context_items = []
         conversation_items = []
+        query_items = []
 
         for item in selected_items:
-            if item.role == "system":
+            if item.role == ROLE_SYSTEM:
+                # System instructions → INSTRUCTIONS section
                 system_items.append(item.content)
-            elif item.role is None:
-                # No role = RAG documents -> CONTEXT section
+            elif item.role == ROLE_CONTEXT:
+                # RAG documents → CONTEXT section
                 context_items.append(item.content)
-            elif item.role in ["user", "assistant"]:
-                # Conversation history
+            elif item.role == ROLE_QUERY:
+                # Current query → INPUT section
+                query_items.append(item.content)
+            elif item.role in (ROLE_USER, ROLE_ASSISTANT):
+                # Conversation history → CONVERSATION section
                 conversation_items.append((item.role, item.content))
 
         # Build sections
@@ -266,21 +285,13 @@ class TextPacker(BasePacker):
 
         # 3. CONVERSATION section (history)
         if conversation_items:
-            # Separate last user query from history
-            if conversation_items[-1][0] == "user":
-                history = conversation_items[:-1]
-                final_query = conversation_items[-1][1]
-            else:
-                history = conversation_items
-                final_query = None
+            conv_lines = [f"{role.capitalize()}: {content}" for role, content in conversation_items]
+            sections.append("### CONVERSATION:\n" + "\n".join(conv_lines))
 
-            # Format conversation history
-            if history:
-                conv_lines = [f"{role.capitalize()}: {content}" for role, content in history]
-                sections.append("### CONVERSATION:\n" + "\n".join(conv_lines))
-
-            # Final user query as INPUT
-            if final_query:
-                sections.append(f"### INPUT:\n{final_query}")
+        # 4. INPUT section (current query)
+        if query_items:
+            # Multiple queries combined (rare but possible)
+            query_text = "\n\n".join(query_items)
+            sections.append(f"### INPUT:\n{query_text}")
 
         return "\n\n".join(sections)

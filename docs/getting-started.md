@@ -157,37 +157,34 @@ print(counter.format_stats())
 
 ### Pattern 5: Advanced - RAG with Context Budget (v0.1.3+)
 
-For RAG applications, manage context budgets with priority-based packing:
+For RAG applications, manage context budgets with smart priority-based packing:
 
 ```python
 from prompt_refiner import (
     MessagesPacker,
-    PRIORITY_SYSTEM, PRIORITY_USER, PRIORITY_HIGH,
+    ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY,
     StripHTML, NormalizeWhitespace
 )
 
 packer = MessagesPacker(max_tokens=1000)
 
-# System prompt (must include)
+# System prompt (auto-prioritized: highest)
 packer.add(
     "Answer based on provided context.",
-    role="system",
-    priority=PRIORITY_SYSTEM
+    role=ROLE_SYSTEM
 )
 
-# RAG documents with JIT cleaning
+# RAG documents with JIT cleaning (auto-prioritized: high)
 packer.add(
     "<div>Document 1...</div>",
-    role="system",
-    priority=PRIORITY_HIGH,
+    role=ROLE_CONTEXT,
     refine_with=[StripHTML(), NormalizeWhitespace()]
 )
 
-# Current user query (must include)
+# Current user query (auto-prioritized: critical)
 packer.add(
     "What is the answer?",
-    role="user",
-    priority=PRIORITY_USER
+    role=ROLE_QUERY
 )
 
 messages = packer.pack()  # Ready for chat APIs

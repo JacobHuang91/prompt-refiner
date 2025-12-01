@@ -3,7 +3,7 @@
 import logging
 from typing import Dict, List, Optional
 
-from .base import BasePacker, PackableItem
+from .base import ROLE_CONTEXT, ROLE_QUERY, BasePacker, PackableItem
 
 logger = logging.getLogger(__name__)
 
@@ -26,33 +26,40 @@ class MessagesPacker(BasePacker):
 
     Example:
         >>> from prompt_refiner import MessagesPacker, PRIORITY_SYSTEM, PRIORITY_USER
+        >>> # With token budget
         >>> packer = MessagesPacker(max_tokens=1000)
         >>> packer.add("You are helpful.", role="system", priority=PRIORITY_SYSTEM)
         >>> packer.add("Hello!", role="user", priority=PRIORITY_USER)
         >>> messages = packer.pack()
-        >>> # messages = [{"role": "system", "content": "..."}, {"role": "user", "content": "..."}]
         >>> # Use directly: openai.chat.completions.create(messages=messages)
+        >>>
+        >>> # Without token budget (unlimited mode)
+        >>> packer = MessagesPacker()  # All items included
+        >>> packer.add("System prompt", role="system", priority=PRIORITY_SYSTEM)
+        >>> packer.add("User query", role="user", priority=PRIORITY_USER)
+        >>> messages = packer.pack()
     """
 
-    def __init__(self, max_tokens: int, model: Optional[str] = None):
+    def __init__(self, max_tokens: Optional[int] = None, model: Optional[str] = None):
         """
         Initialize messages packer.
 
         Args:
-            max_tokens: Maximum token budget
+            max_tokens: Maximum token budget. If None, includes all items without limit.
             model: Optional model name for precise token counting
         """
         super().__init__(max_tokens, model)
 
-        # Pre-deduct request-level overhead (priming tokens)
-        # This ensures we never exceed the budget in edge cases
-        self.effective_max_tokens -= PER_REQUEST_OVERHEAD
-
-        logger.debug(
-            f"MessagesPacker initialized with {max_tokens} tokens "
-            f"(effective: {self.effective_max_tokens} after {PER_REQUEST_OVERHEAD} "
-            f"token request overhead)"
-        )
+        # Pre-deduct request-level overhead (priming tokens) if budget is limited
+        if self.effective_max_tokens is not None:
+            self.effective_max_tokens -= PER_REQUEST_OVERHEAD
+            logger.debug(
+                f"MessagesPacker initialized with {max_tokens} tokens "
+                f"(effective: {self.effective_max_tokens} after {PER_REQUEST_OVERHEAD} "
+                f"token request overhead)"
+            )
+        else:
+            logger.debug("MessagesPacker initialized in unlimited mode")
 
     def _calculate_overhead(self, item: PackableItem) -> int:
         """
@@ -76,9 +83,14 @@ class MessagesPacker(BasePacker):
         """
         Pack items into message format for chat APIs.
 
+        Automatically maps semantic roles to API-compatible roles:
+        - ROLE_CONTEXT → "user" (RAG documents as user-provided context)
+        - ROLE_QUERY → "user" (current user question)
+        - Other roles (system, user, assistant) remain unchanged
+
         Returns:
-            List of message dictionaries with 'role' and 'content' keys.
-            Items without role default to 'user'.
+            List of message dictionaries with 'role' and 'content' keys,
+            ready for OpenAI, Anthropic, and other chat completion APIs.
 
         Example:
             >>> messages = packer.pack()
@@ -92,9 +104,18 @@ class MessagesPacker(BasePacker):
 
         messages = []
         for item in selected_items:
-            # Default to 'user' role if not specified
-            role = item.role or "user"
-            messages.append({"role": role, "content": item.content})
+            # Map semantic roles to API-compatible roles
+            api_role = item.role
+
+            if item.role == ROLE_CONTEXT:
+                # RAG documents become user messages (context provided by user)
+                api_role = "user"
+            elif item.role == ROLE_QUERY:
+                # Current query becomes user message
+                api_role = "user"
+            # Other roles (system, user, assistant) remain unchanged
+
+            messages.append({"role": api_role, "content": item.content})
 
         logger.info(f"Packed {len(messages)} messages for chat API")
         return messages

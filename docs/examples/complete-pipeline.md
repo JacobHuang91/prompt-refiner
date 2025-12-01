@@ -1,6 +1,6 @@
 # Complete Pipeline Example
 
-A comprehensive example using all 4 modules together.
+A comprehensive example using all 5 modules together.
 
 ## Full Optimization Pipeline
 
@@ -66,14 +66,6 @@ print(counter.format_stats())
         # ... continue with other operations
     )
     ```
-
-## Full Example
-
-See: [`examples/all_modules_demo.py`](https://github.com/JacobHuang91/prompt-refiner/blob/main/examples/all_modules_demo.py)
-
-```bash
-python examples/all_modules_demo.py
-```
 
 ## Related
 

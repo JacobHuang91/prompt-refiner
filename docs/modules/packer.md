@@ -1,13 +1,19 @@
 # Packer Module
 
-Intelligently manage context budgets with priority-based item packing for RAG applications and context window management.
+Intelligently manage context budgets with smart priority-based packing for RAG applications and chatbots.
 
 ## Overview (v0.1.3+)
 
 The Packer module provides two specialized packers following the Single Responsibility Principle:
 
-- **`MessagesPacker`**: For chat completion APIs (OpenAI, Anthropic)
-- **`TextPacker`**: For text completion APIs (Llama Base, GPT-3)
+- **`MessagesPacker`**: For chat completion APIs (OpenAI, Anthropic). Returns `List[Dict]`
+- **`TextPacker`**: For text completion APIs (Llama Base, GPT-3). Returns `str`
+
+**Key Features:**
+- Smart priority-based selection (auto-prioritizes: system > query > context > history)
+- Semantic roles for clear intent (ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT, ROLE_USER, ROLE_ASSISTANT)
+- JIT refinement with `refine_with` parameter
+- Automatic format overhead calculation
 
 ## MessagesPacker
 
@@ -16,28 +22,25 @@ Pack items into chat message format for chat completion APIs.
 ### Basic Usage
 
 ```python
-from prompt_refiner import MessagesPacker, PRIORITY_SYSTEM, PRIORITY_USER, PRIORITY_HIGH
+from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY
 
 # Create packer with token budget
 packer = MessagesPacker(max_tokens=1000)
 
-# Add items with priorities and roles
+# Add items with semantic roles (auto-prioritized)
 packer.add(
     "You are a helpful assistant.",
-    role="system",
-    priority=PRIORITY_SYSTEM
-)
-
-packer.add(
-    "What are the key features?",
-    role="user",
-    priority=PRIORITY_USER
+    role=ROLE_SYSTEM  # Auto: highest priority
 )
 
 packer.add(
     "Product documentation: Feature A, B, C...",
-    role="system",
-    priority=PRIORITY_HIGH
+    role=ROLE_CONTEXT  # Auto: high priority
+)
+
+packer.add(
+    "What are the key features?",
+    role=ROLE_QUERY  # Auto: critical priority
 )
 
 # Pack into messages format
@@ -52,42 +55,40 @@ messages = packer.pack()  # Returns List[Dict[str, str]]
 ```python
 from prompt_refiner import (
     MessagesPacker,
-    PRIORITY_SYSTEM,
-    PRIORITY_USER,
-    PRIORITY_HIGH,
-    PRIORITY_LOW,
+    ROLE_SYSTEM,
+    ROLE_CONTEXT,
+    ROLE_QUERY,
+    ROLE_USER,
+    ROLE_ASSISTANT,
     StripHTML
 )
 
 packer = MessagesPacker(max_tokens=500)
 
-# System prompt (must include)
+# System prompt (auto: highest priority)
 packer.add(
     "Answer based on the provided context.",
-    role="system",
-    priority=PRIORITY_SYSTEM
+    role=ROLE_SYSTEM
 )
 
-# RAG documents with JIT cleaning
+# RAG documents with JIT cleaning (auto: high priority)
 packer.add(
     "<p>Prompt-refiner is a library...</p>",
-    role="system",
-    priority=PRIORITY_HIGH,
+    role=ROLE_CONTEXT,
     refine_with=StripHTML()
 )
 
-# Old conversation history (can be dropped if needed)
+# Old conversation history (auto: low priority, can be dropped)
 old_messages = [
-    {"role": "user", "content": "What is this library?"},
-    {"role": "assistant", "content": "It's a tool for optimizing prompts."}
+    {"role": ROLE_USER, "content": "What is this library?"},
+    {"role": ROLE_ASSISTANT, "content": "It's a tool for optimizing prompts."}
 ]
-packer.add_messages(old_messages, priority=PRIORITY_LOW)
+packer.add_messages(old_messages)
 
-# Current query (must include)
+# Current query (auto: critical priority)
 packer.add(
     "How does it reduce costs?",
-    role="user",
-    priority=PRIORITY_USER
+    role=ROLE_QUERY
 )
 
 # Pack into messages
@@ -101,7 +102,7 @@ Pack items into formatted text for text completion APIs (base models).
 ### Basic Usage
 
 ```python
-from prompt_refiner import TextPacker, TextFormat, PRIORITY_SYSTEM, PRIORITY_HIGH, PRIORITY_USER
+from prompt_refiner import TextPacker, TextFormat, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY
 
 # Create packer with MARKDOWN format
 packer = TextPacker(
@@ -109,22 +110,20 @@ packer = TextPacker(
     text_format=TextFormat.MARKDOWN
 )
 
-# Add items
+# Add items with semantic roles (auto-prioritized)
 packer.add(
     "You are a helpful assistant.",
-    role="system",
-    priority=PRIORITY_SYSTEM
+    role=ROLE_SYSTEM  # Auto: highest priority
 )
 
 packer.add(
     "Product documentation...",
-    priority=PRIORITY_HIGH
+    role=ROLE_CONTEXT  # Auto: high priority
 )
 
 packer.add(
     "What are the key features?",
-    role="user",
-    priority=PRIORITY_USER
+    role=ROLE_QUERY  # Auto: critical priority
 )
 
 # Pack into formatted text
@@ -173,55 +172,67 @@ packer = TextPacker(max_tokens=1000, text_format=TextFormat.XML)
 from prompt_refiner import (
     TextPacker,
     TextFormat,
-    PRIORITY_SYSTEM,
-    PRIORITY_HIGH,
-    PRIORITY_MEDIUM,
-    PRIORITY_USER,
+    ROLE_SYSTEM,
+    ROLE_CONTEXT,
+    ROLE_QUERY,
     StripHTML
 )
 
 packer = TextPacker(max_tokens=500, text_format=TextFormat.MARKDOWN)
 
-# System prompt
+# System prompt (auto: highest priority)
 packer.add(
     "Answer based on context.",
-    role="system",
-    priority=PRIORITY_SYSTEM
+    role=ROLE_SYSTEM
 )
 
-# RAG documents (no role = context)
+# RAG documents (auto: high priority)
 packer.add(
     "<p>Document 1...</p>",
-    priority=PRIORITY_HIGH,
+    role=ROLE_CONTEXT,
     refine_with=StripHTML()
 )
 
 packer.add(
     "Document 2...",
-    priority=PRIORITY_MEDIUM
+    role=ROLE_CONTEXT
 )
 
-# User query
+# User query (auto: critical priority)
 packer.add(
     "What is the answer?",
-    role="user",
-    priority=PRIORITY_USER
+    role=ROLE_QUERY
 )
 
 prompt = packer.pack()  # str
 ```
 
-## Priority Constants
+## Semantic Roles & Priorities
 
+**Semantic Roles (Recommended):**
+```python
+from prompt_refiner import (
+    ROLE_SYSTEM,      # "system" - System instructions (auto: PRIORITY_SYSTEM = 0)
+    ROLE_QUERY,       # "query" - Current user question (auto: PRIORITY_QUERY = 10)
+    ROLE_CONTEXT,     # "context" - RAG documents (auto: PRIORITY_HIGH = 20)
+    ROLE_USER,        # "user" - User messages in history (auto: PRIORITY_LOW = 40)
+    ROLE_ASSISTANT,   # "assistant" - Assistant messages in history (auto: PRIORITY_LOW = 40)
+)
+```
+
+**Priority Constants (Optional):**
 ```python
 from prompt_refiner import (
     PRIORITY_SYSTEM,   # 0 - Absolute must-have (system prompts)
-    PRIORITY_USER,     # 10 - Critical user input
+    PRIORITY_QUERY,    # 10 - Current user query (critical for response)
     PRIORITY_HIGH,     # 20 - Important context (core RAG docs)
     PRIORITY_MEDIUM,   # 30 - Normal priority (general RAG docs)
     PRIORITY_LOW,      # 40 - Optional content (old history)
 )
 ```
+
+!!! tip "Use Semantic Roles"
+    Semantic roles auto-infer priorities, making code clearer. You usually don't need to specify priority manually!
 
 ## Common Features
 
@@ -230,11 +241,11 @@ from prompt_refiner import (
 Apply operations before adding items:
 
 ```python
-from prompt_refiner import StripHTML, NormalizeWhitespace
+from prompt_refiner import StripHTML, NormalizeWhitespace, ROLE_CONTEXT
 
 packer.add(
     "<div>  Messy   HTML  </div>",
-    priority=PRIORITY_HIGH,
+    role=ROLE_CONTEXT,
     refine_with=[StripHTML(), NormalizeWhitespace()]
 )
 ```
@@ -242,10 +253,12 @@ packer.add(
 ### Method Chaining
 
 ```python
+from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_QUERY
+
 messages = (
     MessagesPacker(max_tokens=500)
-    .add("System prompt", role="system", priority=PRIORITY_SYSTEM)
-    .add("User query", role="user", priority=PRIORITY_USER)
+    .add("System prompt", role=ROLE_SYSTEM)
+    .add("User query", role=ROLE_QUERY)
     .pack()
 )
 ```
@@ -253,9 +266,11 @@ messages = (
 ### Inspection
 
 ```python
+from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_QUERY
+
 packer = MessagesPacker(max_tokens=1000)
-packer.add("Item 1", role="system", priority=PRIORITY_SYSTEM)
-packer.add("Item 2", role="user", priority=PRIORITY_USER)
+packer.add("Item 1", role=ROLE_SYSTEM)
+packer.add("Item 2", role=ROLE_QUERY)
 
 items = packer.get_items()
 for item in items:
@@ -265,13 +280,15 @@ for item in items:
 ### Reset
 
 ```python
+from prompt_refiner import MessagesPacker, ROLE_CONTEXT
+
 packer = MessagesPacker(max_tokens=1000)
-packer.add("First batch", role="user", priority=PRIORITY_HIGH)
+packer.add("First batch", role=ROLE_CONTEXT)
 messages1 = packer.pack()
 
 # Clear and reuse
 packer.reset()
-packer.add("Second batch", role="user", priority=PRIORITY_HIGH)
+packer.add("Second batch", role=ROLE_CONTEXT)
 messages2 = packer.pack()
 ```
 

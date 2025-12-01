@@ -46,7 +46,7 @@ cd prompt-refiner
 make install
 
 # Run an example
-python examples/all_modules_demo.py
+python examples/packer/messages_packer.py
 ```
 
 ## Need Help?
