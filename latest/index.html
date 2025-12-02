@@ -514,6 +514,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-preset-strategies-easiest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Preset Strategies (Easiest)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-custom-pipelines-flexible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Custom Pipelines (Flexible)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1041,6 +1069,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="modules/packer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1268,6 +1324,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api-reference/packer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api-reference/strategy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1474,6 +1586,62 @@
   
   
     <li class="md-nav__item">
+      <a href="examples/packer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Packer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/json-cleaning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JSON Cleaning
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="examples/complete-pipeline/" class="md-nav__link">
         
   
@@ -1574,6 +1742,34 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-preset-strategies-easiest" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Preset Strategies (Easiest)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-custom-pipelines-flexible" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Custom Pipelines (Flexible)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1741,26 +1937,40 @@
 <p><a href="benchmark/">See benchmark results →</a></p>
 </div>
 <h2 id="quick-start">Quick Start</h2>
-<p>Build custom cleaning pipelines with the pipe operator:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">StripHTML</span><span class="p">,</span> <span class="n">NormalizeWhitespace</span><span class="p">,</span> <span class="n">TruncateTokens</span>
+<h3 id="option-1-preset-strategies-easiest">Option 1: Preset Strategies (Easiest)</h3>
+<p><strong>New in v0.1.5</strong>: Use benchmark-tested preset strategies for instant token optimization:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner.strategy</span><span class="w"> </span><span class="kn">import</span> <span class="n">MinimalStrategy</span><span class="p">,</span> <span class="n">AggressiveStrategy</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Define a cleaning pipeline</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="p">(</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">StripHTML</span><span class="p">()</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="o">|</span> <span class="n">NormalizeWhitespace</span><span class="p">()</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="o">|</span> <span class="n">TruncateTokens</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;middle_out&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">raw_input</span> <span class="o">=</span> <span class="s2">&quot;&lt;div&gt;  User input with &lt;b&gt;lots&lt;/b&gt; of   spaces... &lt;/div&gt;&quot;</span>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">clean_prompt</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">raw_input</span><span class="p">)</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># Output: &quot;User input with lots of spaces...&quot;</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Minimal: 4.3% reduction, 98.7% quality</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">refiner</span> <span class="o">=</span> <span class="n">MinimalStrategy</span><span class="p">()</span><span class="o">.</span><span class="n">create_refiner</span><span class="p">()</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">cleaned</span> <span class="o">=</span> <span class="n">refiner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">&quot;&lt;div&gt;Your HTML content&lt;/div&gt;&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Aggressive: 15% reduction, 96.4% quality</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">refiner</span> <span class="o">=</span> <span class="n">AggressiveStrategy</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span><span class="o">.</span><span class="n">create_refiner</span><span class="p">()</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">cleaned</span> <span class="o">=</span> <span class="n">refiner</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">long_context</span><span class="p">)</span>
+</code></pre></div>
+<p><a class="md-button" href="api-reference/strategy/">Learn more about strategies →</a></p>
+<h3 id="option-2-custom-pipelines-flexible">Option 2: Custom Pipelines (Flexible)</h3>
+<p>Build custom cleaning pipelines with the pipe operator:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">StripHTML</span><span class="p">,</span> <span class="n">NormalizeWhitespace</span><span class="p">,</span> <span class="n">TruncateTokens</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Define a cleaning pipeline</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">StripHTML</span><span class="p">()</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="o">|</span> <span class="n">NormalizeWhitespace</span><span class="p">()</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="o">|</span> <span class="n">TruncateTokens</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;middle_out&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="p">)</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">raw_input</span> <span class="o">=</span> <span class="s2">&quot;&lt;div&gt;  User input with &lt;b&gt;lots&lt;/b&gt; of   spaces... &lt;/div&gt;&quot;</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">clean_prompt</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">raw_input</span><span class="p">)</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="c1"># Output: &quot;User input with lots of spaces...&quot;</span>
 </code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Alternative: Fluent API</p>
 <p>Prefer method chaining? Use <code>Refiner().pipe()</code>:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">Refiner</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">Refiner</span><span class="p">()</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">StripHTML</span><span class="p">())</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">NormalizeWhitespace</span><span class="p">())</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">Refiner</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="n">Refiner</span><span class="p">()</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">StripHTML</span><span class="p">())</span><span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">NormalizeWhitespace</span><span class="p">())</span>
 </code></pre></div></p>
 </div>
 <h2 id="4-core-modules">4 Core Modules</h2>
@@ -1800,21 +2010,21 @@
 - JIT refinement with <code>refine_with</code> parameter
 - Automatic format overhead calculation
 - Semantic roles for clear intent</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessagesPacker</span><span class="p">,</span> <span class="n">ROLE_SYSTEM</span><span class="p">,</span> <span class="n">ROLE_CONTEXT</span><span class="p">,</span> <span class="n">ROLE_QUERY</span><span class="p">,</span> <span class="n">StripHTML</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">packer</span> <span class="o">=</span> <span class="n">MessagesPacker</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">packer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;You are helpful.&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">ROLE_SYSTEM</span><span class="p">)</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># Clean RAG documents on-the-fly</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">packer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="s2">&quot;&lt;div&gt;RAG doc...&lt;/div&gt;&quot;</span><span class="p">,</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">role</span><span class="o">=</span><span class="n">ROLE_CONTEXT</span><span class="p">,</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">refine_with</span><span class="o">=</span><span class="n">StripHTML</span><span class="p">()</span>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">)</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">packer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;User question?&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">ROLE_QUERY</span><span class="p">)</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="n">messages</span> <span class="o">=</span> <span class="n">packer</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>  <span class="c1"># Returns List[Dict] ready for chat APIs</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessagesPacker</span><span class="p">,</span> <span class="n">ROLE_SYSTEM</span><span class="p">,</span> <span class="n">ROLE_CONTEXT</span><span class="p">,</span> <span class="n">ROLE_QUERY</span><span class="p">,</span> <span class="n">StripHTML</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">packer</span> <span class="o">=</span> <span class="n">MessagesPacker</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">packer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;You are helpful.&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">ROLE_SYSTEM</span><span class="p">)</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Clean RAG documents on-the-fly</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">packer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="s2">&quot;&lt;div&gt;RAG doc...&lt;/div&gt;&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">role</span><span class="o">=</span><span class="n">ROLE_CONTEXT</span><span class="p">,</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">refine_with</span><span class="o">=</span><span class="n">StripHTML</span><span class="p">()</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">)</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="n">packer</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;User question?&quot;</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="n">ROLE_QUERY</span><span class="p">)</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">messages</span> <span class="o">=</span> <span class="n">packer</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>  <span class="c1"># Returns List[Dict] ready for chat APIs</span>
 </code></pre></div>
 <p><a class="md-button" href="modules/packer/">Learn more about Packer →</a></p>
 <hr />
@@ -1828,35 +2038,35 @@
 <p><a class="md-button" href="modules/analyzer/">Learn more about Analyzer →</a></p>
 <hr />
 <h2 id="complete-example">Complete Example</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="c1"># Core Modules</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">StripHTML</span><span class="p">,</span> <span class="n">NormalizeWhitespace</span><span class="p">,</span> <span class="n">FixUnicode</span><span class="p">,</span> <span class="n">JsonCleaner</span><span class="p">,</span>  <span class="c1"># Cleaner</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">Deduplicate</span><span class="p">,</span> <span class="n">TruncateTokens</span><span class="p">,</span>  <span class="c1"># Compressor</span>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">RedactPII</span><span class="p">,</span>  <span class="c1"># Scrubber</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="c1"># Measurement</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">CountTokens</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="p">)</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">original_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Your messy input here...&quot;&quot;&quot;</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
-<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">counter</span> <span class="o">=</span> <span class="n">CountTokens</span><span class="p">(</span><span class="n">original_text</span><span class="o">=</span><span class="n">original_text</span><span class="p">)</span>
-<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
-<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="p">(</span>
-<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="c1"># Clean</span>
-<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="n">StripHTML</span><span class="p">(</span><span class="n">to_markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="o">|</span> <span class="n">NormalizeWhitespace</span><span class="p">()</span>
-<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="o">|</span> <span class="n">FixUnicode</span><span class="p">()</span>
-<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    <span class="c1"># Compress</span>
-<a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>    <span class="o">|</span> <span class="n">Deduplicate</span><span class="p">(</span><span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
-<a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>    <span class="o">|</span> <span class="n">TruncateTokens</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;head&quot;</span><span class="p">)</span>
-<a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>    <span class="c1"># Secure</span>
-<a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>    <span class="o">|</span> <span class="n">RedactPII</span><span class="p">(</span><span class="n">redact_types</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;phone&quot;</span><span class="p">})</span>
-<a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>    <span class="c1"># Analyze</span>
-<a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>    <span class="o">|</span> <span class="n">counter</span>
-<a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="p">)</span>
-<a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>
-<a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a><span class="n">result</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">original_text</span><span class="p">)</span>
-<a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a><span class="nb">print</span><span class="p">(</span><span class="n">counter</span><span class="o">.</span><span class="n">format_stats</span><span class="p">())</span>  <span class="c1"># Shows token savings</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prompt_refiner</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="c1"># Core Modules</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">StripHTML</span><span class="p">,</span> <span class="n">NormalizeWhitespace</span><span class="p">,</span> <span class="n">FixUnicode</span><span class="p">,</span> <span class="n">JsonCleaner</span><span class="p">,</span>  <span class="c1"># Cleaner</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">Deduplicate</span><span class="p">,</span> <span class="n">TruncateTokens</span><span class="p">,</span>  <span class="c1"># Compressor</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">RedactPII</span><span class="p">,</span>  <span class="c1"># Scrubber</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="c1"># Measurement</span>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">CountTokens</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">)</span>
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="n">original_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Your messy input here...&quot;&quot;&quot;</span>
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="n">counter</span> <span class="o">=</span> <span class="n">CountTokens</span><span class="p">(</span><span class="n">original_text</span><span class="o">=</span><span class="n">original_text</span><span class="p">)</span>
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="n">pipeline</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="c1"># Clean</span>
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    <span class="n">StripHTML</span><span class="p">(</span><span class="n">to_markdown</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    <span class="o">|</span> <span class="n">NormalizeWhitespace</span><span class="p">()</span>
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>    <span class="o">|</span> <span class="n">FixUnicode</span><span class="p">()</span>
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>    <span class="c1"># Compress</span>
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>    <span class="o">|</span> <span class="n">Deduplicate</span><span class="p">(</span><span class="n">similarity_threshold</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    <span class="o">|</span> <span class="n">TruncateTokens</span><span class="p">(</span><span class="n">max_tokens</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;head&quot;</span><span class="p">)</span>
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>    <span class="c1"># Secure</span>
+<a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>    <span class="o">|</span> <span class="n">RedactPII</span><span class="p">(</span><span class="n">redact_types</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;email&quot;</span><span class="p">,</span> <span class="s2">&quot;phone&quot;</span><span class="p">})</span>
+<a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>    <span class="c1"># Analyze</span>
+<a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>    <span class="o">|</span> <span class="n">counter</span>
+<a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a><span class="p">)</span>
+<a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>
+<a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a><span class="n">result</span> <span class="o">=</span> <span class="n">pipeline</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">original_text</span><span class="p">)</span>
+<a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a><span class="nb">print</span><span class="p">(</span><span class="n">counter</span><span class="o">.</span><span class="n">format_stats</span><span class="p">())</span>  <span class="c1"># Shows token savings</span>
 </code></pre></div>
 <h2 id="next-steps">Next Steps</h2>
 <div class="grid cards">
