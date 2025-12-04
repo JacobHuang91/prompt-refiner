@@ -15,14 +15,8 @@
 
 </div>
 
-> 🧹 **A lightweight Python library for optimizing and cleaning LLM inputs.**
-> **Save 10-20% on API costs** by removing invisible tokens, stripping HTML, and redacting PII.
-
-<div align="center">
-
-⭐ **If you find this useful, please star us on GitHub!** ⭐
-
-</div>
+> 🚀 **Lightweight Python library for building production LLM applications with smart context management and automatic token optimization.**
+> **Save 10-20% on API costs** while fitting RAG docs, chat history, and prompts into your token budget.
 
 ---
 
@@ -34,95 +28,58 @@
 
 ## Why use Prompt Refiner?
 
-**Two core problems solved:**
-
-### 1. 🧹 Save 10-20% on API Costs - Clean & Optimize Prompts
-
-Stop paying for invisible tokens and dirty data.
+Build production RAG applications with automatic token optimization and smart context management. Here's a complete example showing a chatbot that saves tokens and fits within budget:
 
 ```python
-from prompt_refiner import StripHTML, NormalizeWhitespace
+from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT, ROLE_USER, ROLE_ASSISTANT, StripHTML, NormalizeWhitespace, Deduplicate, RedactPII
+from openai import OpenAI
 
-# Before: "<div>  User    input\n\n\n  here  </div>" (150 tokens)
-# After: "User input here" (85 tokens) → 43% savings
-cleaned = (StripHTML() | NormalizeWhitespace()).run(dirty_input)
-```
-
-### 2. 🤖 Build Smart Chatbots - Manage Context Windows
-
-Pack system prompts, RAG docs, and chat history into your token budget. Auto-clean HTML on-the-fly.
-
-**For Chat APIs (OpenAI, Anthropic):**
-
-```python
-from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY, ROLE_USER, StripHTML
-
+# Set up MessagesPacker with token budget
 packer = MessagesPacker(max_tokens=1000)
-packer.add("You are helpful.", role=ROLE_SYSTEM)
-packer.add("<p>RAG doc with HTML...</p>", role=ROLE_CONTEXT, refine_with=StripHTML())
-packer.add("Old chat msg...", role=ROLE_USER)
-packer.add("User question?", role=ROLE_QUERY)
+packer.add("You are a helpful AI assistant.", role=ROLE_SYSTEM)
 
-messages = packer.pack()
-# Output: List[Dict] ready for openai.chat.completions.create()
-# [
-#   {"role": "system", "content": "You are helpful."},
-#   {"role": "user", "content": "User question?"},
-#   {"role": "context", "content": "RAG doc with HTML..."}  # HTML cleaned!
-# ]
-# Note: "Old chat msg..." dropped to fit budget
+# Add user query with composed cleaning pipeline (pipe operator |)
+packer.add(
+    "How do I    install   your library? How do I install your library? My email is john@example.com",
+    role=ROLE_QUERY,
+    refine_with=StripHTML() | NormalizeWhitespace() | Deduplicate(0.8) | RedactPII({"email"})
+)
+
+# Add RAG documents with JIT cleaning
+rag_docs = [
+    "<div><h2>Docs</h2><p>Our    AI   helps developers...</p></div>",
+    "<article><p>Features:    context   management...</p></article>",
+]
+for doc in rag_docs:
+    packer.add(doc, role=ROLE_CONTEXT, refine_with=[StripHTML(), NormalizeWhitespace()])
+
+# Add conversation history (dropped first if over budget)
+packer.add("What can you do?", role=ROLE_USER)
+packer.add("I help with documentation.", role=ROLE_ASSISTANT)
+
+# Pack and send to OpenAI
+messages = packer.pack()  # Saved ~45 tokens (18%)!
+response = OpenAI().chat.completions.create(model="gpt-4", messages=messages)
+print(response.choices[0].message.content)
 ```
 
-**For Completion APIs (Llama, GPT-3):**
+**This example demonstrates:**
 
-```python
-from prompt_refiner import TextPacker, TextFormat, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY, ROLE_USER, ROLE_ASSISTANT, StripHTML
-
-packer = TextPacker(max_tokens=500, text_format=TextFormat.MARKDOWN)
-packer.add("You are a QA assistant.", role=ROLE_SYSTEM)
-packer.add("<div>RAG doc...</div>", role=ROLE_CONTEXT, refine_with=StripHTML())
-packer.add("What is X?", role=ROLE_USER)
-packer.add("X is a library.", role=ROLE_ASSISTANT)
-packer.add("How to install?", role=ROLE_USER)
-packer.add("Use pip install.", role=ROLE_ASSISTANT)
-packer.add("What is this?", role=ROLE_QUERY)
-
-prompt = packer.pack()
-# Output: str ready for completion APIs
-# ### INSTRUCTIONS:
-# You are a QA assistant.
-#
-# ### CONTEXT:
-# - RAG doc...
-#
-# ### CONVERSATION:
-# - What is X?
-# - X is a library.
-#
-# ### INPUT:
-# What is this?
-#
-# Note: Last 2 history messages dropped to fit budget (auto-prioritized)
-```
+- **Compose operations** with `|` - Chain multiple cleaners into a pipeline
+- **Save 10-20% tokens** - Remove HTML, whitespace, duplicates, and redact PII automatically
+- **Stay within budget** - MessagesPacker fits everything into 1000 tokens using priority-based selection
+- **JIT cleaning** - Clean content on-the-fly with `refine_with` parameter
+- **Production ready** - Output goes directly to OpenAI without extra steps
 
 ### ✨ Key Features
 
-**Token Optimization:**
-- **🧹 Clean Dirty Data** - Strip HTML, normalize whitespace, fix Unicode, redact PII
-- **📉 Reduce Costs** - Save 10-20% on API costs by removing unnecessary tokens
-- **📦 Pipe Syntax** - Compose operations like LEGO blocks: `StripHTML() | NormalizeWhitespace()`
-
-**Context Management:**
-- **🤖 Smart Packers** - MessagesPacker for chat APIs, TextPacker for completion APIs
-- **🎯 Priority-Based** - Auto-prioritizes: system > query > context > history
-- **✂️ Budget Control** - Fits content within token limits, drops low-priority items
-- **🔄 JIT Cleaning** - Clean RAG docs on-the-fly with `refine_with=StripHTML()`
-
-**Developer Experience:**
-- **🪶 Zero Dependencies** - Lightweight core, optional tiktoken for precise counting
-- **⚡ Blazing Fast** - < 0.5ms per 1k tokens overhead
-- **🎯 Type Safe** - Full type hints for better IDE support
-- **🚀 Production Ready** - Battle-tested with comprehensive test coverage
+| Module | Description | Components |
+|--------|-------------|------------|
+| **Cleaner** | Remove noise and save tokens | `StripHTML()`, `NormalizeWhitespace()`, `FixUnicode()`, `JsonCleaner()` |
+| **Compressor** | Reduce size aggressively | `TruncateTokens()`, `Deduplicate()` |
+| **Scrubber** | Protect sensitive data | `RedactPII()` |
+| **Packer** | Fit content within token budgets | `MessagesPacker` (chat APIs), `TextPacker` (completion APIs) |
+| **Strategy** | Benchmark-tested presets for quick setup | `MinimalStrategy`, `StandardStrategy`, `AggressiveStrategy` |
 
 ## Installation
 
@@ -134,51 +91,19 @@ pip install llm-prompt-refiner
 pip install llm-prompt-refiner[token]
 ```
 
-**Installation Modes:**
-- **Default (Lightweight)**: Zero dependencies, uses character-based token estimation
-- **Precise Mode**: Installs `tiktoken` for accurate token counting with no safety buffer. Pass a `model` parameter to CountTokens or MessagesPacker/TextPacker to enable.
+## Examples
 
-## 🚀 Quick Start with Preset Strategies
+Check out the [`examples/`](examples/) folder for detailed examples:
 
-**Don't want to manually configure operations?** Use our benchmark-tested preset strategies:
+- **`strategy/`** - Preset strategies (Minimal, Standard, Aggressive) with benchmark results
+- **`cleaner/`** - HTML cleaning, JSON compression, whitespace normalization, Unicode fixing
+- **`compressor/`** - Smart truncation, deduplication
+- **`scrubber/`** - PII redaction (emails, phones, credit cards, etc.)
+- **`packer/`** - Context budget management with OpenAI integration
+- **`analyzer/`** - Token counting and cost savings tracking
+- **`custom_operation.py`** - Build your own custom operations
 
-```python
-from prompt_refiner.strategy import MinimalStrategy, AggressiveStrategy
-
-# Minimal: 4.3% reduction, 98.7% quality
-refiner = MinimalStrategy().create_refiner()
-cleaned = refiner.run("<div>Your HTML content</div>")
-
-# Aggressive: 15% reduction, 96.4% quality
-refiner = AggressiveStrategy(max_tokens=150).create_refiner()
-cleaned = refiner.run(long_context)
-```
-
-**Choose your strategy:**
-
-| Strategy | Token Reduction | Quality | Use Case |
-|----------|----------------|---------|----------|
-| **Minimal** | 4.3% | 98.7% | Maximum quality, minimal risk |
-| **Standard** | 4.8% | 98.4% | RAG contexts with duplicates |
-| **Aggressive** | 15% | 96.4% | Cost optimization, long contexts |
-
-**Usage patterns:**
-
-```python
-# Basic usage
-from prompt_refiner.strategy import MinimalStrategy
-refiner = MinimalStrategy().create_refiner()
-
-# With custom parameters
-from prompt_refiner.strategy import AggressiveStrategy
-refiner = AggressiveStrategy(max_tokens=200).create_refiner()
-
-# Extend with additional operations
-refiner = MinimalStrategy().create_refiner()
-refiner.pipe(RedactPII(redact_types={"email"}))
-```
-
-> 📖 **See full examples:** [examples/strategy/](examples/strategy/)
+> 📖 **Full documentation:** [examples/README.md](examples/README.md)
 
 ## 📊 Proven Effectiveness
 
@@ -265,126 +190,6 @@ Play with different strategies, see real-time token savings, and find the perfec
 - 💰 Real-time cost savings calculator
 - 🔧 All 7 operations configurable
 - 📊 Visual metrics dashboard
-
-## 4 Core Modules
-
-Prompt Refiner is organized into 4 specialized transformation modules:
-
-### 1. **Cleaner** - Clean Dirty Data
-- `StripHTML()` - Remove HTML tags, convert to Markdown
-- `NormalizeWhitespace()` - Collapse excessive whitespace
-- `FixUnicode()` - Remove zero-width spaces and problematic Unicode
-- `JsonCleaner()` - Strip nulls/empties from JSON, minify (great for RAG APIs)
-
-### 2. **Compressor** - Reduce Size
-- `TruncateTokens()` - Smart truncation with sentence boundaries
-  - Strategies: `"head"`, `"tail"`, `"middle_out"`
-- `Deduplicate()` - Remove similar content (great for RAG)
-
-### 3. **Scrubber** - Security & Privacy
-- `RedactPII()` - Automatically redact emails, phones, IPs, credit cards, URLs, SSNs
-
-### 4. **Packer** - Context Budget Management
-- **`MessagesPacker`** - For chat APIs (OpenAI, Anthropic). Returns `List[Dict]`
-- **`TextPacker`** - For completion APIs (Llama Base, GPT-3). Returns `str`
-- **Semantic roles** - Use `ROLE_SYSTEM`, `ROLE_QUERY`, `ROLE_CONTEXT` (auto-prioritized)
-- **JIT refinement** - Clean documents on-the-fly with `refine_with=StripHTML()`
-- **Priority-based selection** - Automatically drops low-priority items when over budget
-
-## Measurement & Analysis
-
-Track and measure your optimization impact:
-
-- **`CountTokens()`** - Calculate token savings and ROI for refiner pipelines
-  - **Estimation mode** (default): Character-based approximation (1 token ≈ 4 chars)
-  - **Precise mode** (with tiktoken): Exact token counts using OpenAI's tokenizer
-
-## Complete Example
-
-```python
-from prompt_refiner import (
-    # Core Modules
-    StripHTML, NormalizeWhitespace, FixUnicode, JsonCleaner,  # Cleaner
-    Deduplicate, TruncateTokens,  # Compressor
-    RedactPII,  # Scrubber
-    MessagesPacker, ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT,  # Packer
-    # Measurement
-    CountTokens,
-)
-
-# Example 1: Clean and optimize text
-original_text = """<div>Your messy input here...</div>"""
-
-counter = CountTokens(original_text=original_text)
-
-# Build pipeline with all modules
-pipeline = (
-    StripHTML(to_markdown=True)
-    | NormalizeWhitespace()
-    | FixUnicode()
-    | Deduplicate(similarity_threshold=0.85)
-    | TruncateTokens(max_tokens=500, strategy="head")
-    | RedactPII(redact_types={"email", "phone"})
-)
-
-result = pipeline.run(original_text)
-counter.process(result)
-print(counter.format_stats())
-
-# Example 2: Pack messages for chat API with JIT refinement
-packer = MessagesPacker(max_tokens=1000)
-packer.add("You are helpful.", role=ROLE_SYSTEM)  # Auto: PRIORITY_SYSTEM (0)
-
-# Clean RAG documents on-the-fly (single operation)
-packer.add(
-    "<div>RAG doc with HTML...</div>",
-    role=ROLE_CONTEXT,  # Auto: PRIORITY_HIGH (20)
-    refine_with=StripHTML()
-)
-
-# Chain multiple cleaning operations for dirty documents
-packer.add(
-    "<p>  Another   doc with  HTML   and   whitespace  </p>",
-    role=ROLE_CONTEXT,  # Auto: PRIORITY_HIGH (20)
-    refine_with=[StripHTML(), NormalizeWhitespace()]
-)
-
-packer.add("User question", role=ROLE_QUERY)  # Auto: PRIORITY_QUERY (10)
-
-messages = packer.pack()  # Returns List[Dict]
-# Use with: openai.chat.completions.create(messages=messages)
-```
-
-## Examples
-
-Check out the [`examples/`](examples/) folder for detailed examples:
-
-**Quick Start:**
-- `strategy/` - Preset strategies (Minimal, Standard, Aggressive) for easy token optimization
-
-**Core Modules:**
-- `cleaner/` - HTML cleaning, JSON compression, whitespace normalization, Unicode fixing
-- `compressor/` - Smart truncation, deduplication
-- `scrubber/` - PII redaction
-- `packer/` - Context budget management with priorities + real API integration (OpenAI)
-
-**Measurement:**
-- `analyzer/` - Token counting and cost savings analysis
-
-## Development
-
-This project uses `uv` for dependency management and `make` for common tasks.
-
-```bash
-# Install dependencies
-make install
-
-# Run tests
-make test
-
-# Format code
-make format
-```
 
 ## Star History
 

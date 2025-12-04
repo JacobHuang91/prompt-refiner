@@ -1,23 +1,24 @@
 """Example: Using the Minimal Strategy for maximum quality preservation."""
 
 from prompt_refiner.strategy import MinimalStrategy
+from prompt_refiner.cleaner import FixUnicode
 
 print("=" * 70)
 print("MINIMAL STRATEGY EXAMPLE")
 print("=" * 70)
 print("\nUse case: Maximum quality, minimal risk")
 print("Token reduction: ~4.3% | Quality: 98.7%")
-print("Operations: StripHTML + NormalizeWhitespace")
+print("Operations: StripHTML + NormalizeWhitespace + FixUnicode")
 print("=" * 70)
 
-# Sample data with HTML and excessive whitespace
+# Sample data with HTML, excessive whitespace, and Unicode issues
 raw_html = """
 <div class="article">
     <h1>Understanding    Large Language Models</h1>
     <p>Large  Language   Models are   powerful AI systems.</p>
     <p>They can    process natural    language efficiently.</p>
     <p>Applications include    chatbots,   translation, and   more.</p>
-    <p>The technology    continues to   evolve rapidly.</p>
+    <p>The technology    continues to   evolve rapidly\u2014with impressive results.</p>
 </div>
 """
 
@@ -25,7 +26,8 @@ raw_html = """
 print("\nProcessing RAG document with Minimal Strategy...")
 print("-" * 70)
 
-refiner = MinimalStrategy().create_refiner()
+# Extend the preset strategy with additional operations using .pipe()
+refiner = MinimalStrategy().create_refiner().pipe(FixUnicode())
 cleaned = refiner.run(raw_html)
 
 input_len = len(raw_html)

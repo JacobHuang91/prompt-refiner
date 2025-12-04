@@ -1,16 +1,17 @@
 """Example: Using the Standard Strategy for RAG contexts with duplicates."""
 
 from prompt_refiner.strategy import StandardStrategy
+from prompt_refiner.cleaner import FixUnicode
 
 print("=" * 70)
 print("STANDARD STRATEGY EXAMPLE")
 print("=" * 70)
 print("\nUse case: RAG contexts with potential duplicates")
 print("Token reduction: ~4.8% | Quality: 98.4%")
-print("Operations: StripHTML + NormalizeWhitespace + Deduplicate(0.8)")
+print("Operations: StripHTML + NormalizeWhitespace + Deduplicate(0.8) + FixUnicode")
 print("=" * 70)
 
-# Sample RAG context with HTML, whitespace, and duplicate content
+# Sample RAG context with HTML, whitespace, duplicate content, and Unicode
 raw_rag_context = """
 <div class="search-results">
     <article id="doc1">
@@ -18,7 +19,7 @@ raw_rag_context = """
         <p>Machine learning is a subset of artificial intelligence.</p>
         <p>Machine learning is a subset of artificial intelligence.</p>
         <p>It enables computers to learn from data without explicit programming.</p>
-        <p>Applications include image recognition and natural language processing.</p>
+        <p>Applications include image recognition and natural language processing—especially in modern AI.</p>
     </article>
     <article id="doc2">
         <h2>ML Applications</h2>
@@ -32,7 +33,8 @@ raw_rag_context = """
 print("\nProcessing RAG context with Standard Strategy...")
 print("-" * 70)
 
-refiner = StandardStrategy().create_refiner()
+# Extend the preset strategy with additional operations using .pipe()
+refiner = StandardStrategy().create_refiner().pipe(FixUnicode())
 cleaned = refiner.run(raw_rag_context)
 
 input_len = len(raw_rag_context)

@@ -65,9 +65,9 @@ clean_prompt = pipeline.run(raw_input)
     pipeline = Refiner().pipe(StripHTML()).pipe(NormalizeWhitespace())
     ```
 
-## 4 Core Modules
+## 5 Core Modules
 
-Prompt Refiner is organized into 4 specialized transformation modules:
+Prompt Refiner is organized into 5 specialized modules:
 
 ### Text Processing Operations
 
@@ -125,6 +125,27 @@ messages = packer.pack()  # Returns List[Dict] ready for chat APIs
 ```
 
 [Learn more about Packer →](modules/packer.md){ .md-button }
+
+#### 5. Strategy - Preset Strategies (v0.1.5+)
+
+For quick setup, use benchmark-tested preset strategies:
+
+- **MinimalStrategy** - 4.3% reduction, 98.7% quality (HTML + Whitespace)
+- **StandardStrategy** - 4.8% reduction, 98.4% quality (+ Deduplication)
+- **AggressiveStrategy** - 15% reduction, 96.4% quality (+ Truncation)
+
+```python
+from prompt_refiner.strategy import StandardStrategy
+
+# Quick setup with preset
+refiner = StandardStrategy().create_refiner()
+cleaned = refiner.run("<div>Your HTML content</div>")
+
+# Extend with additional operations
+refiner.pipe(RedactPII(redact_types={"email"}))
+```
+
+[Learn more about Strategy →](api-reference/strategy.md){ .md-button }
 
 ---
 
