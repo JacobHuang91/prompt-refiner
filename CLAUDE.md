@@ -13,13 +13,14 @@ Perfect for RAG applications, chatbots, and any production system that needs to 
 
 ## Architecture
 
-The library is organized into 4 core transformation modules plus measurement utilities:
+The library is organized into 5 core transformation modules plus measurement utilities:
 
 **Core Modules (Transform prompts):**
 - **Cleaner**: Operations for cleaning dirty data (HTML, whitespace, Unicode, JSON)
 - **Compressor**: Operations for reducing prompt size (truncation, deduplication)
 - **Scrubber**: Operations for security and privacy (PII redaction)
 - **Packer**: Context budget management with specialized packers (v0.1.3+)
+- **Strategy**: Benchmark-tested preset strategies (MinimalStrategy, StandardStrategy, AggressiveStrategy) (v0.1.5+)
   - **MessagesPacker**: For chat completion APIs (OpenAI, Anthropic)
   - **TextPacker**: For text completion APIs (Llama Base, GPT-3)
   - **Semantic roles for RAG**: ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT, ROLE_USER, ROLE_ASSISTANT
@@ -154,10 +155,15 @@ src/prompt_refiner/
 │   └── pii.py
 ├── analyzer/            # Analyzer module
 │   └── counter.py
-└── packer/              # Packer module (v0.1.3+)
-    ├── base.py          # Abstract base class
-    ├── messages_packer.py  # Chat completion APIs
-    └── text_packer.py   # Text completion APIs
+├── packer/              # Packer module (v0.1.3+)
+│   ├── base.py          # Abstract base class
+│   ├── messages_packer.py  # Chat completion APIs
+│   └── text_packer.py   # Text completion APIs
+└── strategy/            # Strategy module (v0.1.5+)
+    ├── __init__.py
+    ├── minimal.py       # MinimalStrategy
+    ├── standard.py      # StandardStrategy
+    └── aggressive.py    # AggressiveStrategy
 
 tests/
 ├── test_refiner.py      # Pipeline tests
@@ -166,14 +172,19 @@ tests/
 ├── test_scrubber.py     # Scrubber module tests
 ├── test_analyzer.py     # Analyzer module tests
 ├── test_messages_packer.py  # MessagesPacker tests
-└── test_text_packer.py  # TextPacker tests
+├── test_text_packer.py  # TextPacker tests
+└── test_strategy.py     # Strategy tests
 
 examples/
 ├── cleaner/             # Cleaner examples
 ├── compressor/          # Compressor examples
 ├── scrubber/            # Scrubber examples
 ├── analyzer/            # Analyzer examples
-└── packer/              # Packer examples
+├── packer/              # Packer examples
+└── strategy/            # Strategy examples
+    ├── minimal.py       # MinimalStrategy example
+    ├── standard.py      # StandardStrategy example
+    └── aggressive.py    # AggressiveStrategy example
 
 benchmark/
 ├── README.md            # Index of all benchmarks

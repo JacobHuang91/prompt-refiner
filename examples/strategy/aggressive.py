@@ -1,6 +1,7 @@
 """Example: Using the Aggressive Strategy for maximum token reduction."""
 
 from prompt_refiner.strategy import AggressiveStrategy
+from prompt_refiner.cleaner import FixUnicode
 
 print("=" * 70)
 print("AGGRESSIVE STRATEGY EXAMPLE")
@@ -8,10 +9,10 @@ print("=" * 70)
 print("\nUse case: Cost optimization, long contexts")
 print("Token reduction: ~15% (up to 74% on very long contexts)")
 print("Quality: 96.4%")
-print("Operations: StripHTML + NormalizeWhitespace + Deduplicate(0.7) + Truncate")
+print("Operations: StripHTML + NormalizeWhitespace + Deduplicate(0.7) + Truncate + FixUnicode")
 print("=" * 70)
 
-# Sample long RAG context with duplicates and excessive content
+# Sample long RAG context with duplicates, excessive content, and Unicode
 long_rag_context = """
 <div class="documentation">
     <h1>Comprehensive Guide to Machine Learning</h1>
@@ -19,8 +20,8 @@ long_rag_context = """
     <section id="intro">
         <p>Machine learning is a subset of artificial intelligence.</p>
         <p>Machine learning is a subset of artificial intelligence.</p>
-        <p>It enables systems to learn and improve from experience automatically.</p>
-        <p>It enables systems to learn and improve from experience automatically.</p>
+        <p>It enables systems to learn and improve from experience automatically—without explicit programming.</p>
+        <p>It enables systems to learn and improve from experience automatically—without explicit programming.</p>
     </section>
 
     <section id="types">
@@ -36,7 +37,7 @@ long_rag_context = """
         <p>Computer vision enables machines to interpret visual information.</p>
         <p>Natural language processing helps computers understand language.</p>
         <p>Recommendation systems suggest products based on preferences.</p>
-        <p>Autonomous vehicles use ML for navigation and decision making.</p>
+        <p>Autonomous vehicles use ML for navigation and decision making—revolutionizing transportation.</p>
     </section>
 </div>
 """
@@ -45,7 +46,8 @@ long_rag_context = """
 print("\nProcessing long RAG context with Aggressive Strategy...")
 print("-" * 70)
 
-refiner = AggressiveStrategy(max_tokens=50).create_refiner()
+# Extend the preset strategy with additional operations using .pipe()
+refiner = AggressiveStrategy().create_refiner().pipe(FixUnicode())
 cleaned = refiner.run(long_rag_context)
 
 input_len = len(long_rag_context)
@@ -56,7 +58,7 @@ print("\nBefore (long context with duplicates):")
 print(f"  Length: {input_len} chars (~{len(long_rag_context.split())} words)")
 print("  ~14 sentences")
 
-print("\nAfter (deduplication + truncation to 50 tokens):")
+print("\nAfter (deduplication + truncation):")
 print(f"  Length: {output_len} chars (~{len(cleaned.split())} words)")
 print(f"  Reduction: {reduction:.1f}%")
 

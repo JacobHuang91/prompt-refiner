@@ -206,16 +206,12 @@ Curious about the real-world effectiveness? Check out our comprehensive benchmar
 
 Prompt Refiner has 5 specialized modules:
 
-### Basic Operations
-
-- **[Cleaner](modules/cleaner.md)** - Clean dirty data (HTML, whitespace, Unicode)
+- **[Cleaner](modules/cleaner.md)** - Clean dirty data (HTML, whitespace, Unicode, JSON)
 - **[Compressor](modules/compressor.md)** - Reduce size (truncation, deduplication)
 - **[Scrubber](modules/scrubber.md)** - Security and privacy (PII redaction)
-- **[Analyzer](modules/analyzer.md)** - Metrics and analysis (token counting)
-
-### Advanced Usage
-
 - **[Packer](modules/packer.md)** - Context budget management for RAG and chatbots (v0.1.3+)
+- **[Strategy](api-reference/strategy.md)** - Preset strategies for quick setup (v0.1.5+)
+- **[Analyzer](modules/analyzer.md)** - Metrics and analysis (token counting)
 
 ## Next Steps
 
@@ -225,7 +221,7 @@ Prompt Refiner has 5 specialized modules:
 
     ---
 
-    Deep dive into each of the 4 core modules
+    Deep dive into each of the 5 core modules
 
     [:octicons-arrow-right-24: Modules Overview](modules/overview.md)
 

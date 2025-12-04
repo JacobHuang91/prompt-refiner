@@ -1,8 +1,8 @@
 # Modules Overview
 
-Prompt Refiner is organized into 4 core transformation modules plus measurement utilities.
+Prompt Refiner is organized into 5 core modules plus measurement utilities.
 
-## The 4 Core Modules
+## The 5 Core Modules
 
 ### 1. Cleaner - Clean Dirty Data
 
@@ -74,6 +74,24 @@ The Packer module manages context budgets with intelligent priority-based item s
 - Combining system prompts, user input, and documents
 
 [Learn more →](packer.md){ .md-button }
+
+### 5. Strategy - Preset Strategies
+
+The Strategy module provides benchmark-tested preset strategies for quick setup.
+
+**Strategies:**
+
+- **[MinimalStrategy](../api-reference/strategy.md#minimalstrategy)** - 4.3% reduction, 98.7% quality
+- **[StandardStrategy](../api-reference/strategy.md#standardstrategy)** - 4.8% reduction, 98.4% quality
+- **[AggressiveStrategy](../api-reference/strategy.md#aggressivestrategy)** - 15% reduction, 96.4% quality
+
+**When to use:**
+
+- Quick setup without manual configuration
+- Benchmark-tested optimization presets
+- Extending with additional custom operations
+
+[Learn more →](../api-reference/strategy.md){ .md-button }
 
 ---
 
