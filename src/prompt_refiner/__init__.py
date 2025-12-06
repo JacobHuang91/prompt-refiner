@@ -29,6 +29,7 @@ from .packer import (
 from .refiner import Refiner
 from .scrubber import RedactPII
 from .strategy import AggressiveStrategy, MinimalStrategy, StandardStrategy
+from .tools import SchemaCompressor
 
 __all__ = [
     "Refiner",
@@ -44,6 +45,8 @@ __all__ = [
     "RedactPII",
     # Analyzer operations
     "CountTokens",
+    # Tools operations
+    "SchemaCompressor",
     # Packer operations
     "MessagesPacker",
     "TextPacker",

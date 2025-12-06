@@ -31,7 +31,7 @@
 Build production RAG applications with automatic token optimization and smart context management. Here's a complete example showing a chatbot that saves tokens and fits within budget:
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT, ROLE_USER, ROLE_ASSISTANT, StripHTML, NormalizeWhitespace, Deduplicate, RedactPII
+from prompt_refiner import MessagesPacker, SchemaCompressor, ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT, ROLE_USER, ROLE_ASSISTANT, StripHTML, NormalizeWhitespace, Deduplicate, RedactPII
 from openai import OpenAI
 
 # Set up MessagesPacker with token budget
@@ -46,12 +46,7 @@ packer.add(
 )
 
 # Add RAG documents with JIT cleaning
-rag_docs = [
-    "<div><h2>Docs</h2><p>Our    AI   helps developers...</p></div>",
-    "<article><p>Features:    context   management...</p></article>",
-]
-for doc in rag_docs:
-    packer.add(doc, role=ROLE_CONTEXT, refine_with=[StripHTML(), NormalizeWhitespace()])
+packer.add("<div><h2>Docs</h2><p>Our    AI   helps developers...</p></div>", role=ROLE_CONTEXT, refine_with=[StripHTML(), NormalizeWhitespace()])
 
 # Add conversation history (dropped first if over budget)
 packer.add("What can you do?", role=ROLE_USER)
@@ -59,12 +54,36 @@ packer.add("I help with documentation.", role=ROLE_ASSISTANT)
 
 # Pack and send to OpenAI
 messages = packer.pack()  # Saved ~45 tokens (18%)!
-response = OpenAI().chat.completions.create(model="gpt-4", messages=messages)
+
+# Compress tool schemas (save 40-50% tokens on function definitions)
+tool = {
+    "type": "function",
+    "function": {
+        "name": "search_docs",
+        "title": "Documentation Search",
+        "description": "Search our documentation with examples...",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "Search query with `keywords`"}  # Markdown removed
+            }
+        }
+    }
+}
+compressor = SchemaCompressor()
+compressed_tool = compressor.process(tool)  # Saves around 10-15% tokens
+
+response = OpenAI().chat.completions.create(
+    model="gpt-4",
+    messages=messages,
+    tools=[compressed_tool]
+)
 print(response.choices[0].message.content)
 ```
 
 **This example demonstrates:**
 
+- **Compress tool schemas** - Save 40-50% tokens on function calling definitions
 - **Compose operations** with `|` - Chain multiple cleaners into a pipeline
 - **Save 10-20% tokens** - Remove HTML, whitespace, duplicates, and redact PII automatically
 - **Stay within budget** - MessagesPacker fits everything into 1000 tokens using priority-based selection
@@ -78,6 +97,7 @@ print(response.choices[0].message.content)
 | **Cleaner** | Remove noise and save tokens | `StripHTML()`, `NormalizeWhitespace()`, `FixUnicode()`, `JsonCleaner()` |
 | **Compressor** | Reduce size aggressively | `TruncateTokens()`, `Deduplicate()` |
 | **Scrubber** | Protect sensitive data | `RedactPII()` |
+| **Tools** | Optimize LLM tool/API outputs and schemas | `ToolOutputCleaner()`, `SchemaCompressor()` |
 | **Packer** | Fit content within token budgets | `MessagesPacker` (chat APIs), `TextPacker` (completion APIs) |
 | **Strategy** | Benchmark-tested presets for quick setup | `MinimalStrategy`, `StandardStrategy`, `AggressiveStrategy` |
 
@@ -99,6 +119,7 @@ Check out the [`examples/`](examples/) folder for detailed examples:
 - **`cleaner/`** - HTML cleaning, JSON compression, whitespace normalization, Unicode fixing
 - **`compressor/`** - Smart truncation, deduplication
 - **`scrubber/`** - PII redaction (emails, phones, credit cards, etc.)
+- **`tools/`** - Tool/API output cleaning for agent systems
 - **`packer/`** - Context budget management with OpenAI integration
 - **`analyzer/`** - Token counting and cost savings tracking
 - **`custom_operation.py`** - Build your own custom operations
