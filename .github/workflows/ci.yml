@@ -21,13 +21,13 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: uv pip install --system -e ".[dev]"
+        run: uv sync --group dev
 
       - name: Run ruff lint
-        run: ruff check src/ tests/
+        run: uv run ruff check src/ tests/
 
       - name: Check formatting
-        run: ruff format --check src/ tests/
+        run: uv run ruff format --check src/ tests/
 
   test:
     runs-on: ubuntu-latest
@@ -47,10 +47,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv pip install --system -e ".[dev]"
+        run: uv sync --group dev
 
       - name: Run tests
-        run: pytest tests/ -v --cov=src/prompt_refiner --cov-report=term-missing --cov-report=xml
+        run: uv run pytest tests/ -v --cov=src/prompt_refiner --cov-report=term-missing --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -75,7 +75,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: uv pip install --system -e ".[dev]"
+        run: uv sync --group dev
 
       - name: Build documentation
         run: uv run mkdocs build --strict

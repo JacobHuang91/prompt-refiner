@@ -54,3 +54,4 @@ uv.lock
 .claude/
 /site/
 examples/packer/.env
+examples/tools/.env

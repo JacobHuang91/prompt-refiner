@@ -13,12 +13,13 @@ Perfect for RAG applications, chatbots, and any production system that needs to 
 
 ## Architecture
 
-The library is organized into 5 core transformation modules plus measurement utilities:
+The library is organized into 6 core transformation modules plus measurement utilities:
 
 **Core Modules (Transform prompts):**
 - **Cleaner**: Operations for cleaning dirty data (HTML, whitespace, Unicode, JSON)
 - **Compressor**: Operations for reducing prompt size (truncation, deduplication)
 - **Scrubber**: Operations for security and privacy (PII redaction)
+- **Tools**: Operations for optimizing LLM tool schemas (SchemaCompressor) (v0.1.6+)
 - **Packer**: Context budget management with specialized packers (v0.1.3+)
 - **Strategy**: Benchmark-tested preset strategies (MinimalStrategy, StandardStrategy, AggressiveStrategy) (v0.1.5+)
   - **MessagesPacker**: For chat completion APIs (OpenAI, Anthropic)
@@ -46,7 +47,23 @@ Each core module contains specialized operations that can be composed into pipel
 
 ## Version History
 
-### v0.1.5 (Current) - Preset Strategies & Token Savings Tracking
+### v0.1.6 (Current) - Tools Module
+**New Operation:**
+
+**SchemaCompressor (NEW)**
+- Compresses tool schemas (OpenAI/Anthropic function calling) to save tokens
+- Never modifies protocol fields (name, type, required, enum)
+- Only optimizes documentation fields (description, title, examples, markdown)
+- Achieves 10-50% token savings depending on schema verbosity (simple: 10-15%, verbose: 30-50%)
+- Simple API: all compression features enabled by default
+- 21 comprehensive tests + real-world OpenAI integration example
+
+**Use Cases:**
+- Compress tool schemas for OpenAI/Anthropic function calling
+- Reduce token cost from verbose tool definitions
+- Fit more tools within token budget
+
+### v0.1.5 - Preset Strategies & Token Savings Tracking
 **Three Major Features:**
 
 1. **Strategy Module (NEW)**
@@ -153,6 +170,8 @@ src/prompt_refiner/
 │   └── deduplicate.py
 ├── scrubber/            # Scrubber module
 │   └── pii.py
+├── tools/               # Tools module (v0.1.6+)
+│   └── schema_compressor.py
 ├── analyzer/            # Analyzer module
 │   └── counter.py
 ├── packer/              # Packer module (v0.1.3+)
@@ -170,6 +189,7 @@ tests/
 ├── test_cleaner.py      # Cleaner module tests
 ├── test_compressor.py   # Compressor module tests
 ├── test_scrubber.py     # Scrubber module tests
+├── test_schema_compressor.py  # SchemaCompressor tests
 ├── test_analyzer.py     # Analyzer module tests
 ├── test_messages_packer.py  # MessagesPacker tests
 ├── test_text_packer.py  # TextPacker tests
@@ -179,6 +199,7 @@ examples/
 ├── cleaner/             # Cleaner examples
 ├── compressor/          # Compressor examples
 ├── scrubber/            # Scrubber examples
+├── tools/               # Tools examples
 ├── analyzer/            # Analyzer examples
 ├── packer/              # Packer examples
 └── strategy/            # Strategy examples

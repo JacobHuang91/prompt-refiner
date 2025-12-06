@@ -1,6 +1,6 @@
 # Prompt Refiner Examples
 
-This directory contains examples demonstrating the 4 core transformation modules plus measurement utilities of Prompt Refiner.
+This directory contains examples demonstrating the 5 core transformation modules plus measurement utilities of Prompt Refiner.
 
 ## Core Module Examples
 
@@ -103,6 +103,26 @@ python examples/scrubber/pii_redaction.py
 
 ---
 
+### 4. Tools Module
+
+Optimize LLM tool schemas for function calling.
+
+#### `tools/schema_compression.py`
+Demonstrates compressing tool schemas for function calling.
+```bash
+python examples/tools/schema_compression.py
+```
+
+**What it shows:**
+- Compress OpenAI/Anthropic function calling schemas
+- Remove documentation overhead (titles, examples, markdown)
+- Preserve all protocol fields (name, type, required, enum)
+- Real-world OpenAI integration example with actual API calls
+- Handle nested objects and array types
+- 10-50% token savings depending on schema verbosity
+
+---
+
 ## Measurement Utilities
 
 ### Analyzer Module
@@ -139,7 +159,7 @@ python examples/custom_operation.py
 
 ---
 
-### 4. Packer Module
+### 5. Packer Module
 
 Intelligently manage context budgets for RAG applications and chatbots.
 
@@ -180,6 +200,7 @@ python examples/cleaner/html_cleaning.py
 python examples/cleaner/json_cleaning.py
 python examples/compressor/smart_truncation.py
 python examples/scrubber/pii_redaction.py
+python examples/tools/schema_compression.py
 python examples/analyzer/token_counting.py
 python examples/packer/messages_packer.py
 python examples/packer/text_packer.py
@@ -233,6 +254,17 @@ refiner = (
     .pipe(RedactPII())
     .pipe(counter)
 )
+```
+
+### Tool Schema Compression
+```python
+from prompt_refiner import SchemaCompressor
+
+# Compress function calling schemas (all features enabled by default)
+compressor = SchemaCompressor()
+
+# Compress before sending to OpenAI/Anthropic (10-50% savings)
+compressed_tool = compressor.process(tool)
 ```
 
 ---

@@ -1,6 +1,6 @@
 [project]
 name = "llm-prompt-refiner"
-version = "0.1.5"
+version = "0.1.6"
 description = "A lightweight Python library for optimizing and cleaning LLM inputs"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -24,21 +24,11 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-# Precise token counting with tiktoken
+# Precise token counting with tiktoken (user-facing optional feature)
 token = [
     "tiktoken>=0.7.0",
 ]
-dev = [
-    "pytest>=7.0.0",
-    "pytest-cov>=4.0.0",
-    "ruff>=0.1.0",
-    # Documentation
-    "mkdocs>=1.5.0",
-    "mkdocs-material>=9.5.0",
-    "mkdocstrings[python]>=0.24.0",
-    "mkdocs-autorefs>=0.5.0",
-    "mike>=2.0.0",
-]
+# Benchmark dependencies (users who want to run benchmarks)
 benchmark = [
     "openai>=1.0.0",
     "pandas>=2.0.0",
@@ -85,4 +75,18 @@ exclude_lines = [
     "def __repr__",
     "raise AssertionError",
     "raise NotImplementedError",
+]
+
+[dependency-groups]
+# Development dependencies (NOT published to PyPI, local dev only)
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    # Documentation
+    "mkdocs>=1.5.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+    "mkdocs-autorefs>=0.5.0",
+    "mike>=2.0.0",
 ]
