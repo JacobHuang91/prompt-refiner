@@ -28,62 +28,47 @@
 
 ## Why use Prompt Refiner?
 
-Build production RAG applications with automatic token optimization and smart context management. Here's a complete example showing a chatbot that saves tokens and fits within budget:
+Build production RAG applications with automatic token optimization and smart context management. Here's a complete example (see [`examples/quickstart.py`](examples/quickstart.py) for full code):
 
 ```python
-from prompt_refiner import MessagesPacker, SchemaCompressor, ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT, ROLE_USER, ROLE_ASSISTANT, StripHTML, NormalizeWhitespace, Deduplicate, RedactPII
-from openai import OpenAI
+from prompt_refiner import MessagesPacker, SchemaCompressor, ResponseCompressor, StripHTML
+from openai import OpenAI, pydantic_function_tool
+from pydantic import BaseModel, Field
 
-# Set up MessagesPacker with token budget
-packer = MessagesPacker(max_tokens=1000)
-packer.add("You are a helpful AI assistant.", role=ROLE_SYSTEM)
+# 1. Pack messages with token budget (101 → 56 tokens, 44.6% saved)
+packer = MessagesPacker(max_tokens=1000, model="gpt-4o-mini")
+packer.add("You are a helpful AI assistant that helps users find books.", role="system")
+packer.add("Search for books about Python programming.", role="query")
+packer.add("<div><h1>Installation Guide</h1>...</div>", role="context", refine_with=[StripHTML()])
+messages = packer.pack()
 
-# Add user query with composed cleaning pipeline (pipe operator |)
-packer.add(
-    "How do I    install   your library? How do I install your library? My email is john@example.com",
-    role=ROLE_QUERY,
-    refine_with=StripHTML() | NormalizeWhitespace() | Deduplicate(0.8) | RedactPII({"email"})
-)
+# 2. Compress tool schema (139 → 131 tokens, 5.8% saved)
+class SearchBooksInput(BaseModel):
+    query: str = Field(description="Search query to find books")
 
-# Add RAG documents with JIT cleaning
-packer.add("<div><h2>Docs</h2><p>Our    AI   helps developers...</p></div>", role=ROLE_CONTEXT, refine_with=[StripHTML(), NormalizeWhitespace()])
+tool_schema = pydantic_function_tool(SearchBooksInput, name="search_books")
+compressed_schema = SchemaCompressor().process(tool_schema)
 
-# Add conversation history (dropped first if over budget)
-packer.add("What can you do?", role=ROLE_USER)
-packer.add("I help with documentation.", role=ROLE_ASSISTANT)
-
-# Pack and send to OpenAI
-messages = packer.pack()  # Saved ~45 tokens (18%)!
-
-# Compress tool schemas (save 40-50% tokens on function definitions)
-tool = {
-    "type": "function",
-    "function": {
-        "name": "search_docs",
-        "title": "Documentation Search",
-        "description": "Search our documentation with examples...",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "query": {"type": "string", "description": "Search query with `keywords`"}  # Markdown removed
-            }
-        }
-    }
-}
-compressor = SchemaCompressor()
-compressed_tool = compressor.process(tool)  # Saves around 10-15% tokens
-
-response = OpenAI().chat.completions.create(
-    model="gpt-4",
+# 3. Execute tool call with OpenAI
+client = OpenAI()
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
     messages=messages,
-    tools=[compressed_tool]
+    tools=[compressed_schema]
 )
-print(response.choices[0].message.content)
+tool_call = response.choices[0].message.tool_calls[0]
+tool_response = search_books(**json.loads(tool_call.function.arguments))
+
+# 4. Compress tool response (19251 → 12813 tokens, 33.4% saved)
+compressed_response = ResponseCompressor().process(tool_response)
 ```
 
-**This example demonstrates:**
+> 💡 Run `python examples/quickstart.py` to see the complete workflow with real OpenAI API verification.
 
-- **Compress tool schemas** - Save 40-50% tokens on function calling definitions
+**Key benefits:**
+
+- **Tool schema compression** - Save 10-15% tokens on function definitions
+- **Tool response compression** - Save 30-70% tokens on API responses
 - **Compose operations** with `|` - Chain multiple cleaners into a pipeline
 - **Save 10-20% tokens** - Remove HTML, whitespace, duplicates, and redact PII automatically
 - **Stay within budget** - MessagesPacker fits everything into 1000 tokens using priority-based selection
@@ -97,7 +82,7 @@ print(response.choices[0].message.content)
 | **Cleaner** | Remove noise and save tokens | `StripHTML()`, `NormalizeWhitespace()`, `FixUnicode()`, `JsonCleaner()` |
 | **Compressor** | Reduce size aggressively | `TruncateTokens()`, `Deduplicate()` |
 | **Scrubber** | Protect sensitive data | `RedactPII()` |
-| **Tools** | Optimize LLM tool/API outputs and schemas | `ToolOutputCleaner()`, `SchemaCompressor()` |
+| **Tools** | Optimize LLM tool schemas and responses | `SchemaCompressor()`, `ResponseCompressor()` |
 | **Packer** | Fit content within token budgets | `MessagesPacker` (chat APIs), `TextPacker` (completion APIs) |
 | **Strategy** | Benchmark-tested presets for quick setup | `MinimalStrategy`, `StandardStrategy`, `AggressiveStrategy` |
 

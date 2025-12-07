@@ -155,7 +155,7 @@ savings = packer.get_token_savings()
 ### Example with Real API
 
 ```python
-from prompt_refiner import MessagesPacker, StripHTML, ROLE_CONTEXT
+from prompt_refiner import MessagesPacker, StripHTML
 from openai import OpenAI
 
 client = OpenAI()
@@ -163,7 +163,7 @@ packer = MessagesPacker(model="gpt-4o", track_savings=True)
 
 # Add multiple RAG documents with automatic cleaning
 for doc in scraped_html_docs:
-    packer.add(doc, role=ROLE_CONTEXT, refine_with=StripHTML())
+    packer.add(doc, role="context", refine_with=StripHTML())
 
 # Pack messages and check savings
 messages = packer.pack()
@@ -209,18 +209,18 @@ response = client.chat.completions.create(
 ### Basic Usage
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_QUERY
+from prompt_refiner import MessagesPacker
 
 packer = MessagesPacker(max_tokens=500)
 
 packer.add(
     "You are a helpful assistant.",
-    role=ROLE_SYSTEM  # Auto: PRIORITY_SYSTEM (0)
+    role="system"  # Auto: PRIORITY_SYSTEM (0)
 )
 
 packer.add(
     "What is prompt-refiner?",
-    role=ROLE_QUERY  # Auto: PRIORITY_QUERY (10)
+    role="query"  # Auto: PRIORITY_QUERY (10)
 )
 
 messages = packer.pack()  # List[Dict[str, str]]
@@ -230,39 +230,34 @@ messages = packer.pack()  # List[Dict[str, str]]
 ### RAG with Conversation History
 
 ```python
-from prompt_refiner import (
-    MessagesPacker,
-    ROLE_SYSTEM, ROLE_QUERY, ROLE_CONTEXT,
-    ROLE_USER, ROLE_ASSISTANT,
-    StripHTML
-)
+from prompt_refiner import MessagesPacker, StripHTML
 
 packer = MessagesPacker(max_tokens=1000)
 
 # System prompt (must include)
 packer.add(
     "Answer based on provided context.",
-    role=ROLE_SYSTEM  # Auto: PRIORITY_SYSTEM (0)
+    role="system"  # Auto: PRIORITY_SYSTEM (0)
 )
 
 # RAG documents with JIT cleaning
 packer.add(
     "<p>Prompt-refiner is a library...</p>",
-    role=ROLE_CONTEXT,  # Auto: PRIORITY_HIGH (20)
+    role="context",  # Auto: PRIORITY_HIGH (20)
     refine_with=StripHTML()
 )
 
 # Old conversation history (can be dropped if needed)
 old_messages = [
-    {"role": ROLE_USER, "content": "What is this library?"},
-    {"role": ROLE_ASSISTANT, "content": "It's a tool for optimizing prompts."}
+    {"role": "user", "content": "What is this library?"},
+    {"role": "assistant", "content": "It's a tool for optimizing prompts."}
 ]
 packer.add_messages(old_messages)  # Auto: PRIORITY_LOW (40) for history
 
 # Current query (must include)
 packer.add(
     "How does it reduce costs?",
-    role=ROLE_QUERY  # Auto: PRIORITY_QUERY (10)
+    role="query"  # Auto: PRIORITY_QUERY (10)
 )
 
 messages = packer.pack()
@@ -273,7 +268,7 @@ messages = packer.pack()
 ### Basic Usage
 
 ```python
-from prompt_refiner import TextPacker, TextFormat, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY
+from prompt_refiner import TextPacker, TextFormat
 
 packer = TextPacker(
     max_tokens=500,
@@ -282,17 +277,17 @@ packer = TextPacker(
 
 packer.add(
     "You are a QA assistant.",
-    role=ROLE_SYSTEM  # Auto: PRIORITY_SYSTEM (0)
+    role="system"  # Auto: PRIORITY_SYSTEM (0)
 )
 
 packer.add(
     "Context: Prompt-refiner is a library...",
-    role=ROLE_CONTEXT  # Auto: PRIORITY_HIGH (20)
+    role="context"  # Auto: PRIORITY_HIGH (20)
 )
 
 packer.add(
     "What is prompt-refiner?",
-    role=ROLE_QUERY  # Auto: PRIORITY_QUERY (10)
+    role="query"  # Auto: PRIORITY_QUERY (10)
 )
 
 prompt = packer.pack()  # str
@@ -302,12 +297,12 @@ prompt = packer.pack()  # str
 ### Text Format Comparison
 
 ```python
-from prompt_refiner import TextPacker, TextFormat, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY
+from prompt_refiner import TextPacker, TextFormat
 
 # RAW format (simple concatenation)
 packer = TextPacker(max_tokens=200, text_format=TextFormat.RAW)
-packer.add("System prompt", role=ROLE_SYSTEM)
-packer.add("User query", role=ROLE_QUERY)
+packer.add("System prompt", role="system")
+packer.add("User query", role="query")
 prompt = packer.pack()
 # Output:
 # System prompt
@@ -316,10 +311,10 @@ prompt = packer.pack()
 
 # MARKDOWN format (grouped sections in v0.1.3+)
 packer = TextPacker(max_tokens=200, text_format=TextFormat.MARKDOWN)
-packer.add("System prompt", role=ROLE_SYSTEM)
-packer.add("Doc 1", role=ROLE_CONTEXT)
-packer.add("Doc 2", role=ROLE_CONTEXT)
-packer.add("User query", role=ROLE_QUERY)
+packer.add("System prompt", role="system")
+packer.add("Doc 1", role="context")
+packer.add("Doc 2", role="context")
+packer.add("User query", role="query")
 prompt = packer.pack()
 # Output:
 # ### INSTRUCTIONS:
@@ -334,8 +329,8 @@ prompt = packer.pack()
 
 # XML format
 packer = TextPacker(max_tokens=200, text_format=TextFormat.XML)
-packer.add("System prompt", role=ROLE_SYSTEM)
-packer.add("User query", role=ROLE_QUERY)
+packer.add("System prompt", role="system")
+packer.add("User query", role="query")
 prompt = packer.pack()
 # Output:
 # <system>
@@ -354,19 +349,19 @@ prompt = packer.pack()
 Both packers support Just-In-Time refinement:
 
 ```python
-from prompt_refiner import StripHTML, NormalizeWhitespace, ROLE_CONTEXT
+from prompt_refiner import StripHTML, NormalizeWhitespace
 
 # Single operation
 packer.add(
     "<div>HTML content</div>",
-    role=ROLE_CONTEXT,
+    role="context",
     refine_with=StripHTML()
 )
 
 # Multiple operations
 packer.add(
     "<p>  Messy   HTML  </p>",
-    role=ROLE_CONTEXT,
+    role="context",
     refine_with=[StripHTML(), NormalizeWhitespace()]
 )
 ```
@@ -374,12 +369,12 @@ packer.add(
 ### Method Chaining
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_QUERY
+from prompt_refiner import MessagesPacker
 
 messages = (
     MessagesPacker(max_tokens=500)
-    .add("System prompt", role=ROLE_SYSTEM)
-    .add("User query", role=ROLE_QUERY)
+    .add("System prompt", role="system")
+    .add("User query", role="query")
     .pack()
 )
 ```
@@ -387,11 +382,11 @@ messages = (
 ### Inspection
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_QUERY
+from prompt_refiner import MessagesPacker
 
 packer = MessagesPacker(max_tokens=1000)
-packer.add("Item 1", role=ROLE_SYSTEM)
-packer.add("Item 2", role=ROLE_QUERY)
+packer.add("Item 1", role="system")
+packer.add("Item 2", role="query")
 
 # Inspect items before packing
 items = packer.get_items()
@@ -402,15 +397,15 @@ for item in items:
 ### Reset
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_CONTEXT
+from prompt_refiner import MessagesPacker
 
 packer = MessagesPacker(max_tokens=1000)
-packer.add("First batch", role=ROLE_CONTEXT)
+packer.add("First batch", role="context")
 messages1 = packer.pack()
 
 # Clear and reuse
 packer.reset()
-packer.add("Second batch", role=ROLE_CONTEXT)
+packer.add("Second batch", role="context")
 messages2 = packer.pack()
 ```
 

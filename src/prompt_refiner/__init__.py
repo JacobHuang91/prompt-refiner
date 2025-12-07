@@ -23,13 +23,14 @@ from .packer import (
     BasePacker,
     MessagesPacker,
     PackableItem,
+    RoleType,
     TextFormat,
     TextPacker,
 )
 from .refiner import Refiner
 from .scrubber import RedactPII
 from .strategy import AggressiveStrategy, MinimalStrategy, StandardStrategy
-from .tools import SchemaCompressor
+from .tools import ResponseCompressor, SchemaCompressor
 
 __all__ = [
     "Refiner",
@@ -47,6 +48,7 @@ __all__ = [
     "CountTokens",
     # Tools operations
     "SchemaCompressor",
+    "ResponseCompressor",
     # Packer operations
     "MessagesPacker",
     "TextPacker",
@@ -65,6 +67,7 @@ __all__ = [
     "ROLE_CONTEXT",
     "ROLE_USER",
     "ROLE_ASSISTANT",
+    "RoleType",
     # Overhead constants
     "PER_MESSAGE_OVERHEAD",
     "PER_REQUEST_OVERHEAD",

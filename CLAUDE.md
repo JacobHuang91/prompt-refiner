@@ -19,7 +19,7 @@ The library is organized into 6 core transformation modules plus measurement uti
 - **Cleaner**: Operations for cleaning dirty data (HTML, whitespace, Unicode, JSON)
 - **Compressor**: Operations for reducing prompt size (truncation, deduplication)
 - **Scrubber**: Operations for security and privacy (PII redaction)
-- **Tools**: Operations for optimizing LLM tool schemas (SchemaCompressor) (v0.1.6+)
+- **Tools**: Operations for optimizing LLM tool schemas and responses (SchemaCompressor, ResponseCompressor) (v0.1.6+)
 - **Packer**: Context budget management with specialized packers (v0.1.3+)
 - **Strategy**: Benchmark-tested preset strategies (MinimalStrategy, StandardStrategy, AggressiveStrategy) (v0.1.5+)
   - **MessagesPacker**: For chat completion APIs (OpenAI, Anthropic)
@@ -48,9 +48,9 @@ Each core module contains specialized operations that can be composed into pipel
 ## Version History
 
 ### v0.1.6 (Current) - Tools Module
-**New Operation:**
+**New Operations:**
 
-**SchemaCompressor (NEW)**
+**SchemaCompressor**
 - Compresses tool schemas (OpenAI/Anthropic function calling) to save tokens
 - Never modifies protocol fields (name, type, required, enum)
 - Only optimizes documentation fields (description, title, examples, markdown)
@@ -58,10 +58,20 @@ Each core module contains specialized operations that can be composed into pipel
 - Simple API: all compression features enabled by default
 - 21 comprehensive tests + real-world OpenAI integration example
 
+**ResponseCompressor (NEW)**
+- Compresses verbose tool/API responses before sending to LLM
+- Hardcoded sensible limits: 512 chars per string, 16 items per list
+- Removes debug/trace/logs fields automatically
+- Optionally drops null values and empty containers
+- Depth protection prevents infinite recursion
+- Achieves 30-70% token savings on verbose API responses
+- 24 comprehensive tests + OpenAI integration example showing 36% savings
+
 **Use Cases:**
 - Compress tool schemas for OpenAI/Anthropic function calling
-- Reduce token cost from verbose tool definitions
-- Fit more tools within token budget
+- Compress verbose API/tool responses in agent systems
+- Reduce token cost from verbose tool definitions and responses
+- Fit more tools and tool outputs within token budget
 
 ### v0.1.5 - Preset Strategies & Token Savings Tracking
 **Three Major Features:**
@@ -171,7 +181,8 @@ src/prompt_refiner/
 ├── scrubber/            # Scrubber module
 │   └── pii.py
 ├── tools/               # Tools module (v0.1.6+)
-│   └── schema_compressor.py
+│   ├── schema_compressor.py
+│   └── response_compressor.py
 ├── analyzer/            # Analyzer module
 │   └── counter.py
 ├── packer/              # Packer module (v0.1.3+)
@@ -190,6 +201,7 @@ tests/
 ├── test_compressor.py   # Compressor module tests
 ├── test_scrubber.py     # Scrubber module tests
 ├── test_schema_compressor.py  # SchemaCompressor tests
+├── test_response_compressor.py  # ResponseCompressor tests
 ├── test_analyzer.py     # Analyzer module tests
 ├── test_messages_packer.py  # MessagesPacker tests
 ├── test_text_packer.py  # TextPacker tests

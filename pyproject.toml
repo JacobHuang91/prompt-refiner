@@ -1,6 +1,6 @@
 [project]
 name = "llm-prompt-refiner"
-version = "0.1.6"
+version = "0.1.7"
 description = "A lightweight Python library for optimizing and cleaning LLM inputs"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -89,4 +89,10 @@ dev = [
     "mkdocstrings[python]>=0.24.0",
     "mkdocs-autorefs>=0.5.0",
     "mike>=2.0.0",
+    # Examples dependencies
+    "tiktoken>=0.7.0",
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+    "pydantic>=2.0.0",
 ]
