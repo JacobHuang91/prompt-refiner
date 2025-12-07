@@ -8,17 +8,7 @@ Demonstrates token optimization through HTML cleaning and MARKDOWN formatting.
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from prompt_refiner import (
-    ROLE_ASSISTANT,
-    ROLE_CONTEXT,
-    ROLE_QUERY,
-    ROLE_SYSTEM,
-    ROLE_USER,
-    NormalizeWhitespace,
-    StripHTML,
-    TextFormat,
-    TextPacker,
-)
+from prompt_refiner import NormalizeWhitespace, StripHTML, TextFormat, TextPacker
 
 # Load environment variables from .env file
 load_dotenv()
@@ -50,27 +40,27 @@ def main():
     # Add system instructions
     packer.add(
         "You are a QA assistant. Answer questions based on the provided context.",
-        role=ROLE_SYSTEM,
+        role="system",
     )
 
     # Add RAG documents with automatic cleaning pipeline
-    packer.add(doc_html, role=ROLE_CONTEXT, refine_with=[StripHTML(), NormalizeWhitespace()])
+    packer.add(doc_html, role="context", refine_with=[StripHTML(), NormalizeWhitespace()])
     packer.add(
         "The library includes 5 modules: Cleaner, Compressor, Scrubber, Analyzer, and Packer.",
-        role=ROLE_CONTEXT,
+        role="context",
     )
 
     # Add conversation history
     history = [
-        {"role": ROLE_USER, "content": "What is prompt-refiner?"},
-        {"role": ROLE_ASSISTANT, "content": "It's a Python library for optimizing LLM inputs."},
-        {"role": ROLE_USER, "content": "Does it reduce costs?"},
-        {"role": ROLE_ASSISTANT, "content": "Yes, by removing unnecessary tokens it can save 10-20% on API costs."},
+        {"role": "user", "content": "What is prompt-refiner?"},
+        {"role": "assistant", "content": "It's a Python library for optimizing LLM inputs."},
+        {"role": "user", "content": "Does it reduce costs?"},
+        {"role": "assistant", "content": "Yes, by removing unnecessary tokens it can save 10-20% on API costs."},
     ]
     packer.add_messages(history)
 
     # Add current query
-    packer.add("What is TextPacker and how does it work?", role=ROLE_QUERY)
+    packer.add("What is TextPacker and how does it work?", role="query")
 
     # Pack into text format with priority-based selection
     prompt = packer.pack()

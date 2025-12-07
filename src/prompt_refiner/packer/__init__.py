@@ -14,6 +14,7 @@ from .base import (
     ROLE_USER,
     BasePacker,
     PackableItem,
+    RoleType,
 )
 from .messages_packer import PER_MESSAGE_OVERHEAD, PER_REQUEST_OVERHEAD, MessagesPacker
 from .text_packer import TextFormat, TextPacker
@@ -37,6 +38,7 @@ __all__ = [
     "ROLE_CONTEXT",
     "ROLE_USER",
     "ROLE_ASSISTANT",
+    "RoleType",
     # Message overhead constants
     "PER_MESSAGE_OVERHEAD",
     "PER_REQUEST_OVERHEAD",

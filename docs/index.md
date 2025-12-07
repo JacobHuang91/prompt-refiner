@@ -107,19 +107,19 @@ For RAG applications and chatbots, the Packer module manages context budgets wit
 - Semantic roles for clear intent
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY, StripHTML
+from prompt_refiner import MessagesPacker, StripHTML
 
 packer = MessagesPacker(max_tokens=1000)
-packer.add("You are helpful.", role=ROLE_SYSTEM)
+packer.add("You are helpful.", role="system")
 
 # Clean RAG documents on-the-fly
 packer.add(
     "<div>RAG doc...</div>",
-    role=ROLE_CONTEXT,
+    role="context",
     refine_with=StripHTML()
 )
 
-packer.add("User question?", role=ROLE_QUERY)
+packer.add("User question?", role="query")
 
 messages = packer.pack()  # Returns List[Dict] ready for chat APIs
 ```

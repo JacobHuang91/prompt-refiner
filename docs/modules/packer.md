@@ -22,7 +22,7 @@ Pack items into chat message format for chat completion APIs.
 ### Basic Usage
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY
+from prompt_refiner import MessagesPacker
 
 # Create packer with token budget
 packer = MessagesPacker(max_tokens=1000)
@@ -30,17 +30,17 @@ packer = MessagesPacker(max_tokens=1000)
 # Add items with semantic roles (auto-prioritized)
 packer.add(
     "You are a helpful assistant.",
-    role=ROLE_SYSTEM  # Auto: highest priority
+    role="system"  # Auto: highest priority
 )
 
 packer.add(
     "Product documentation: Feature A, B, C...",
-    role=ROLE_CONTEXT  # Auto: high priority
+    role="context"  # Auto: high priority
 )
 
 packer.add(
     "What are the key features?",
-    role=ROLE_QUERY  # Auto: critical priority
+    role="query"  # Auto: critical priority
 )
 
 # Pack into messages format
@@ -53,42 +53,34 @@ messages = packer.pack()  # Returns List[Dict[str, str]]
 ### RAG + Conversation History Example
 
 ```python
-from prompt_refiner import (
-    MessagesPacker,
-    ROLE_SYSTEM,
-    ROLE_CONTEXT,
-    ROLE_QUERY,
-    ROLE_USER,
-    ROLE_ASSISTANT,
-    StripHTML
-)
+from prompt_refiner import MessagesPacker, StripHTML
 
 packer = MessagesPacker(max_tokens=500)
 
 # System prompt (auto: highest priority)
 packer.add(
     "Answer based on the provided context.",
-    role=ROLE_SYSTEM
+    role="system"
 )
 
 # RAG documents with JIT cleaning (auto: high priority)
 packer.add(
     "<p>Prompt-refiner is a library...</p>",
-    role=ROLE_CONTEXT,
+    role="context",
     refine_with=StripHTML()
 )
 
 # Old conversation history (auto: low priority, can be dropped)
 old_messages = [
-    {"role": ROLE_USER, "content": "What is this library?"},
-    {"role": ROLE_ASSISTANT, "content": "It's a tool for optimizing prompts."}
+    {"role": "user", "content": "What is this library?"},
+    {"role": "assistant", "content": "It's a tool for optimizing prompts."}
 ]
 packer.add_messages(old_messages)
 
 # Current query (auto: critical priority)
 packer.add(
     "How does it reduce costs?",
-    role=ROLE_QUERY
+    role="query"
 )
 
 # Pack into messages
@@ -102,7 +94,7 @@ Pack items into formatted text for text completion APIs (base models).
 ### Basic Usage
 
 ```python
-from prompt_refiner import TextPacker, TextFormat, ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY
+from prompt_refiner import TextPacker, TextFormat
 
 # Create packer with MARKDOWN format
 packer = TextPacker(
@@ -113,17 +105,17 @@ packer = TextPacker(
 # Add items with semantic roles (auto-prioritized)
 packer.add(
     "You are a helpful assistant.",
-    role=ROLE_SYSTEM  # Auto: highest priority
+    role="system"  # Auto: highest priority
 )
 
 packer.add(
     "Product documentation...",
-    role=ROLE_CONTEXT  # Auto: high priority
+    role="context"  # Auto: high priority
 )
 
 packer.add(
     "What are the key features?",
-    role=ROLE_QUERY  # Auto: critical priority
+    role="query"  # Auto: critical priority
 )
 
 # Pack into formatted text
@@ -169,39 +161,32 @@ packer = TextPacker(max_tokens=1000, text_format=TextFormat.XML)
 ### RAG Example with Grouped Sections
 
 ```python
-from prompt_refiner import (
-    TextPacker,
-    TextFormat,
-    ROLE_SYSTEM,
-    ROLE_CONTEXT,
-    ROLE_QUERY,
-    StripHTML
-)
+from prompt_refiner import TextPacker, TextFormat, StripHTML
 
 packer = TextPacker(max_tokens=500, text_format=TextFormat.MARKDOWN)
 
 # System prompt (auto: highest priority)
 packer.add(
     "Answer based on context.",
-    role=ROLE_SYSTEM
+    role="system"
 )
 
 # RAG documents (auto: high priority)
 packer.add(
     "<p>Document 1...</p>",
-    role=ROLE_CONTEXT,
+    role="context",
     refine_with=StripHTML()
 )
 
 packer.add(
     "Document 2...",
-    role=ROLE_CONTEXT
+    role="context"
 )
 
 # User query (auto: critical priority)
 packer.add(
     "What is the answer?",
-    role=ROLE_QUERY
+    role="query"
 )
 
 prompt = packer.pack()  # str
@@ -241,11 +226,11 @@ from prompt_refiner import (
 Apply operations before adding items:
 
 ```python
-from prompt_refiner import StripHTML, NormalizeWhitespace, ROLE_CONTEXT
+from prompt_refiner import StripHTML, NormalizeWhitespace
 
 packer.add(
     "<div>  Messy   HTML  </div>",
-    role=ROLE_CONTEXT,
+    role="context",
     refine_with=[StripHTML(), NormalizeWhitespace()]
 )
 ```
@@ -253,12 +238,12 @@ packer.add(
 ### Method Chaining
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_QUERY
+from prompt_refiner import MessagesPacker
 
 messages = (
     MessagesPacker(max_tokens=500)
-    .add("System prompt", role=ROLE_SYSTEM)
-    .add("User query", role=ROLE_QUERY)
+    .add("System prompt", role="system")
+    .add("User query", role="query")
     .pack()
 )
 ```
@@ -266,11 +251,11 @@ messages = (
 ### Inspection
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_SYSTEM, ROLE_QUERY
+from prompt_refiner import MessagesPacker
 
 packer = MessagesPacker(max_tokens=1000)
-packer.add("Item 1", role=ROLE_SYSTEM)
-packer.add("Item 2", role=ROLE_QUERY)
+packer.add("Item 1", role="system")
+packer.add("Item 2", role="query")
 
 items = packer.get_items()
 for item in items:
@@ -280,15 +265,15 @@ for item in items:
 ### Reset
 
 ```python
-from prompt_refiner import MessagesPacker, ROLE_CONTEXT
+from prompt_refiner import MessagesPacker
 
 packer = MessagesPacker(max_tokens=1000)
-packer.add("First batch", role=ROLE_CONTEXT)
+packer.add("First batch", role="context")
 messages1 = packer.pack()
 
 # Clear and reuse
 packer.reset()
-packer.add("Second batch", role=ROLE_CONTEXT)
+packer.add("Second batch", role="context")
 messages2 = packer.pack()
 ```
 

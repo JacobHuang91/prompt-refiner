@@ -160,31 +160,27 @@ print(counter.format_stats())
 For RAG applications, manage context budgets with smart priority-based packing:
 
 ```python
-from prompt_refiner import (
-    MessagesPacker,
-    ROLE_SYSTEM, ROLE_CONTEXT, ROLE_QUERY,
-    StripHTML, NormalizeWhitespace
-)
+from prompt_refiner import MessagesPacker, StripHTML, NormalizeWhitespace
 
 packer = MessagesPacker(max_tokens=1000)
 
 # System prompt (auto-prioritized: highest)
 packer.add(
     "Answer based on provided context.",
-    role=ROLE_SYSTEM
+    role="system"
 )
 
 # RAG documents with JIT cleaning (auto-prioritized: high)
 packer.add(
     "<div>Document 1...</div>",
-    role=ROLE_CONTEXT,
+    role="context",
     refine_with=[StripHTML(), NormalizeWhitespace()]
 )
 
 # Current user query (auto-prioritized: critical)
 packer.add(
     "What is the answer?",
-    role=ROLE_QUERY
+    role="query"
 )
 
 messages = packer.pack()  # Ready for chat APIs

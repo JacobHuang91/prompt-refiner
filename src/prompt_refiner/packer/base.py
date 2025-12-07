@@ -3,7 +3,7 @@
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Literal, Optional, Union
 
 from ..analyzer.counter import CountTokens
 from ..operation import Operation
@@ -24,6 +24,9 @@ ROLE_CONTEXT = "context"  # RAG retrieved documents (P20, medium-high priority)
 ROLE_USER = "user"  # User messages in conversation history (P40, low priority)
 ROLE_ASSISTANT = "assistant"  # Assistant messages in history (P40, low priority)
 
+# Type alias for valid roles
+RoleType = Literal["system", "query", "context", "user", "assistant"]
+
 
 @dataclass
 class PackableItem:
@@ -35,14 +38,14 @@ class PackableItem:
         tokens: Base token count (without format overhead)
         priority: Priority value (lower = higher priority)
         insertion_index: Order in which item was added
-        role: Optional role for message-based APIs (system, user, assistant)
+        role: Optional role for message-based APIs (system, query, context, user, assistant)
     """
 
     content: str
     tokens: int
     priority: int
     insertion_index: int
-    role: Optional[str] = None
+    role: Optional[RoleType] = None
 
 
 class BasePacker(ABC):
@@ -109,7 +112,7 @@ class BasePacker(ABC):
     def add(
         self,
         content: str,
-        role: str,
+        role: RoleType,
         priority: Optional[int] = None,
         refine_with: Optional[Union[Operation, List[Operation]]] = None,
     ) -> "BasePacker":
