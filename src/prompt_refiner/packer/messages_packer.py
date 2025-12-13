@@ -1,9 +1,13 @@
 """MessagesPacker for chat completion APIs (OpenAI, Anthropic, etc.)."""
 
 import logging
-from typing import Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 from .base import ROLE_CONTEXT, ROLE_QUERY, BasePacker, PackableItem
+
+if TYPE_CHECKING:
+    from ..pipeline import Pipeline
+    from ..refiner import Refiner
 
 logger = logging.getLogger(__name__)
 
@@ -45,10 +49,15 @@ class MessagesPacker(BasePacker):
         max_tokens: Optional[int] = None,
         model: Optional[str] = None,
         track_savings: bool = False,
-        system: Optional[Union[str, Tuple[str, List]]] = None,
-        context: Optional[Union[List[str], Tuple[List[str], List]]] = None,
-        history: Optional[Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List]]] = None,
-        query: Optional[Union[str, Tuple[str, List]]] = None,
+        system: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], Union["Refiner", "Pipeline"]]]] = None,
+        history: Optional[
+            Union[
+                List[Dict[str, str]],
+                Tuple[List[Dict[str, str]], Union["Refiner", "Pipeline"]],
+            ]
+        ] = None,
+        query: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
     ):
         """
         Initialize messages packer.
@@ -60,17 +69,22 @@ class MessagesPacker(BasePacker):
                 operations (default: False)
             system: System message. Can be:
                 - str: "You are helpful"
-                - Tuple[str, List]: ("You are helpful", [StripHTML()])
+                - Tuple[str, Refiner]: ("You are helpful", StripHTML())
+                - Tuple[str, Pipeline]: ("You are helpful", StripHTML() | NormalizeWhitespace())
             context: Context documents. Can be:
                 - List[str]: ["doc1", "doc2"]
-                - Tuple[List[str], List]: (["doc1", "doc2"], [StripHTML()])
+                - Tuple[List[str], Refiner]: (["doc1", "doc2"], StripHTML())
+                - Tuple[List[str], Pipeline]: (["doc1", "doc2"],
+                    StripHTML() | NormalizeWhitespace())
             history: Conversation history. Can be:
                 - List[Dict]: [{"role": "user", "content": "Hi"}]
-                - Tuple[List[Dict], List]: ([{"role": "user", "content": "Hi"}],
-                    [NormalizeWhitespace()])
+                - Tuple[List[Dict], Refiner]: ([{"role": "user", "content": "Hi"}], StripHTML())
+                - Tuple[List[Dict], Pipeline]: ([{"role": "user", "content": "Hi"}],
+                    StripHTML() | NormalizeWhitespace())
             query: Current query. Can be:
                 - str: "What's the weather?"
-                - Tuple[str, List]: ("What's the weather?", [StripHTML()])
+                - Tuple[str, Refiner]: ("What's the weather?", StripHTML())
+                - Tuple[str, Pipeline]: ("What's the weather?", StripHTML() | NormalizeWhitespace())
 
         Example (Simple - no refiners):
             >>> packer = MessagesPacker(
@@ -82,13 +96,24 @@ class MessagesPacker(BasePacker):
             ... )
             >>> messages = packer.pack()
 
-        Example (With refiners - tuple syntax):
-            >>> from prompt_refiner import MessagesPacker, StripHTML, NormalizeWhitespace
+        Example (With single Refiner):
+            >>> from prompt_refiner import MessagesPacker, StripHTML
             >>> packer = MessagesPacker(
             ...     model="gpt-4o-mini",
             ...     system="You are helpful.",
-            ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], [StripHTML()]),
-            ...     history=([{"role": "user", "content": "Hi   there"}], [NormalizeWhitespace()]),
+            ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], StripHTML()),
+            ...     query="What's the weather?"
+            ... )
+            >>> messages = packer.pack()
+
+        Example (With Pipeline - multiple refiners):
+            >>> from prompt_refiner import MessagesPacker, StripHTML, NormalizeWhitespace, Pipeline
+            >>> cleaner = StripHTML() | NormalizeWhitespace()
+            >>> # Or: cleaner = Pipeline([StripHTML(), NormalizeWhitespace()])
+            >>> packer = MessagesPacker(
+            ...     model="gpt-4o-mini",
+            ...     system="You are helpful.",
+            ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], cleaner),
             ...     query="What's the weather?"
             ... )
             >>> messages = packer.pack()
@@ -133,15 +158,19 @@ class MessagesPacker(BasePacker):
             self.add(query_content, role="query", refine_with=query_refiner)
 
     @staticmethod
-    def _extract_field(field: Union[any, Tuple[any, List]]) -> Tuple[any, Optional[List]]:
+    def _extract_field(
+        field: Union[any, Tuple[any, Union["Refiner", "Pipeline"]]],
+    ) -> Tuple[any, Optional[Union["Refiner", "Pipeline"]]]:
         """
-        Extract content and refiner from a field.
+        Extract content and refiner/pipeline from a field.
 
         Args:
-            field: Either raw content or (content, refiner) tuple
+            field: Either raw content or (content, refiner/pipeline) tuple.
+                Can be a Refiner or Pipeline.
 
         Returns:
-            Tuple of (content, refiner)
+            Tuple of (content, refiner/pipeline) where the second element can be
+            None, Refiner, or Pipeline.
         """
         if isinstance(field, tuple) and len(field) == 2:
             content, refiner = field
@@ -152,10 +181,15 @@ class MessagesPacker(BasePacker):
     @classmethod
     def quick_pack(
         cls,
-        system: Optional[Union[str, Tuple[str, List]]] = None,
-        context: Optional[Union[List[str], Tuple[List[str], List]]] = None,
-        history: Optional[Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List]]] = None,
-        query: Optional[Union[str, Tuple[str, List]]] = None,
+        system: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], Union["Refiner", "Pipeline"]]]] = None,
+        history: Optional[
+            Union[
+                List[Dict[str, str]],
+                Tuple[List[Dict[str, str]], Union["Refiner", "Pipeline"]],
+            ]
+        ] = None,
+        query: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
         model: Optional[str] = None,
         max_tokens: Optional[int] = None,
         track_savings: bool = False,
@@ -164,10 +198,10 @@ class MessagesPacker(BasePacker):
         One-liner to create packer and pack messages immediately.
 
         Args:
-            system: System message (str or (str, refiner_list) tuple)
-            context: Context documents (list or (list, refiner_list) tuple)
-            history: Conversation history (list or (list, refiner_list) tuple)
-            query: Current query (str or (str, refiner_list) tuple)
+            system: System message (str or (str, Refiner/Pipeline) tuple)
+            context: Context documents (list or (list, Refiner/Pipeline) tuple)
+            history: Conversation history (list or (list, Refiner/Pipeline) tuple)
+            query: Current query (str or (str, Refiner/Pipeline) tuple)
             model: Optional model name for precise token counting
             max_tokens: Optional token budget
             track_savings: Enable token savings tracking
@@ -182,12 +216,22 @@ class MessagesPacker(BasePacker):
             ...     query="What's the weather?"
             ... )
 
-        Example (With refiners):
-            >>> from prompt_refiner import MessagesPacker, StripHTML, NormalizeWhitespace
+        Example (With single Refiner):
+            >>> from prompt_refiner import MessagesPacker, StripHTML
             >>> messages = MessagesPacker.quick_pack(
             ...     system="You are helpful.",
-            ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], [StripHTML()]),
-            ...     history=([{"role": "user", "content": "Hi   there"}], [NormalizeWhitespace()]),
+            ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], StripHTML()),
+            ...     query="What's the weather?",
+            ...     model="gpt-4o-mini"
+            ... )
+
+        Example (With Pipeline - multiple refiners):
+            >>> from prompt_refiner import MessagesPacker, StripHTML, NormalizeWhitespace, Pipeline
+            >>> cleaner = StripHTML() | NormalizeWhitespace()
+            >>> # Or: cleaner = Pipeline([StripHTML(), NormalizeWhitespace()])
+            >>> messages = MessagesPacker.quick_pack(
+            ...     system="You are helpful.",
+            ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], cleaner),
             ...     query="What's the weather?",
             ...     model="gpt-4o-mini"
             ... )

@@ -321,13 +321,13 @@ def test_response_compressor_tuple_handling():
 
 
 def test_response_compressor_in_refiner_pipeline():
-    """Test ResponseCompressor works in a Refiner pipeline."""
-    from prompt_refiner import Refiner
+    """Test ResponseCompressor works in a Pipeline."""
+    from prompt_refiner import Pipeline
 
     response = {"data": "x" * 1000, "debug": "verbose"}
 
-    refiner = Refiner().pipe(ResponseCompressor())
-    result = refiner.run(response)
+    pipeline = Pipeline().pipe(ResponseCompressor())
+    result = pipeline.run(response)
 
     assert len(result["data"]) <= 530
     assert "debug" not in result

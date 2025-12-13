@@ -26,9 +26,9 @@ raw_html = """
 print("\nProcessing RAG document with Minimal Strategy...")
 print("-" * 70)
 
-# Extend the preset strategy with additional operations using .pipe()
-refiner = MinimalStrategy().create_refiner().pipe(FixUnicode())
-cleaned = refiner.run(raw_html)
+# Strategy IS a pipeline - use directly, extend with .pipe()
+strategy = MinimalStrategy().pipe(FixUnicode())
+cleaned = strategy.run(raw_html)
 
 input_len = len(raw_html)
 output_len = len(cleaned)

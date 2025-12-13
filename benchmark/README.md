@@ -38,7 +38,7 @@ A custom A/B testing approach that compares raw vs refined prompts:
 
 1. **Install dependencies**:
    ```bash
-   uv pip install -e ".[benchmark]"
+   uv sync --group dev
    ```
 
 2. **Set up API key** (for custom benchmark):

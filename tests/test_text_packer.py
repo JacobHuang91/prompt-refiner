@@ -12,6 +12,7 @@ from prompt_refiner import (
     ROLE_SYSTEM,
     ROLE_USER,
     NormalizeWhitespace,
+    Pipeline,
     StripHTML,
     TextFormat,
     TextPacker,
@@ -151,7 +152,7 @@ def test_text_packer_chained_operations():
         messy,
         role=ROLE_CONTEXT,
         priority=PRIORITY_HIGH,
-        refine_with=[StripHTML(), NormalizeWhitespace()],
+        refine_with=Pipeline([StripHTML(), NormalizeWhitespace()]),
     )
 
     text = packer.pack()
@@ -615,7 +616,7 @@ def test_constructor_with_system_and_refiner():
     packer = TextPacker(
         max_tokens=200,
         text_format=TextFormat.RAW,
-        system=("You    are    helpful.", [NormalizeWhitespace()]),
+        system=("You    are    helpful.", Pipeline([NormalizeWhitespace()])),
     )
 
     text = packer.pack()
@@ -628,7 +629,7 @@ def test_constructor_with_context_and_refiner():
     packer = TextPacker(
         max_tokens=300,
         text_format=TextFormat.RAW,
-        context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], [StripHTML()]),
+        context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], Pipeline([StripHTML()])),
     )
 
     text = packer.pack()
@@ -644,7 +645,10 @@ def test_constructor_with_history_and_refiner():
     packer = TextPacker(
         max_tokens=200,
         text_format=TextFormat.RAW,
-        history=([{"role": "user", "content": "Hello    world"}], [NormalizeWhitespace()]),
+        history=(
+            [{"role": "user", "content": "Hello    world"}],
+            Pipeline([NormalizeWhitespace()]),
+        ),
     )
 
     text = packer.pack()
@@ -657,7 +661,7 @@ def test_constructor_with_query_and_refiner():
     packer = TextPacker(
         max_tokens=100,
         text_format=TextFormat.RAW,
-        query=("<div>What's the weather?</div>", [StripHTML()]),
+        query=("<div>What's the weather?</div>", Pipeline([StripHTML()])),
     )
 
     text = packer.pack()
@@ -669,7 +673,7 @@ def test_constructor_with_query_and_refiner():
 def test_constructor_with_track_savings():
     """Test constructor with track_savings enabled."""
     packer = TextPacker(
-        max_tokens=200, track_savings=True, context=(["<div>Test</div>"], [StripHTML()])
+        max_tokens=200, track_savings=True, context=(["<div>Test</div>"], Pipeline([StripHTML()]))
     )
 
     text = packer.pack()
@@ -690,11 +694,12 @@ def test_extract_field_with_plain_value():
 
 def test_extract_field_with_tuple():
     """Test _extract_field with tuple."""
-    content, refiner = TextPacker._extract_field(("Hello", [StripHTML()]))
+    content, refiner = TextPacker._extract_field(("Hello", Pipeline([StripHTML()])))
 
     assert content == "Hello"
-    assert len(refiner) == 1
-    assert isinstance(refiner[0], StripHTML)
+    assert isinstance(refiner, Pipeline)
+    assert len(refiner._refiners) == 1
+    assert isinstance(refiner._refiners[0], StripHTML)
 
 
 def test_extract_field_with_list():
@@ -720,7 +725,7 @@ def test_quick_pack_with_refiners():
     text = TextPacker.quick_pack(
         text_format=TextFormat.RAW,
         system="You are helpful.",
-        context=(["<div>Doc 1</div>"], [StripHTML()]),
+        context=(["<div>Doc 1</div>"], Pipeline([StripHTML()])),
         query="What's the weather?",
     )
 
@@ -769,7 +774,7 @@ def test_quick_pack_with_track_savings():
     text = TextPacker.quick_pack(
         track_savings=True,
         text_format=TextFormat.RAW,
-        context=(["<div>Test</div>"], [StripHTML()]),
+        context=(["<div>Test</div>"], Pipeline([StripHTML()])),
         query="Test",
     )
 
@@ -791,3 +796,80 @@ def test_constructor_and_add_method_combined():
     assert "You are helpful." in text
     assert "Additional context" in text
     assert "What's up?" in text
+
+
+class TestTextPackerWithRefiner:
+    def test_constructor_with_refiner_system(self):
+        """Test TextPacker constructor accepts Refiner for system."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = TextPacker(system=("<div>  System   prompt  </div>", cleaner))
+        result = packer.pack()
+
+        assert "System prompt" in result
+        assert "<div>" not in result
+
+    def test_constructor_with_refiner_context(self):
+        """Test TextPacker constructor accepts Refiner for context."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = TextPacker(context=(["<div>  Doc   1  </div>", "<p>  Doc   2  </p>"], cleaner))
+        result = packer.pack()
+
+        assert "Doc 1" in result
+        assert "Doc 2" in result
+        assert "<div>" not in result
+
+    def test_constructor_with_refiner_query(self):
+        """Test TextPacker constructor accepts Refiner for query."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = TextPacker(query=("<div>  What's   the   weather?  </div>", cleaner))
+        result = packer.pack()
+
+        assert "What's the weather?" in result
+        assert "<div>" not in result
+
+    def test_constructor_with_refiner_history(self):
+        """Test TextPacker constructor accepts Refiner for history."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = TextPacker(
+            history=(
+                [
+                    {"role": "user", "content": "<div>  Hello  </div>"},
+                    {"role": "assistant", "content": "<p>  Hi   there  </p>"},
+                ],
+                cleaner,
+            )
+        )
+        result = packer.pack()
+
+        assert "Hello" in result
+        assert "Hi there" in result
+        assert "<div>" not in result
+
+    def test_quick_pack_with_refiner(self):
+        """Test quick_pack accepts Refiner."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        result = TextPacker.quick_pack(
+            text_format=TextFormat.MARKDOWN,
+            system=("You are helpful.", cleaner),
+            context=(["<div>Doc</div>"], cleaner),
+            query=("<div>Query</div>", cleaner),
+        )
+
+        assert "Doc" in result
+        assert "Query" in result
+        assert "<div>" not in result
+        assert "  " not in result
+
+    def test_add_with_refiner(self):
+        """Test add() method accepts Refiner in refine_with."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = TextPacker()
+        packer.add(
+            "<div>  Test   content  </div>",
+            role=ROLE_SYSTEM,
+            refine_with=cleaner,
+        )
+        result = packer.pack()
+
+        assert "Test content" in result
+        assert "<div>" not in result

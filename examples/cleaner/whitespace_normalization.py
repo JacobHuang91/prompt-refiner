@@ -1,6 +1,6 @@
 """Example: Normalizing excessive whitespace."""
 
-from prompt_refiner import Refiner, NormalizeWhitespace
+from prompt_refiner import Pipeline, NormalizeWhitespace
 
 # Text with excessive whitespace (common in web scraping)
 messy_text = """
@@ -22,7 +22,7 @@ print("=" * 60)
 print(f"\nOriginal text:\n{repr(messy_text)}")
 
 # Normalize whitespace
-refiner = Refiner().pipe(NormalizeWhitespace())
+refiner = Pipeline().pipe(NormalizeWhitespace())
 cleaned = refiner.run(messy_text)
 print(f"\nNormalized text:\n{repr(cleaned)}")
 print(f"\nVisual comparison:")

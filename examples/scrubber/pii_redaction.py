@@ -1,6 +1,6 @@
 """Example: Redacting PII (Personally Identifiable Information)."""
 
-from prompt_refiner import Refiner, RedactPII
+from prompt_refiner import Pipeline, RedactPII
 
 # Customer support ticket with PII
 support_ticket = """
@@ -28,7 +28,7 @@ print(f"\nOriginal ticket:\n{support_ticket}")
 print("\n" + "-" * 60)
 print("Full PII redaction (all types)")
 print("-" * 60)
-refiner = Refiner().pipe(RedactPII())
+refiner = Pipeline().pipe(RedactPII())
 redacted = refiner.run(support_ticket)
 print(f"Result:\n{redacted}")
 
@@ -36,7 +36,7 @@ print(f"Result:\n{redacted}")
 print("\n" + "-" * 60)
 print("Selective redaction (email and phone only)")
 print("-" * 60)
-refiner_selective = Refiner().pipe(RedactPII(redact_types={"email", "phone"}))
+refiner_selective = Pipeline().pipe(RedactPII(redact_types={"email", "phone"}))
 redacted_selective = refiner_selective.run(support_ticket)
 print(f"Result:\n{redacted_selective}")
 
@@ -55,7 +55,7 @@ print("Custom patterns and keywords")
 print("-" * 60)
 print(f"\nOriginal document:\n{internal_doc}")
 
-refiner_custom = Refiner().pipe(
+refiner_custom = Pipeline().pipe(
     RedactPII(
         redact_types={"email", "ip"},
         custom_keywords={"classified", "secret", "confidential", "proprietary"},

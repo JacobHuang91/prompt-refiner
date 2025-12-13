@@ -3,10 +3,10 @@
 import re
 from typing import Optional, Set
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 
-class StripHTML(Operation):
+class StripHTML(Refiner):
     """Remove HTML tags from text, with options to preserve semantic tags or convert to Markdown."""
 
     def __init__(

@@ -562,7 +562,7 @@ def test_schema_compressor_real_world_openai_schema():
 
 def test_schema_compressor_in_refiner_pipeline():
     """Test SchemaCompressor works in a Refiner pipeline."""
-    from prompt_refiner import Refiner
+    from prompt_refiner import Pipeline
 
     tool = {
         "type": "function",
@@ -574,8 +574,8 @@ def test_schema_compressor_in_refiner_pipeline():
         },
     }
 
-    refiner = Refiner().pipe(SchemaCompressor(drop_titles=True))
-    result = refiner.run(tool)
+    pipeline = Pipeline().pipe(SchemaCompressor(drop_titles=True))
+    result = pipeline.run(tool)
 
     assert "title" not in result["function"]
 

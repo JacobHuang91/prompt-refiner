@@ -1,71 +1,97 @@
 """Aggressive refining strategy for maximum token reduction."""
 
-from typing import List, Literal
+from typing import Literal
 
 from ..cleaner import NormalizeWhitespace, StripHTML
 from ..compressor import Deduplicate, TruncateTokens
-from ..operation import Operation
-from .base import BaseStrategy
+from ..pipeline import Pipeline
 
 
-class AggressiveStrategy(BaseStrategy):
+class AggressiveStrategy(Pipeline):
     """
     Aggressive strategy: Maximum token reduction with truncation.
 
-    Operations:
-    - StripHTML: Remove HTML tags
+    This strategy is itself a Pipeline, so you can use it directly or extend it.
+
+    Refiners:
+    - StripHTML: Remove HTML tags (optional)
     - NormalizeWhitespace: Collapse excessive whitespace
-    - Deduplicate: Remove similar content (sentence-level, 0.7 threshold)
-    - TruncateTokens: Limit to max_tokens (default: 150)
+    - Deduplicate: Remove similar content
+    - TruncateTokens: Limit to max_tokens
 
     Characteristics:
     - Token reduction: ~15% (up to 74% on long contexts)
     - Quality: 96.4% (cosine similarity)
     - Use case: Cost optimization, long contexts, lenient quality requirements
     - Latency: 0.25ms per 1k tokens
+
+    Example:
+        >>> # Use with defaults
+        >>> strategy = AggressiveStrategy()
+        >>> cleaned = strategy.run(text)
+        >>>
+        >>> # Customize operator parameters
+        >>> strategy = AggressiveStrategy(
+        ...     truncate_max_tokens=500,
+        ...     truncate_strategy="tail",
+        ...     strip_html_to_markdown=True,
+        ...     deduplicate_method="levenshtein",
+        ...     deduplicate_similarity_threshold=0.9,
+        ...     deduplicate_granularity="paragraph"
+        ... )
+        >>> cleaned = strategy.run(text)
+        >>>
+        >>> # Extend with additional operators
+        >>> extended = AggressiveStrategy().pipe(RedactPII())
+        >>> cleaned = extended.run(text)
     """
 
     def __init__(
         self,
-        max_tokens: int = 150,
-        strip_html: bool = True,
-        to_markdown: bool = False,
-        similarity_threshold: float = 0.7,
-        dedup_method: Literal["jaccard", "levenshtein"] = "jaccard",
+        # Parameters to configure TruncateTokens operator
+        truncate_max_tokens: int = 150,
         truncate_strategy: Literal["head", "tail", "middle_out"] = "head",
+        # Parameters to configure StripHTML operator
+        strip_html: bool = True,
+        strip_html_to_markdown: bool = False,
+        # Parameters to configure Deduplicate operator
+        deduplicate_method: Literal["jaccard", "levenshtein"] = "jaccard",
+        deduplicate_similarity_threshold: float = 0.7,
+        deduplicate_granularity: Literal["sentence", "paragraph"] = "sentence",
     ):
         """
-        Initialize aggressive strategy.
+        Initialize aggressive strategy with configured operators.
 
         Args:
-            max_tokens: Maximum tokens to keep (default: 150)
-            strip_html: Whether to strip HTML tags (default: True)
-            to_markdown: Convert HTML to Markdown instead of stripping (default: False)
-            similarity_threshold: Threshold for deduplication (default: 0.7)
-            dedup_method: Deduplication method: "jaccard" or "levenshtein" (default: "jaccard")
-            truncate_strategy: "head", "tail", or "middle_out" (default: "head")
+            truncate_max_tokens: Maximum tokens to keep (default: 150)
+            truncate_strategy: Truncation strategy (default: "head")
+            strip_html: Whether to include StripHTML operator (default: True)
+            strip_html_to_markdown: Convert HTML to Markdown instead of stripping (default: False)
+            deduplicate_method: Deduplication method (default: "jaccard")
+            deduplicate_similarity_threshold: Similarity threshold (default: 0.7)
+            deduplicate_granularity: Deduplication granularity (default: "sentence")
         """
-        self.max_tokens = max_tokens
-        self.strip_html = strip_html
-        self.to_markdown = to_markdown
-        self.similarity_threshold = similarity_threshold
-        self.dedup_method = dedup_method
-        self.truncate_strategy = truncate_strategy
-
-    def get_operations(self) -> List[Operation]:
-        """Get operations for aggressive strategy."""
         operations = []
-        if self.strip_html:
-            operations.append(StripHTML(to_markdown=self.to_markdown))
+
+        if strip_html:
+            operations.append(StripHTML(to_markdown=strip_html_to_markdown))
+
         operations.append(NormalizeWhitespace())
+
         operations.append(
             Deduplicate(
-                similarity_threshold=self.similarity_threshold,
-                method=self.dedup_method,
-                granularity="sentence",
+                method=deduplicate_method,
+                similarity_threshold=deduplicate_similarity_threshold,
+                granularity=deduplicate_granularity,
             )
         )
+
         operations.append(
-            TruncateTokens(max_tokens=self.max_tokens, strategy=self.truncate_strategy)
+            TruncateTokens(
+                max_tokens=truncate_max_tokens,
+                strategy=truncate_strategy,
+            )
         )
-        return operations
+
+        # Initialize Pipeline with the configured operators
+        super().__init__(operations)

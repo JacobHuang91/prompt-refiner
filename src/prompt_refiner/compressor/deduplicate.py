@@ -2,10 +2,10 @@
 
 from typing import Literal
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 
-class Deduplicate(Operation):
+class Deduplicate(Refiner):
     """Remove duplicate or highly similar text chunks (useful for RAG contexts).
 
     Performance Characteristics:

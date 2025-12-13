@@ -4,7 +4,8 @@ The Strategy module provides benchmark-tested preset strategies for token optimi
 
 ## Overview
 
-**Version 0.1.5+** introduces three preset strategies optimized for different use cases:
+**Version 0.1.5+** introduces three preset strategies optimized for different use cases.
+**Version 0.2.0** refactored strategies to inherit directly from Pipeline for a simpler API.
 
 | Strategy | Token Reduction | Quality | Use Case |
 |----------|----------------|---------|----------|
@@ -12,7 +13,7 @@ The Strategy module provides benchmark-tested preset strategies for token optimi
 | **Standard** | 4.8% | 98.4% | RAG contexts with duplicates |
 | **Aggressive** | 15% | 96.4% | Cost optimization, long contexts |
 
-All strategies return a `Refiner` instance, making them fully compatible with the existing API and extensible with `.pipe()`.
+Strategies now inherit from `Pipeline`, so you can use them directly without calling `.create_refiner()`. They're fully extensible with `.pipe()`.
 
 ## MinimalStrategy
 
@@ -34,20 +35,20 @@ Basic cleaning with minimal token reduction, prioritizing quality preservation.
 ```python
 from prompt_refiner.strategy import MinimalStrategy
 
-# Create strategy and refiner
-refiner = MinimalStrategy().create_refiner()
-cleaned = refiner.run("<div>  Your HTML content  </div>")
+# Use strategy directly (v0.2.0+)
+strategy = MinimalStrategy()
+cleaned = strategy.run("<div>  Your HTML content  </div>")
 # Output: "Your HTML content"
 
 # With Markdown conversion
-refiner = MinimalStrategy(to_markdown=True).create_refiner()
-cleaned = refiner.run("<strong>bold</strong> text")
+strategy = MinimalStrategy(strip_html_to_markdown=True)
+cleaned = strategy.run("<strong>bold</strong> text")
 # Output: "**bold** text"
 
 # Extend with additional operations
 from prompt_refiner import RedactPII
-refiner = MinimalStrategy().create_refiner()
-refiner.pipe(RedactPII(redact_types={"email"}))
+extended = MinimalStrategy().pipe(RedactPII(redact_types={"email"}))
+cleaned = extended.run(text)
 ```
 
 ## StandardStrategy
@@ -71,17 +72,17 @@ Enhanced cleaning with deduplication for RAG contexts with potential duplicates.
 ```python
 from prompt_refiner.strategy import StandardStrategy
 
-# Create strategy with defaults
-refiner = StandardStrategy().create_refiner()
+# Use strategy directly (v0.2.0+)
+strategy = StandardStrategy()
 text = "<div>Hello world. Hello world. Goodbye world.</div>"
-cleaned = refiner.run(text)
+cleaned = strategy.run(text)
 # Output: "Hello world. Goodbye world."  (duplicate removed)
 
 # Custom similarity threshold
-refiner = StandardStrategy(similarity_threshold=0.7).create_refiner()
+strategy = StandardStrategy(deduplicate_similarity_threshold=0.7)
 
 # Alternative deduplication method
-refiner = StandardStrategy(dedup_method="levenshtein").create_refiner()
+strategy = StandardStrategy(deduplicate_method="levenshtein")
 ```
 
 ## AggressiveStrategy
@@ -106,102 +107,91 @@ Maximum token reduction with deduplication and truncation for cost optimization.
 ```python
 from prompt_refiner.strategy import AggressiveStrategy
 
-# Create strategy with default max_tokens=150
-refiner = AggressiveStrategy().create_refiner()
+# Use strategy directly (v0.2.0+) with default truncate_max_tokens=150
+strategy = AggressiveStrategy()
 long_text = "word " * 100  # 100 words
-cleaned = refiner.run(long_text)
+cleaned = strategy.run(long_text)
 # Output: Truncated to ~150 tokens with duplicates removed
 
 # Custom max_tokens and truncation strategy
-refiner = AggressiveStrategy(
-    max_tokens=200,
+strategy = AggressiveStrategy(
+    truncate_max_tokens=200,
     truncate_strategy="tail"  # Keep last 200 tokens
-).create_refiner()
+)
 
 # More aggressive deduplication
-refiner = AggressiveStrategy(
-    max_tokens=100,
-    similarity_threshold=0.6  # More aggressive duplicate detection
-).create_refiner()
+strategy = AggressiveStrategy(
+    truncate_max_tokens=100,
+    deduplicate_similarity_threshold=0.6  # More aggressive duplicate detection
+)
 ```
 
-## BaseStrategy
+## Creating Custom Strategies
 
-Abstract base class for creating custom strategies.
-
-::: prompt_refiner.strategy.BaseStrategy
-    options:
-      show_source: true
-      members_order: source
-      heading_level: 3
-
-### Creating Custom Strategies
+Custom strategies can be created by inheriting from `Pipeline`:
 
 ```python
-from prompt_refiner.strategy import BaseStrategy
-from prompt_refiner import StripHTML, NormalizeWhitespace, RedactPII
+from prompt_refiner import Pipeline, StripHTML, NormalizeWhitespace, RedactPII
 
-class CustomStrategy(BaseStrategy):
+class CustomStrategy(Pipeline):
     def __init__(self, redact_pii: bool = True):
-        self.redact_pii = redact_pii
-
-    def get_operations(self):
         operations = [StripHTML(), NormalizeWhitespace()]
-        if self.redact_pii:
+        if redact_pii:
             operations.append(RedactPII(redact_types={"email", "phone"}))
-        return operations
+        super().__init__(operations)
 
-# Use custom strategy
-refiner = CustomStrategy(redact_pii=True).create_refiner()
+# Use custom strategy directly
+strategy = CustomStrategy(redact_pii=True)
+cleaned = strategy.run(text)
 ```
 
 ## Usage Patterns
 
-### Basic Usage
+### Basic Usage (v0.2.0+)
 
 ```python
 from prompt_refiner.strategy import MinimalStrategy, StandardStrategy, AggressiveStrategy
 
-# Quick start with minimal
-refiner = MinimalStrategy().create_refiner()
-cleaned = refiner.run(text)
+# Quick start with minimal - use directly
+strategy = MinimalStrategy()
+cleaned = strategy.run(text)
 
 # Standard for RAG with duplicates
-refiner = StandardStrategy().create_refiner()
-cleaned = refiner.run(rag_context)
+strategy = StandardStrategy()
+cleaned = strategy.run(rag_context)
 
 # Aggressive for cost optimization
-refiner = AggressiveStrategy(max_tokens=200).create_refiner()
-cleaned = refiner.run(long_context)
+strategy = AggressiveStrategy(truncate_max_tokens=200)
+cleaned = strategy.run(long_context)
 ```
 
 ### Composition with Additional Operations
 
-Strategies return `Refiner` instances, so you can extend them with additional operations:
+Strategies inherit from `Pipeline`, so you can extend them with `.pipe()`:
 
 ```python
 from prompt_refiner.strategy import MinimalStrategy
 from prompt_refiner import RedactPII, Deduplicate
 
 # Start with minimal, add PII redaction
-refiner = MinimalStrategy().create_refiner()
-refiner.pipe(RedactPII(redact_types={"email"}))
+extended = MinimalStrategy().pipe(RedactPII(redact_types={"email"}))
+cleaned = extended.run(text)
 
 # Start with standard, add more aggressive deduplication
 from prompt_refiner.strategy import StandardStrategy
-refiner = StandardStrategy().create_refiner()
-refiner.pipe(Deduplicate(similarity_threshold=0.6))  # More aggressive
+extended = StandardStrategy().pipe(Deduplicate(similarity_threshold=0.6))
+cleaned = extended.run(text)
 ```
 
-### Direct Strategy Calling
+### Using .process() Method
 
-Strategies also support direct calling for quick one-off processing:
+Strategies also support the `.process()` method from the Refiner interface:
 
 ```python
 from prompt_refiner.strategy import MinimalStrategy
 
 strategy = MinimalStrategy()
-cleaned = strategy(text)  # Equivalent to: strategy.create_refiner().run(text)
+cleaned = strategy.process(text)  # Equivalent to strategy.run(text)
 ```
 
 ## Choosing a Strategy
@@ -242,34 +232,36 @@ cleaned = strategy(text)  # Equivalent to: strategy.create_refiner().run(text)
 - Context is already short
 - Truncation would remove critical info
 
-## Configuration Reference
+## Configuration Reference (v0.2.0+)
 
 ### MinimalStrategy Parameters
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `strip_html` | `bool` | `True` | Whether to strip HTML tags |
-| `to_markdown` | `bool` | `False` | Convert HTML to Markdown instead of stripping |
+| `strip_html_to_markdown` | `bool` | `False` | Convert HTML to Markdown instead of stripping |
 
 ### StandardStrategy Parameters
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `strip_html` | `bool` | `True` | Whether to strip HTML tags |
-| `to_markdown` | `bool` | `False` | Convert HTML to Markdown instead of stripping |
-| `similarity_threshold` | `float` | `0.8` | Threshold for deduplication (0.0-1.0) |
-| `dedup_method` | `Literal["jaccard", "levenshtein"]` | `"jaccard"` | Deduplication algorithm |
+| `strip_html_to_markdown` | `bool` | `False` | Convert HTML to Markdown instead of stripping |
+| `deduplicate_method` | `Literal["jaccard", "levenshtein"]` | `"jaccard"` | Deduplication algorithm |
+| `deduplicate_similarity_threshold` | `float` | `0.8` | Threshold for deduplication (0.0-1.0) |
+| `deduplicate_granularity` | `Literal["sentence", "paragraph"]` | `"sentence"` | Deduplication granularity |
 
 ### AggressiveStrategy Parameters
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `max_tokens` | `int` | `150` | Maximum tokens to keep |
-| `strip_html` | `bool` | `True` | Whether to strip HTML tags |
-| `to_markdown` | `bool` | `False` | Convert HTML to Markdown instead of stripping |
-| `similarity_threshold` | `float` | `0.7` | Threshold for deduplication (0.0-1.0) |
-| `dedup_method` | `Literal["jaccard", "levenshtein"]` | `"jaccard"` | Deduplication algorithm |
+| `truncate_max_tokens` | `int` | `150` | Maximum tokens to keep |
 | `truncate_strategy` | `Literal["head", "tail", "middle_out"]` | `"head"` | Which part of text to keep |
+| `strip_html` | `bool` | `True` | Whether to strip HTML tags |
+| `strip_html_to_markdown` | `bool` | `False` | Convert HTML to Markdown instead of stripping |
+| `deduplicate_method` | `Literal["jaccard", "levenshtein"]` | `"jaccard"` | Deduplication algorithm |
+| `deduplicate_similarity_threshold` | `float` | `0.7` | Threshold for deduplication (0.0-1.0) |
+| `deduplicate_granularity` | `Literal["sentence", "paragraph"]` | `"sentence"` | Deduplication granularity |
 
 ## See Also
 

@@ -33,9 +33,9 @@ raw_rag_context = """
 print("\nProcessing RAG context with Standard Strategy...")
 print("-" * 70)
 
-# Extend the preset strategy with additional operations using .pipe()
-refiner = StandardStrategy().create_refiner().pipe(FixUnicode())
-cleaned = refiner.run(raw_rag_context)
+# Strategy IS a pipeline - use directly, extend with .pipe()
+strategy = StandardStrategy().pipe(FixUnicode())
+cleaned = strategy.run(raw_rag_context)
 
 input_len = len(raw_rag_context)
 output_len = len(cleaned)

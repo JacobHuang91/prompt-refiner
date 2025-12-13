@@ -3,10 +3,10 @@
 import json
 from typing import Any, Dict, List, Union
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 
-class JsonCleaner(Operation):
+class JsonCleaner(Refiner):
     """
     Cleans and minifies JSON strings.
     Removes null values, empty containers, and extra whitespace.

@@ -2,7 +2,7 @@
 
 import logging
 from enum import Enum
-from typing import Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 from .base import (
     ROLE_ASSISTANT,
@@ -13,6 +13,10 @@ from .base import (
     BasePacker,
     PackableItem,
 )
+
+if TYPE_CHECKING:
+    from ..pipeline import Pipeline
+    from ..refiner import Refiner
 
 logger = logging.getLogger(__name__)
 
@@ -71,10 +75,15 @@ class TextPacker(BasePacker):
         text_format: TextFormat = TextFormat.RAW,
         separator: Optional[str] = None,
         track_savings: bool = False,
-        system: Optional[Union[str, Tuple[str, List]]] = None,
-        context: Optional[Union[List[str], Tuple[List[str], List]]] = None,
-        history: Optional[Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List]]] = None,
-        query: Optional[Union[str, Tuple[str, List]]] = None,
+        system: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], Union["Refiner", "Pipeline"]]]] = None,
+        history: Optional[
+            Union[
+                List[Dict[str, str]],
+                Tuple[List[Dict[str, str]], Union["Refiner", "Pipeline"]],
+            ]
+        ] = None,
+        query: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
     ):
         """
         Initialize text packer.
@@ -88,17 +97,22 @@ class TextPacker(BasePacker):
                 operations (default: False)
             system: System message. Can be:
                 - str: "You are helpful"
-                - Tuple[str, List]: ("You are helpful", [StripHTML()])
+                - Tuple[str, Refiner]: ("You are helpful", StripHTML())
+                - Tuple[str, Pipeline]: ("You are helpful", StripHTML() | NormalizeWhitespace())
             context: Context documents. Can be:
                 - List[str]: ["doc1", "doc2"]
-                - Tuple[List[str], List]: (["doc1", "doc2"], [StripHTML()])
+                - Tuple[List[str], Refiner]: (["doc1", "doc2"], StripHTML())
+                - Tuple[List[str], Pipeline]: (["doc1", "doc2"],
+                    StripHTML() | NormalizeWhitespace())
             history: Conversation history. Can be:
                 - List[Dict]: [{"role": "user", "content": "Hi"}]
-                - Tuple[List[Dict], List]: ([{"role": "user", "content": "Hi"}],
-                    [NormalizeWhitespace()])
+                - Tuple[List[Dict], Refiner]: ([{"role": "user", "content": "Hi"}], StripHTML())
+                - Tuple[List[Dict], Pipeline]: ([{"role": "user", "content": "Hi"}],
+                    StripHTML() | NormalizeWhitespace())
             query: Current query. Can be:
                 - str: "What's the weather?"
-                - Tuple[str, List]: ("What's the weather?", [StripHTML()])
+                - Tuple[str, Refiner]: ("What's the weather?", StripHTML())
+                - Tuple[str, Pipeline]: ("What's the weather?", StripHTML() | NormalizeWhitespace())
 
         Example (Simple - no refiners):
             >>> packer = TextPacker(
@@ -110,12 +124,24 @@ class TextPacker(BasePacker):
             ... )
             >>> prompt = packer.pack()
 
-        Example (With refiners - tuple syntax):
+        Example (With single Refiner):
             >>> from prompt_refiner import TextPacker, StripHTML
             >>> packer = TextPacker(
             ...     text_format=TextFormat.MARKDOWN,
             ...     system="You are helpful.",
-            ...     context=(["<div>Doc 1</div>"], [StripHTML()]),
+            ...     context=(["<div>Doc 1</div>"], StripHTML()),
+            ...     query="What's the weather?"
+            ... )
+            >>> prompt = packer.pack()
+
+        Example (With Pipeline - multiple refiners):
+            >>> from prompt_refiner import TextPacker, StripHTML, NormalizeWhitespace, Pipeline
+            >>> cleaner = StripHTML() | NormalizeWhitespace()
+            >>> # Or: cleaner = Pipeline([StripHTML(), NormalizeWhitespace()])
+            >>> packer = TextPacker(
+            ...     text_format=TextFormat.MARKDOWN,
+            ...     system="You are helpful.",
+            ...     context=(["<div>Doc 1</div>"], cleaner),
             ...     query="What's the weather?"
             ... )
             >>> prompt = packer.pack()
@@ -156,15 +182,19 @@ class TextPacker(BasePacker):
             self.add(query_content, role="query", refine_with=query_refiner)
 
     @staticmethod
-    def _extract_field(field: Union[any, Tuple[any, List]]) -> Tuple[any, Optional[List]]:
+    def _extract_field(
+        field: Union[any, Tuple[any, Union["Refiner", "Pipeline"]]],
+    ) -> Tuple[any, Optional[Union["Refiner", "Pipeline"]]]:
         """
-        Extract content and refiner from a field.
+        Extract content and refiner/pipeline from a field.
 
         Args:
-            field: Either raw content or (content, refiner) tuple
+            field: Either raw content or (content, refiner/pipeline) tuple.
+                Can be a Refiner or Pipeline.
 
         Returns:
-            Tuple of (content, refiner)
+            Tuple of (content, refiner/pipeline) where the second element can be
+            None, Refiner, or Pipeline.
         """
         if isinstance(field, tuple) and len(field) == 2:
             content, refiner = field
@@ -175,10 +205,15 @@ class TextPacker(BasePacker):
     @classmethod
     def quick_pack(
         cls,
-        system: Optional[Union[str, Tuple[str, List]]] = None,
-        context: Optional[Union[List[str], Tuple[List[str], List]]] = None,
-        history: Optional[Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List]]] = None,
-        query: Optional[Union[str, Tuple[str, List]]] = None,
+        system: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], Union["Refiner", "Pipeline"]]]] = None,
+        history: Optional[
+            Union[
+                List[Dict[str, str]],
+                Tuple[List[Dict[str, str]], Union["Refiner", "Pipeline"]],
+            ]
+        ] = None,
+        query: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
         model: Optional[str] = None,
         max_tokens: Optional[int] = None,
         text_format: TextFormat = TextFormat.RAW,
@@ -189,10 +224,10 @@ class TextPacker(BasePacker):
         One-liner to create packer and pack text immediately.
 
         Args:
-            system: System message (str or (str, refiner_list) tuple)
-            context: Context documents (list or (list, refiner_list) tuple)
-            history: Conversation history (list or (list, refiner_list) tuple)
-            query: Current query (str or (str, refiner_list) tuple)
+            system: System message (str or (str, Refiner/Pipeline) tuple)
+            context: Context documents (list or (list, Refiner/Pipeline) tuple)
+            history: Conversation history (list or (list, Refiner/Pipeline) tuple)
+            query: Current query (str or (str, Refiner/Pipeline) tuple)
             model: Optional model name for precise token counting
             max_tokens: Optional token budget
             text_format: Text formatting strategy (RAW, MARKDOWN, XML)
@@ -210,12 +245,25 @@ class TextPacker(BasePacker):
             ...     query="What's the weather?"
             ... )
 
-        Example (With refiners):
+        Example (With single Refiner):
             >>> from prompt_refiner import TextPacker, StripHTML, TextFormat
             >>> prompt = TextPacker.quick_pack(
             ...     text_format=TextFormat.MARKDOWN,
             ...     system="You are helpful.",
-            ...     context=(["<div>Doc 1</div>"], [StripHTML()]),
+            ...     context=(["<div>Doc 1</div>"], StripHTML()),
+            ...     query="What's the weather?"
+            ... )
+
+        Example (With Pipeline - multiple refiners):
+            >>> from prompt_refiner import (
+            ...     TextPacker, StripHTML, NormalizeWhitespace, TextFormat, Pipeline
+            ... )
+            >>> cleaner = StripHTML() | NormalizeWhitespace()
+            >>> # Or: cleaner = Pipeline([StripHTML(), NormalizeWhitespace()])
+            >>> prompt = TextPacker.quick_pack(
+            ...     text_format=TextFormat.MARKDOWN,
+            ...     system="You are helpful.",
+            ...     context=(["<div>Doc 1</div>"], cleaner),
             ...     query="What's the weather?"
             ... )
         """

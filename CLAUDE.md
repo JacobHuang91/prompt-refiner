@@ -47,7 +47,50 @@ Each core module contains specialized operations that can be composed into pipel
 
 ## Version History
 
-### v0.1.6 (Current) - Tools Module
+### v0.2.0 (Current) - Strategy Refactoring
+**BREAKING CHANGES:**
+
+**Strategy Module Refactoring**
+- **Strategies now inherit from Pipeline**: MinimalStrategy, StandardStrategy, and AggressiveStrategy now directly inherit from Pipeline class
+- **Removed `.create_refiner()` method**: Strategies ARE pipelines now - use them directly with `.run()` or `.process()`
+- **Fine-grained parameter control**: Each operator's parameters exposed with clear prefixing
+  - `strip_html_to_markdown` - Configure StripHTML operator
+  - `deduplicate_method`, `deduplicate_similarity_threshold`, `deduplicate_granularity` - Configure Deduplicate operator
+  - `truncate_max_tokens`, `truncate_strategy` - Configure TruncateTokens operator
+- **Simplified API**: Direct usage without intermediate conversion step
+- **Consistent extension**: Use `.pipe()` method (inherited from Pipeline) to add operations
+- **Type-safe**: Full IDE autocomplete for all operator parameters with Literal types
+- **Removed BaseStrategy**: No longer needed with direct Pipeline inheritance
+
+**Migration Guide:**
+```python
+# OLD (v0.1.x)
+strategy = StandardStrategy()
+refiner = strategy.create_refiner()
+result = refiner.run(text)
+
+# NEW (v0.2.0)
+strategy = StandardStrategy()
+result = strategy.run(text)  # Direct usage!
+
+# Configure individual operators
+strategy = StandardStrategy(
+    deduplicate_method="levenshtein",
+    deduplicate_similarity_threshold=0.9,
+    strip_html_to_markdown=True
+)
+
+# Extend with .pipe()
+extended = StandardStrategy().pipe(RedactPII())
+```
+
+**Benefits:**
+- Simpler API (one less step)
+- Better type safety (full parameter autocomplete)
+- Cleaner code (strategies work exactly like Pipeline)
+- More flexible (fine-grained control over preset operators)
+
+### v0.1.6 - Tools Module
 **New Operations:**
 
 **SchemaCompressor**
@@ -76,9 +119,9 @@ Each core module contains specialized operations that can be composed into pipel
 ### v0.1.5 - Preset Strategies & Token Savings Tracking
 **Three Major Features:**
 
-1. **Strategy Module (NEW)**
+1. **Strategy Module (NEW)** *(Refactored in v0.2.0)*
    - 3 benchmark-tested preset strategies: MinimalStrategy, StandardStrategy, AggressiveStrategy
-   - Direct instantiation API: `MinimalStrategy().create_refiner()`
+   - Direct instantiation API (v0.1.5: `MinimalStrategy().create_refiner()`, v0.2.0: `MinimalStrategy()`)
    - Type-safe with Literal types
    - Fully extensible with `.pipe()` for additional operations
    - 25 comprehensive tests + 3 focused example files

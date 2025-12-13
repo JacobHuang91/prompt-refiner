@@ -16,7 +16,7 @@ print(f"\nOriginal (with invisible characters):\n{repr(text_with_issues)}")
 print(f"Visual appearance: {text_with_issues}")
 
 # Clean unicode
-refiner = Refiner().pipe(FixUnicode())
+refiner = Pipeline().pipe(FixUnicode())
 cleaned = refiner.run(text_with_issues)
 print(f"\nCleaned:\n{repr(cleaned)}")
 print(f"Visual appearance: {cleaned}")

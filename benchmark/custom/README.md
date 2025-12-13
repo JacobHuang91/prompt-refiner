@@ -32,14 +32,11 @@ The benchmark uses 30 carefully curated test cases:
 
 ## 🔧 Installation
 
-Install benchmark dependencies:
+Install dependencies:
 
 ```bash
 # Using uv (recommended)
-uv pip install -e ".[benchmark]"
-
-# Or using pip
-pip install -e ".[benchmark]"
+uv sync --group dev
 ```
 
 This installs:

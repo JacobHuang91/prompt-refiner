@@ -1,9 +1,9 @@
 """Whitespace normalization operation."""
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 
-class NormalizeWhitespace(Operation):
+class NormalizeWhitespace(Refiner):
     """Normalize whitespace in text."""
 
     def process(self, text: str) -> str:

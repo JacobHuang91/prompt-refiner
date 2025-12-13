@@ -3,10 +3,10 @@
 import re
 from typing import Literal
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 
-class TruncateTokens(Operation):
+class TruncateTokens(Refiner):
     """Truncate text to a maximum number of tokens with intelligent sentence boundary detection."""
 
     def __init__(

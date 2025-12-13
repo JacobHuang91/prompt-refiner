@@ -46,7 +46,7 @@ print(f"Original size: {len(api_response)} characters")
 print("\n" + "=" * 60)
 print("Example 1: Strip nulls only")
 print("=" * 60)
-refiner = Refiner().pipe(JsonCleaner(strip_nulls=True, strip_empty=False))
+refiner = Pipeline().pipe(JsonCleaner(strip_nulls=True, strip_empty=False))
 cleaned = refiner.run(api_response)
 print(f"\nResult:\n{cleaned}")
 print(f"Size: {len(cleaned)} characters ({100 - len(cleaned) * 100 // len(api_response)}% reduction)")
@@ -55,7 +55,7 @@ print(f"Size: {len(cleaned)} characters ({100 - len(cleaned) * 100 // len(api_re
 print("\n" + "=" * 60)
 print("Example 2: Strip nulls AND empty containers")
 print("=" * 60)
-refiner = Refiner().pipe(JsonCleaner(strip_nulls=True, strip_empty=True))
+refiner = Pipeline().pipe(JsonCleaner(strip_nulls=True, strip_empty=True))
 cleaned = refiner.run(api_response)
 print(f"\nResult:\n{cleaned}")
 print(f"Size: {len(cleaned)} characters ({100 - len(cleaned) * 100 // len(api_response)}% reduction)")
@@ -88,7 +88,7 @@ user_profile = """
 """
 print(f"Original:\n{user_profile}")
 
-refiner = Refiner().pipe(JsonCleaner(strip_nulls=True, strip_empty=True))
+refiner = Pipeline().pipe(JsonCleaner(strip_nulls=True, strip_empty=True))
 cleaned = refiner.run(user_profile)
 print(f"\nCleaned:\n{cleaned}")
 print(f"\nToken savings: {len(user_profile)} → {len(cleaned)} characters ({100 - len(cleaned) * 100 // len(user_profile)}% reduction)")
@@ -104,7 +104,7 @@ data = """
     "items": []
 }
 """
-refiner = Refiner().pipe(JsonCleaner(strip_nulls=False, strip_empty=False))
+refiner = Pipeline().pipe(JsonCleaner(strip_nulls=False, strip_empty=False))
 minified = refiner.run(data)
 print(f"Original: {data}")
 print(f"Minified: {minified}")
@@ -143,7 +143,7 @@ print("Use Case: Compress RAG context before sending to LLM")
 print(f"\nBefore compression: {len(rag_docs)} characters")
 
 # Aggressive cleaning to maximize token savings
-refiner = Refiner().pipe(JsonCleaner(strip_nulls=True, strip_empty=True))
+refiner = Pipeline().pipe(JsonCleaner(strip_nulls=True, strip_empty=True))
 compressed = refiner.run(rag_docs)
 
 print(f"After compression: {len(compressed)} characters")

@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from typing import Any, Dict, Mapping, Sequence, Set
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 JSON = Dict[str, Any]
 JSONLike = Any
 
 
-class ResponseCompressor(Operation):
+class ResponseCompressor(Refiner):
     """
     Compress tool responses to reduce token usage before sending to LLM.
 

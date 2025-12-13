@@ -27,6 +27,7 @@ from .packer import (
     TextFormat,
     TextPacker,
 )
+from .pipeline import Pipeline
 from .refiner import Refiner
 from .scrubber import RedactPII
 from .strategy import AggressiveStrategy, MinimalStrategy, StandardStrategy
@@ -34,6 +35,7 @@ from .tools import ResponseCompressor, SchemaCompressor
 
 __all__ = [
     "Refiner",
+    "Pipeline",
     # Cleaner operations
     "StripHTML",
     "NormalizeWhitespace",

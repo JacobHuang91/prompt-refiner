@@ -4,12 +4,12 @@ import logging
 import math
 from typing import Optional
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 logger = logging.getLogger(__name__)
 
 
-class CountTokens(Operation):
+class CountTokens(Refiner):
     """Count tokens and provide statistics before/after processing.
 
     Supports two modes:

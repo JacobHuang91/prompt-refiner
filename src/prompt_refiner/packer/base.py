@@ -3,10 +3,13 @@
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Union
 
 from ..analyzer.counter import CountTokens
-from ..operation import Operation
+from ..refiner import Refiner
+
+if TYPE_CHECKING:
+    from ..pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
 
@@ -114,7 +117,7 @@ class BasePacker(ABC):
         content: str,
         role: RoleType,
         priority: Optional[int] = None,
-        refine_with: Optional[Union[Operation, List[Operation]]] = None,
+        refine_with: Optional[Union[Refiner, "Pipeline"]] = None,
     ) -> "BasePacker":
         """
         Add an item to the packer.
@@ -133,7 +136,11 @@ class BasePacker(ABC):
                 - ROLE_CONTEXT → PRIORITY_HIGH (20)
                 - ROLE_USER/ROLE_ASSISTANT → PRIORITY_LOW (40)
                 - Other roles → PRIORITY_MEDIUM (30)
-            refine_with: Optional operation(s) to apply before adding
+            refine_with: Optional refiner or pipeline to apply before adding.
+                Can be:
+                - Single refiner: StripHTML()
+                - Pipeline: StripHTML() | NormalizeWhitespace()
+                - Pipeline from list: Pipeline([StripHTML(), NormalizeWhitespace()])
 
         Returns:
             Self for method chaining
@@ -156,12 +163,8 @@ class BasePacker(ABC):
             # Track original tokens before refinement (if tracking enabled)
             original_content = content if self.track_savings else None
 
-            # Apply refinement operations
-            if isinstance(refine_with, list):
-                for op in refine_with:
-                    content = op.process(content)
-            else:
-                content = refine_with.process(content)
+            # Apply refinement (Refiner or Pipeline both use process() method)
+            content = refine_with.process(content)
 
             # Update savings statistics (if tracking enabled)
             if self.track_savings and original_content is not None:

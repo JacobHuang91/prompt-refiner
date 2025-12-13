@@ -24,7 +24,7 @@ print(f"\nOriginal RAG results:\n{rag_results}")
 print("\n" + "-" * 60)
 print("Deduplication: Sentence level, Jaccard similarity (80%)")
 print("-" * 60)
-refiner = Refiner().pipe(
+refiner = Pipeline().pipe(
     Deduplicate(similarity_threshold=0.8, method="jaccard", granularity="sentence")
 )
 deduped = refiner.run(rag_results)
@@ -34,7 +34,7 @@ print(f"Result:\n{deduped}")
 print("\n" + "-" * 60)
 print("Deduplication: Sentence level, Levenshtein distance (70%)")
 print("-" * 60)
-refiner_aggressive = Refiner().pipe(
+refiner_aggressive = Pipeline().pipe(
     Deduplicate(similarity_threshold=0.7, method="levenshtein", granularity="sentence")
 )
 deduped_aggressive = refiner_aggressive.run(rag_results)
@@ -53,7 +53,7 @@ print("\n" + "-" * 60)
 print("Deduplication: Paragraph level")
 print("-" * 60)
 print(f"\nOriginal:\n{paragraph_text}")
-refiner_para = Refiner().pipe(
+refiner_para = Pipeline().pipe(
     Deduplicate(similarity_threshold=0.95, method="jaccard", granularity="paragraph")
 )
 deduped_para = refiner_para.run(paragraph_text)

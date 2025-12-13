@@ -13,6 +13,7 @@ from prompt_refiner import (
     ROLE_USER,
     MessagesPacker,
     NormalizeWhitespace,
+    Pipeline,
     StripHTML,
 )
 
@@ -108,7 +109,7 @@ def test_messages_packer_chained_operations():
         messy,
         role=ROLE_USER,
         priority=PRIORITY_HIGH,
-        refine_with=[StripHTML(), NormalizeWhitespace()],
+        refine_with=Pipeline([StripHTML(), NormalizeWhitespace()]),
     )
 
     messages = packer.pack()
@@ -536,7 +537,7 @@ def test_constructor_with_all_parameters():
 def test_constructor_with_system_and_refiner():
     """Test constructor with system and refiner using tuple syntax."""
     packer = MessagesPacker(
-        max_tokens=200, system=("You    are    helpful.", [NormalizeWhitespace()])
+        max_tokens=200, system=("You    are    helpful.", Pipeline([NormalizeWhitespace()]))
     )
 
     messages = packer.pack()
@@ -548,7 +549,7 @@ def test_constructor_with_system_and_refiner():
 def test_constructor_with_context_and_refiner():
     """Test constructor with context and refiner using tuple syntax."""
     packer = MessagesPacker(
-        max_tokens=300, context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], [StripHTML()])
+        max_tokens=300, context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], Pipeline([StripHTML()]))
     )
 
     messages = packer.pack()
@@ -562,7 +563,10 @@ def test_constructor_with_history_and_refiner():
     """Test constructor with history and refiner using tuple syntax."""
     packer = MessagesPacker(
         max_tokens=200,
-        history=([{"role": "user", "content": "Hello    world"}], [NormalizeWhitespace()]),
+        history=(
+            [{"role": "user", "content": "Hello    world"}],
+            Pipeline([NormalizeWhitespace()]),
+        ),
     )
 
     messages = packer.pack()
@@ -573,7 +577,9 @@ def test_constructor_with_history_and_refiner():
 
 def test_constructor_with_query_and_refiner():
     """Test constructor with query and refiner using tuple syntax."""
-    packer = MessagesPacker(max_tokens=100, query=("<div>What's the weather?</div>", [StripHTML()]))
+    packer = MessagesPacker(
+        max_tokens=100, query=("<div>What's the weather?</div>", Pipeline([StripHTML()]))
+    )
 
     messages = packer.pack()
 
@@ -584,7 +590,7 @@ def test_constructor_with_query_and_refiner():
 def test_constructor_with_track_savings():
     """Test constructor with track_savings enabled."""
     packer = MessagesPacker(
-        max_tokens=200, track_savings=True, context=(["<div>Test</div>"], [StripHTML()])
+        max_tokens=200, track_savings=True, context=(["<div>Test</div>"], Pipeline([StripHTML()]))
     )
 
     messages = packer.pack()
@@ -605,11 +611,12 @@ def test_extract_field_with_plain_value():
 
 def test_extract_field_with_tuple():
     """Test _extract_field with tuple."""
-    content, refiner = MessagesPacker._extract_field(("Hello", [StripHTML()]))
+    content, refiner = MessagesPacker._extract_field(("Hello", Pipeline([StripHTML()])))
 
     assert content == "Hello"
-    assert len(refiner) == 1
-    assert isinstance(refiner[0], StripHTML)
+    assert isinstance(refiner, Pipeline)
+    assert len(refiner._refiners) == 1
+    assert isinstance(refiner._refiners[0], StripHTML)
 
 
 def test_extract_field_with_list():
@@ -635,7 +642,7 @@ def test_quick_pack_with_refiners():
     """Test quick_pack with refiners."""
     messages = MessagesPacker.quick_pack(
         system="You are helpful.",
-        context=(["<div>Doc 1</div>"], [StripHTML()]),
+        context=(["<div>Doc 1</div>"], Pipeline([StripHTML()])),
         query="What's the weather?",
     )
 
@@ -664,7 +671,7 @@ def test_quick_pack_with_model():
 def test_quick_pack_with_track_savings():
     """Test quick_pack cannot access savings (one-liner returns messages only)."""
     messages = MessagesPacker.quick_pack(
-        track_savings=True, context=(["<div>Test</div>"], [StripHTML()]), query="Test"
+        track_savings=True, context=(["<div>Test</div>"], Pipeline([StripHTML()])), query="Test"
     )
 
     # Just verify it works and returns messages
@@ -686,3 +693,109 @@ def test_constructor_and_add_method_combined():
     assert messages[0]["content"] == "You are helpful."
     assert messages[1]["content"] == "Additional context"
     assert messages[2]["content"] == "What's up?"
+
+
+class TestMessagePackerWithRefiner:
+    def test_constructor_with_refiner_system(self):
+        """Test MessagesPacker constructor accepts Refiner for system."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = MessagesPacker(system=("<div>  System   prompt  </div>", cleaner))
+        messages = packer.pack()
+
+        assert len(messages) == 1
+        assert messages[0]["role"] == "system"
+        assert messages[0]["content"] == "System prompt"
+
+    def test_constructor_with_refiner_context(self):
+        """Test MessagesPacker constructor accepts Refiner for context."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = MessagesPacker(context=(["<div>  Doc   1  </div>", "<p>  Doc   2  </p>"], cleaner))
+        messages = packer.pack()
+
+        assert len(messages) == 2
+        assert messages[0]["content"] == "Doc 1"
+        assert messages[1]["content"] == "Doc 2"
+
+    def test_constructor_with_refiner_query(self):
+        """Test MessagesPacker constructor accepts Refiner for query."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = MessagesPacker(query=("<div>  What's   the   weather?  </div>", cleaner))
+        messages = packer.pack()
+
+        assert len(messages) == 1
+        assert messages[0]["content"] == "What's the weather?"
+
+    def test_constructor_with_refiner_history(self):
+        """Test MessagesPacker constructor accepts Refiner for history."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = MessagesPacker(
+            history=(
+                [
+                    {"role": "user", "content": "<div>  Hello  </div>"},
+                    {"role": "assistant", "content": "<p>  Hi   there  </p>"},
+                ],
+                cleaner,
+            )
+        )
+        messages = packer.pack()
+
+        assert len(messages) == 2
+        assert messages[0]["content"] == "Hello"
+        assert messages[1]["content"] == "Hi there"
+
+    def test_quick_pack_with_refiner(self):
+        """Test quick_pack accepts Refiner."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        messages = MessagesPacker.quick_pack(
+            system=("You are helpful.", cleaner),
+            context=(["<div>Doc</div>"], cleaner),
+            query=("<div>Query</div>", cleaner),
+        )
+
+        assert len(messages) == 3
+        assert all("<" not in msg["content"] for msg in messages)
+        assert all("  " not in msg["content"] for msg in messages)
+
+    def test_add_with_refiner(self):
+        """Test add() method accepts Refiner in refine_with."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+        packer = MessagesPacker()
+        packer.add(
+            "<div>  Test   content  </div>",
+            role=ROLE_SYSTEM,
+            refine_with=cleaner,
+        )
+        messages = packer.pack()
+
+        assert len(messages) == 1
+        assert messages[0]["content"] == "Test content"
+
+
+class TestRefinerReuse:
+    def test_refiner_can_be_reused(self):
+        """Test that same Refiner can be used in multiple places."""
+        cleaner = StripHTML() | NormalizeWhitespace()
+
+        packer = MessagesPacker(
+            system=("<div>System</div>", cleaner),
+            context=(["<div>Context</div>"], cleaner),
+            query=("<div>Query</div>", cleaner),
+        )
+        messages = packer.pack()
+
+        assert len(messages) == 3
+        assert all("<" not in msg["content"] for msg in messages)
+
+    def test_different_refiners_work_independently(self):
+        """Test that different Refiners work independently."""
+        html_stripper = StripHTML()
+        whitespace_normalizer = NormalizeWhitespace()
+
+        packer = MessagesPacker(
+            system=("<div>System</div>", html_stripper),
+            query=("Query   with   spaces", whitespace_normalizer),
+        )
+        messages = packer.pack()
+
+        assert messages[0]["content"] == "System"  # HTML stripped
+        assert messages[1]["content"] == "Query with spaces"  # Whitespace normalized

@@ -31,7 +31,7 @@ counter = CountTokens(original_text=original_text)
 
 # Build optimization pipeline
 refiner = (
-    Refiner()
+    Pipeline()
     .pipe(StripHTML())  # Remove HTML tags
     .pipe(NormalizeWhitespace())  # Fix whitespace
     .pipe(FixUnicode())  # Clean unicode
@@ -54,7 +54,7 @@ print("=" * 60)
 
 counter2 = CountTokens(original_text=original_text)
 refiner_truncate = (
-    Refiner()
+    Pipeline()
     .pipe(StripHTML())
     .pipe(NormalizeWhitespace())
     .pipe(TruncateTokens(max_tokens=20, strategy="head"))

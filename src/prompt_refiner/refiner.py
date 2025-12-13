@@ -1,60 +1,46 @@
-"""Main Refiner class for building prompt processing pipelines."""
+"""Base refiner class for prompt processing."""
 
-from typing import List
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
-from .operation import Operation
+if TYPE_CHECKING:
+    from .pipeline import Pipeline
 
 
-class Refiner:
-    """A pipeline builder for prompt refining operations."""
+class Refiner(ABC):
+    """Base class for all prompt refining operations."""
 
-    def __init__(self):
-        """Initialize an empty refiner pipeline."""
-        self._operations: List[Operation] = []
-
-    def pipe(self, operation: Operation) -> "Refiner":
+    @abstractmethod
+    def process(self, text: str) -> str:
         """
-        Add an operation to the pipeline.
-
-        Args:
-            operation: The operation to add
-
-        Returns:
-            Self for method chaining
-        """
-        self._operations.append(operation)
-        return self
-
-    def run(self, text: str) -> str:
-        """
-        Execute the pipeline on the input text.
+        Process the input text.
 
         Args:
             text: The input text to process
 
         Returns:
-            The processed text after all operations
+            The processed text
         """
-        result = text
-        for operation in self._operations:
-            result = operation.process(result)
-        return result
+        pass
 
-    def __or__(self, other: Operation) -> "Refiner":
+    def __or__(self, other: "Refiner") -> "Pipeline":
         """
-        Support pipe operator syntax for adding operations to the pipeline.
+        Support pipe operator syntax for composing refiners.
 
-        Enables continued chaining: (op1 | op2) | op3
+        Enables LangChain-style pipeline composition: refiner1 | refiner2 | refiner3
 
         Args:
-            other: The operation to add to the pipeline
+            other: The refiner to chain with this refiner
 
         Returns:
-            Self for method chaining
+            A Pipeline containing both refiners
 
         Example:
-            >>> from prompt_refiner import StripHTML, NormalizeWhitespace, TruncateTokens
-            >>> pipeline = StripHTML() | NormalizeWhitespace() | TruncateTokens(max_tokens=100)
-            >>> result = pipeline.run(text)
+            >>> from prompt_refiner import StripHTML, NormalizeWhitespace
+            >>> pipeline = StripHTML() | NormalizeWhitespace()
+            >>> result = pipeline.run("<div>  hello  </div>")
+            >>> # Returns: "hello"
         """
-        return self.pipe(other)
+        from .pipeline import Pipeline
+
+        return Pipeline().pipe(self).pipe(other)

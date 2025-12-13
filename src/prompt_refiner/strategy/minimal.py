@@ -1,18 +1,17 @@
 """Minimal refining strategy for maximum quality preservation."""
 
-from typing import List
-
 from ..cleaner import NormalizeWhitespace, StripHTML
-from ..operation import Operation
-from .base import BaseStrategy
+from ..pipeline import Pipeline
 
 
-class MinimalStrategy(BaseStrategy):
+class MinimalStrategy(Pipeline):
     """
     Minimal strategy: Basic cleaning with minimal token reduction.
 
-    Operations:
-    - StripHTML: Remove HTML tags
+    This strategy is itself a Pipeline, so you can use it directly or extend it.
+
+    Refiners:
+    - StripHTML: Remove HTML tags (optional)
     - NormalizeWhitespace: Collapse excessive whitespace
 
     Characteristics:
@@ -20,23 +19,41 @@ class MinimalStrategy(BaseStrategy):
     - Quality: 98.7% (cosine similarity)
     - Use case: When quality is paramount, minimal risk
     - Latency: 0.05ms per 1k tokens
+
+    Example:
+        >>> # Use with defaults
+        >>> strategy = MinimalStrategy()
+        >>> cleaned = strategy.run(text)
+        >>>
+        >>> # Customize operators
+        >>> strategy = MinimalStrategy(
+        ...     strip_html_to_markdown=True
+        ... )
+        >>> cleaned = strategy.run(text)
+        >>>
+        >>> # Extend with additional operators
+        >>> extended = MinimalStrategy().pipe(RedactPII())
+        >>> cleaned = extended.run(text)
     """
 
-    def __init__(self, strip_html: bool = True, to_markdown: bool = False):
+    def __init__(
+        self,
+        strip_html: bool = True,
+        strip_html_to_markdown: bool = False,
+    ):
         """
-        Initialize minimal strategy.
+        Initialize minimal strategy with configured operators.
 
         Args:
-            strip_html: Whether to strip HTML tags (default: True)
-            to_markdown: Convert HTML to Markdown instead of stripping (default: False)
+            strip_html: Whether to include StripHTML operator (default: True)
+            strip_html_to_markdown: Convert HTML to Markdown instead of stripping (default: False)
         """
-        self.strip_html = strip_html
-        self.to_markdown = to_markdown
-
-    def get_operations(self) -> List[Operation]:
-        """Get operations for minimal strategy."""
         operations = []
-        if self.strip_html:
-            operations.append(StripHTML(to_markdown=self.to_markdown))
+
+        if strip_html:
+            operations.append(StripHTML(to_markdown=strip_html_to_markdown))
+
         operations.append(NormalizeWhitespace())
-        return operations
+
+        # Initialize Pipeline with the configured operators
+        super().__init__(operations)

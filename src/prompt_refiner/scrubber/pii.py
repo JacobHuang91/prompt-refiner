@@ -3,10 +3,10 @@
 import re
 from typing import Optional, Set
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 
-class RedactPII(Operation):
+class RedactPII(Refiner):
     """Redact sensitive information from text using regex patterns."""
 
     # Default regex patterns for common PII types

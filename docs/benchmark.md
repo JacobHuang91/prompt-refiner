@@ -140,8 +140,8 @@ Want to validate these results yourself?
 ### Prerequisites
 
 ```bash
-# Install benchmark dependencies
-uv pip install -e ".[benchmark]"
+# Install dependencies
+uv sync --group dev
 
 # Set up OpenAI API key
 cd benchmark/custom

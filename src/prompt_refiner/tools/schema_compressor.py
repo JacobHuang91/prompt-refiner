@@ -4,12 +4,12 @@ import copy
 import re
 from typing import Any, Dict
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 JSON = Dict[str, Any]
 
 
-class SchemaCompressor(Operation):
+class SchemaCompressor(Refiner):
     """
     Compress tool schemas to save tokens while preserving functionality.
 

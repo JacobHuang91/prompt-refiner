@@ -2,10 +2,10 @@
 
 import unicodedata
 
-from ..operation import Operation
+from ..refiner import Refiner
 
 
-class FixUnicode(Operation):
+class FixUnicode(Refiner):
     """Remove or fix problematic Unicode characters."""
 
     def __init__(self, remove_zero_width: bool = True, remove_control_chars: bool = True):

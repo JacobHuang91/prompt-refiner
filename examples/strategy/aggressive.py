@@ -46,9 +46,9 @@ long_rag_context = """
 print("\nProcessing long RAG context with Aggressive Strategy...")
 print("-" * 70)
 
-# Extend the preset strategy with additional operations using .pipe()
-refiner = AggressiveStrategy().create_refiner().pipe(FixUnicode())
-cleaned = refiner.run(long_rag_context)
+# Strategy IS a pipeline - use directly, extend with .pipe()
+strategy = AggressiveStrategy().pipe(FixUnicode())
+cleaned = strategy.run(long_rag_context)
 
 input_len = len(long_rag_context)
 output_len = len(cleaned)
