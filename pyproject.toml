@@ -28,15 +28,6 @@ dependencies = []
 token = [
     "tiktoken>=0.7.0",
 ]
-# Benchmark dependencies (users who want to run benchmarks)
-benchmark = [
-    "openai-agents>=0.6.0",
-    "pandas>=2.0.0",
-    "matplotlib>=3.7.0",
-    "scikit-learn>=1.3.0",
-    "tqdm>=4.65.0",
-    "python-dotenv>=1.0.0",
-]
 
 [project.urls]
 Homepage = "https://github.com/JacobHuang91/prompt-refiner"
@@ -98,4 +89,9 @@ dev = [
     "langchain>=0.3.27",
     "langchain-core>=0.3.80",
     "langchain-openai>=0.3.35",
+    # Benchmark dependencies
+    "pandas>=2.0.0",
+    "matplotlib>=3.7.0",
+    "scikit-learn>=1.3.0",
+    "tqdm>=4.65.0",
 ]
