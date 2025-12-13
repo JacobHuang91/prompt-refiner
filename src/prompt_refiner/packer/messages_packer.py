@@ -1,7 +1,7 @@
 """MessagesPacker for chat completion APIs (OpenAI, Anthropic, etc.)."""
 
 import logging
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple, Union
 
 from .base import ROLE_CONTEXT, ROLE_QUERY, BasePacker, PackableItem
 
@@ -45,6 +45,10 @@ class MessagesPacker(BasePacker):
         max_tokens: Optional[int] = None,
         model: Optional[str] = None,
         track_savings: bool = False,
+        system: Optional[Union[str, Tuple[str, List]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], List]]] = None,
+        history: Optional[Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List]]] = None,
+        query: Optional[Union[str, Tuple[str, List]]] = None,
     ):
         """
         Initialize messages packer.
@@ -54,6 +58,46 @@ class MessagesPacker(BasePacker):
             model: Optional model name for precise token counting
             track_savings: Enable automatic token savings tracking for refine_with
                 operations (default: False)
+            system: System message. Can be:
+                - str: "You are helpful"
+                - Tuple[str, List]: ("You are helpful", [StripHTML()])
+            context: Context documents. Can be:
+                - List[str]: ["doc1", "doc2"]
+                - Tuple[List[str], List]: (["doc1", "doc2"], [StripHTML()])
+            history: Conversation history. Can be:
+                - List[Dict]: [{"role": "user", "content": "Hi"}]
+                - Tuple[List[Dict], List]: ([{"role": "user", "content": "Hi"}],
+                    [NormalizeWhitespace()])
+            query: Current query. Can be:
+                - str: "What's the weather?"
+                - Tuple[str, List]: ("What's the weather?", [StripHTML()])
+
+        Example (Simple - no refiners):
+            >>> packer = MessagesPacker(
+            ...     model="gpt-4o-mini",
+            ...     system="You are helpful.",
+            ...     context=["<div>Doc 1</div>", "<p>Doc 2</p>"],
+            ...     history=[{"role": "user", "content": "Hi"}],
+            ...     query="What's the weather?"
+            ... )
+            >>> messages = packer.pack()
+
+        Example (With refiners - tuple syntax):
+            >>> from prompt_refiner import MessagesPacker, StripHTML, NormalizeWhitespace
+            >>> packer = MessagesPacker(
+            ...     model="gpt-4o-mini",
+            ...     system="You are helpful.",
+            ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], [StripHTML()]),
+            ...     history=([{"role": "user", "content": "Hi   there"}], [NormalizeWhitespace()]),
+            ...     query="What's the weather?"
+            ... )
+            >>> messages = packer.pack()
+
+        Example (Traditional API - still supported):
+            >>> packer = MessagesPacker(model="gpt-4o-mini")
+            >>> packer.add("You are helpful.", role="system")
+            >>> packer.add("Doc 1", role="context")
+            >>> messages = packer.pack()
         """
         super().__init__(max_tokens, model, track_savings)
 
@@ -67,6 +111,98 @@ class MessagesPacker(BasePacker):
             )
         else:
             logger.debug("MessagesPacker initialized in unlimited mode")
+
+        # Auto-add items if provided (convenient API)
+        # Extract content and refiner from tuple if provided
+        if system is not None:
+            system_content, system_refiner = self._extract_field(system)
+            self.add(system_content, role="system", refine_with=system_refiner)
+
+        if context is not None:
+            context_docs, context_refiner = self._extract_field(context)
+            for doc in context_docs:
+                self.add(doc, role="context", refine_with=context_refiner)
+
+        if history is not None:
+            history_msgs, history_refiner = self._extract_field(history)
+            for msg in history_msgs:
+                self.add(msg["content"], role=msg["role"], refine_with=history_refiner)
+
+        if query is not None:
+            query_content, query_refiner = self._extract_field(query)
+            self.add(query_content, role="query", refine_with=query_refiner)
+
+    @staticmethod
+    def _extract_field(field: Union[any, Tuple[any, List]]) -> Tuple[any, Optional[List]]:
+        """
+        Extract content and refiner from a field.
+
+        Args:
+            field: Either raw content or (content, refiner) tuple
+
+        Returns:
+            Tuple of (content, refiner)
+        """
+        if isinstance(field, tuple) and len(field) == 2:
+            content, refiner = field
+            return content, refiner
+        else:
+            return field, None
+
+    @classmethod
+    def quick_pack(
+        cls,
+        system: Optional[Union[str, Tuple[str, List]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], List]]] = None,
+        history: Optional[Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List]]] = None,
+        query: Optional[Union[str, Tuple[str, List]]] = None,
+        model: Optional[str] = None,
+        max_tokens: Optional[int] = None,
+        track_savings: bool = False,
+    ) -> List[Dict[str, str]]:
+        """
+        One-liner to create packer and pack messages immediately.
+
+        Args:
+            system: System message (str or (str, refiner_list) tuple)
+            context: Context documents (list or (list, refiner_list) tuple)
+            history: Conversation history (list or (list, refiner_list) tuple)
+            query: Current query (str or (str, refiner_list) tuple)
+            model: Optional model name for precise token counting
+            max_tokens: Optional token budget
+            track_savings: Enable token savings tracking
+
+        Returns:
+            Packed messages ready for LLM API
+
+        Example (Simple):
+            >>> messages = MessagesPacker.quick_pack(
+            ...     system="You are helpful.",
+            ...     context=["<div>Doc 1</div>", "<p>Doc 2</p>"],
+            ...     query="What's the weather?"
+            ... )
+
+        Example (With refiners):
+            >>> from prompt_refiner import MessagesPacker, StripHTML, NormalizeWhitespace
+            >>> messages = MessagesPacker.quick_pack(
+            ...     system="You are helpful.",
+            ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], [StripHTML()]),
+            ...     history=([{"role": "user", "content": "Hi   there"}], [NormalizeWhitespace()]),
+            ...     query="What's the weather?",
+            ...     model="gpt-4o-mini"
+            ... )
+            >>> # Ready to use: client.chat.completions.create(messages=messages)
+        """
+        packer = cls(
+            max_tokens=max_tokens,
+            model=model,
+            track_savings=track_savings,
+            system=system,
+            context=context,
+            history=history,
+            query=query,
+        )
+        return packer.pack()
 
     def _calculate_overhead(self, item: PackableItem) -> int:
         """

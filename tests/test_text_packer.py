@@ -526,3 +526,268 @@ def test_token_savings_with_model():
     assert savings["original_tokens"] > savings["refined_tokens"]
     assert savings["saved_tokens"] > 0
     assert "%" in savings["saving_percent"]
+
+
+# Tests for new constructor-based API
+
+
+def test_constructor_with_system():
+    """Test constructor with system parameter."""
+    packer = TextPacker(
+        max_tokens=100, text_format=TextFormat.MARKDOWN, system="You are a helpful assistant."
+    )
+
+    text = packer.pack()
+
+    assert "# INSTRUCTIONS" in text
+    assert "You are a helpful assistant." in text
+
+
+def test_constructor_with_context():
+    """Test constructor with context parameter."""
+    packer = TextPacker(
+        max_tokens=200, text_format=TextFormat.MARKDOWN, context=["Doc 1", "Doc 2", "Doc 3"]
+    )
+
+    text = packer.pack()
+
+    assert "# CONTEXT" in text
+    assert "Doc 1" in text
+    assert "Doc 2" in text
+    assert "Doc 3" in text
+
+
+def test_constructor_with_history():
+    """Test constructor with history parameter."""
+    packer = TextPacker(
+        max_tokens=200,
+        text_format=TextFormat.MARKDOWN,
+        history=[
+            {"role": "user", "content": "Hello"},
+            {"role": "assistant", "content": "Hi there!"},
+        ],
+    )
+
+    text = packer.pack()
+
+    assert "# CONVERSATION" in text
+    assert "Hello" in text
+    assert "Hi there!" in text
+
+
+def test_constructor_with_query():
+    """Test constructor with query parameter."""
+    packer = TextPacker(
+        max_tokens=100, text_format=TextFormat.MARKDOWN, query="What's the weather?"
+    )
+
+    text = packer.pack()
+
+    assert "# INPUT" in text
+    assert "What's the weather?" in text
+
+
+def test_constructor_with_all_parameters():
+    """Test constructor with all parameters."""
+    packer = TextPacker(
+        max_tokens=500,
+        text_format=TextFormat.MARKDOWN,
+        system="You are helpful.",
+        context=["Doc 1", "Doc 2"],
+        history=[{"role": "user", "content": "Hi"}],
+        query="What's the weather?",
+    )
+
+    text = packer.pack()
+
+    assert "# INSTRUCTIONS" in text
+    assert "You are helpful." in text
+    assert "# CONTEXT" in text
+    assert "Doc 1" in text
+    assert "# CONVERSATION" in text
+    assert "Hi" in text
+    assert "# INPUT" in text
+    assert "What's the weather?" in text
+
+
+def test_constructor_with_system_and_refiner():
+    """Test constructor with system and refiner using tuple syntax."""
+    packer = TextPacker(
+        max_tokens=200,
+        text_format=TextFormat.RAW,
+        system=("You    are    helpful.", [NormalizeWhitespace()]),
+    )
+
+    text = packer.pack()
+
+    assert "You are helpful." in text
+
+
+def test_constructor_with_context_and_refiner():
+    """Test constructor with context and refiner using tuple syntax."""
+    packer = TextPacker(
+        max_tokens=300,
+        text_format=TextFormat.RAW,
+        context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], [StripHTML()]),
+    )
+
+    text = packer.pack()
+
+    assert "Doc 1" in text
+    assert "Doc 2" in text
+    assert "<div>" not in text
+    assert "<p>" not in text
+
+
+def test_constructor_with_history_and_refiner():
+    """Test constructor with history and refiner using tuple syntax."""
+    packer = TextPacker(
+        max_tokens=200,
+        text_format=TextFormat.RAW,
+        history=([{"role": "user", "content": "Hello    world"}], [NormalizeWhitespace()]),
+    )
+
+    text = packer.pack()
+
+    assert "Hello world" in text
+
+
+def test_constructor_with_query_and_refiner():
+    """Test constructor with query and refiner using tuple syntax."""
+    packer = TextPacker(
+        max_tokens=100,
+        text_format=TextFormat.RAW,
+        query=("<div>What's the weather?</div>", [StripHTML()]),
+    )
+
+    text = packer.pack()
+
+    assert "What's the weather?" in text
+    assert "<div>" not in text
+
+
+def test_constructor_with_track_savings():
+    """Test constructor with track_savings enabled."""
+    packer = TextPacker(
+        max_tokens=200, track_savings=True, context=(["<div>Test</div>"], [StripHTML()])
+    )
+
+    text = packer.pack()
+    savings = packer.get_token_savings()
+
+    assert "Test" in text
+    assert savings["items_refined"] == 1
+    assert savings["saved_tokens"] > 0
+
+
+def test_extract_field_with_plain_value():
+    """Test _extract_field with plain value."""
+    content, refiner = TextPacker._extract_field("Hello")
+
+    assert content == "Hello"
+    assert refiner is None
+
+
+def test_extract_field_with_tuple():
+    """Test _extract_field with tuple."""
+    content, refiner = TextPacker._extract_field(("Hello", [StripHTML()]))
+
+    assert content == "Hello"
+    assert len(refiner) == 1
+    assert isinstance(refiner[0], StripHTML)
+
+
+def test_extract_field_with_list():
+    """Test _extract_field with list value."""
+    content, refiner = TextPacker._extract_field(["Doc1", "Doc2"])
+
+    assert content == ["Doc1", "Doc2"]
+    assert refiner is None
+
+
+def test_quick_pack_basic():
+    """Test quick_pack class method."""
+    text = TextPacker.quick_pack(
+        text_format=TextFormat.RAW, system="You are helpful.", query="What's the weather?"
+    )
+
+    assert "You are helpful." in text
+    assert "What's the weather?" in text
+
+
+def test_quick_pack_with_refiners():
+    """Test quick_pack with refiners."""
+    text = TextPacker.quick_pack(
+        text_format=TextFormat.RAW,
+        system="You are helpful.",
+        context=(["<div>Doc 1</div>"], [StripHTML()]),
+        query="What's the weather?",
+    )
+
+    assert "Doc 1" in text
+    assert "<div>" not in text
+
+
+def test_quick_pack_with_max_tokens():
+    """Test quick_pack with token budget."""
+    text = TextPacker.quick_pack(
+        max_tokens=50,
+        text_format=TextFormat.RAW,
+        system="System",
+        context=["Very long context " * 100],
+        query="Query",
+    )
+
+    # Should respect token budget
+    assert "System" in text
+    assert "Query" in text
+
+
+def test_quick_pack_with_model():
+    """Test quick_pack with model parameter."""
+    text = TextPacker.quick_pack(
+        model="gpt-4", text_format=TextFormat.RAW, system="You are helpful.", query="Test"
+    )
+
+    assert "You are helpful." in text
+    assert "Test" in text
+
+
+def test_quick_pack_with_markdown_format():
+    """Test quick_pack with MARKDOWN format."""
+    text = TextPacker.quick_pack(
+        text_format=TextFormat.MARKDOWN, system="System", context=["Doc 1"], query="Query"
+    )
+
+    assert "# INSTRUCTIONS" in text
+    assert "# CONTEXT" in text
+    assert "# INPUT" in text
+
+
+def test_quick_pack_with_track_savings():
+    """Test quick_pack cannot access savings (one-liner returns text only)."""
+    text = TextPacker.quick_pack(
+        track_savings=True,
+        text_format=TextFormat.RAW,
+        context=(["<div>Test</div>"], [StripHTML()]),
+        query="Test",
+    )
+
+    # Just verify it works and returns text
+    assert isinstance(text, str)
+    assert "Test" in text
+
+
+def test_constructor_and_add_method_combined():
+    """Test that constructor parameters and add() method work together."""
+    packer = TextPacker(max_tokens=500, text_format=TextFormat.RAW, system="You are helpful.")
+
+    # Add more items using traditional API
+    packer.add("Additional context", role=ROLE_CONTEXT)
+    packer.add("What's up?", role=ROLE_QUERY)
+
+    text = packer.pack()
+
+    assert "You are helpful." in text
+    assert "Additional context" in text
+    assert "What's up?" in text

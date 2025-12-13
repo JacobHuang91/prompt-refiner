@@ -15,32 +15,43 @@
 
 </div>
 
-> 🚀 **Lightweight Python library for building production LLM applications with smart context management and automatic token optimization.**
+> 🚀 **Lightweight Python library for AI Agents, RAG apps, and chatbots with smart context management and automatic token optimization.**
 > **Save 10-20% on API costs** while fitting RAG docs, chat history, and prompts into your token budget.
 
 ---
 
 ### 🎯 Perfect for:
 
-**RAG Applications** • **Chatbots** • **Document Processing** • **Production LLM Apps** • **Cost Optimization**
+**RAG Applications** • **AI Agents** • **Chatbots** • **Document Processing** • **Cost Optimization**
 
 ---
 
 ## Why use Prompt Refiner?
 
-Build production RAG applications with automatic token optimization and smart context management. Here's a complete example (see [`examples/quickstart.py`](examples/quickstart.py) for full code):
+Build AI agents, RAG applications, and chatbots with automatic token optimization and smart context management. Here's a complete example (see [`examples/quickstart.py`](examples/quickstart.py) for full code):
 
 ```python
 from prompt_refiner import MessagesPacker, SchemaCompressor, ResponseCompressor, StripHTML
 from openai import OpenAI, pydantic_function_tool
 from pydantic import BaseModel, Field
 
-# 1. Pack messages with token budget (101 → 56 tokens, 44.6% saved)
-packer = MessagesPacker(max_tokens=1000, model="gpt-4o-mini")
-packer.add("You are a helpful AI assistant that helps users find books.", role="system")
-packer.add("Search for books about Python programming.", role="query")
-packer.add("<div><h1>Installation Guide</h1>...</div>", role="context", refine_with=[StripHTML()])
+# 1. Pack messages with token budget and track savings
+packer = MessagesPacker(
+    max_tokens=1000,
+    model="gpt-4o-mini",
+    track_savings=True,
+    system="You are a helpful AI assistant that helps users find books.",
+    context=(
+        ["<div><h1>Installation Guide</h1>...</div>"],
+        [StripHTML()]
+    ),
+    query="Search for books about Python programming."
+)
 messages = packer.pack()
+
+# Get token savings
+savings = packer.get_token_savings()
+print(f"Saved {savings['saved_tokens']} tokens ({savings['savings_rate']:.1%})")
 
 # 2. Compress tool schema (139 → 131 tokens, 5.8% saved)
 class SearchBooksInput(BaseModel):
@@ -67,8 +78,8 @@ compressed_response = ResponseCompressor().process(tool_response)
 
 **Key benefits:**
 
-- **Tool schema compression** - Save 10-15% tokens on function definitions
-- **Tool response compression** - Save 30-70% tokens on API responses
+- **Tool schema compression** - Save 10-15% tokens on AI agent function definitions
+- **Tool response compression** - Save 30-70% tokens on agent tool outputs
 - **Compose operations** with `|` - Chain multiple cleaners into a pipeline
 - **Save 10-20% tokens** - Remove HTML, whitespace, duplicates, and redact PII automatically
 - **Stay within budget** - MessagesPacker fits everything into 1000 tokens using priority-based selection
@@ -82,7 +93,7 @@ compressed_response = ResponseCompressor().process(tool_response)
 | **Cleaner** | Remove noise and save tokens | `StripHTML()`, `NormalizeWhitespace()`, `FixUnicode()`, `JsonCleaner()` |
 | **Compressor** | Reduce size aggressively | `TruncateTokens()`, `Deduplicate()` |
 | **Scrubber** | Protect sensitive data | `RedactPII()` |
-| **Tools** | Optimize LLM tool schemas and responses | `SchemaCompressor()`, `ResponseCompressor()` |
+| **Tools** | Optimize AI agent function calling (tool schemas & responses) | `SchemaCompressor()`, `ResponseCompressor()` |
 | **Packer** | Fit content within token budgets | `MessagesPacker` (chat APIs), `TextPacker` (completion APIs) |
 | **Strategy** | Benchmark-tested presets for quick setup | `MinimalStrategy`, `StandardStrategy`, `AggressiveStrategy` |
 
@@ -107,7 +118,6 @@ Check out the [`examples/`](examples/) folder for detailed examples:
 - **`tools/`** - Tool/API output cleaning for agent systems
 - **`packer/`** - Context budget management with OpenAI integration
 - **`analyzer/`** - Token counting and cost savings tracking
-- **`custom_operation.py`** - Build your own custom operations
 
 > 📖 **Full documentation:** [examples/README.md](examples/README.md)
 

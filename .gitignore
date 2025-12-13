@@ -53,5 +53,15 @@ uv.lock
 # Claude Code
 .claude/
 /site/
-examples/packer/.env
-examples/.env
+
+# Environment variables - ignore all .env files
+.env
+.env.*
+!.env.example
+
+# Custom benchmark outputs
+benchmark/custom/results/
+benchmark/custom/*.csv
+benchmark/custom/*.png
+benchmark/custom/*.md
+!benchmark/custom/README.md

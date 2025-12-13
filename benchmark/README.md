@@ -41,7 +41,7 @@ A custom A/B testing approach that compares raw vs refined prompts:
    uv pip install -e ".[benchmark]"
    ```
 
-2. **Set up API key**:
+2. **Set up API key** (for custom benchmark):
    ```bash
    cd benchmark/custom
    cp .env.example .env
@@ -51,11 +51,11 @@ A custom A/B testing approach that compares raw vs refined prompts:
 3. **Run a benchmark**:
    ```bash
    # Latency benchmark (no API key needed)
-   cd latency
+   cd benchmark/latency
    python benchmark.py
 
    # Quality/cost benchmark (requires OpenAI API key)
-   cd custom
+   cd benchmark/custom
    python benchmark.py
    ```
 
@@ -65,7 +65,6 @@ A custom A/B testing approach that compares raw vs refined prompts:
 |-----------|-------|------|------------------|----------|
 | **latency** | Very Fast | $0 | Processing overhead, execution time | Performance validation, latency analysis |
 | **custom** | Fast | ~$3 | Token reduction, response quality | Quality & cost savings validation |
-| **promptfoo** | - | - | - | *(coming soon)* |
 | **ragas** | - | - | - | *(coming soon)* |
 
 ## 🤝 Contributing

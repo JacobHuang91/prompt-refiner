@@ -2,7 +2,7 @@
 
 import logging
 from enum import Enum
-from typing import Optional
+from typing import Dict, List, Optional, Tuple, Union
 
 from .base import (
     ROLE_ASSISTANT,
@@ -71,6 +71,10 @@ class TextPacker(BasePacker):
         text_format: TextFormat = TextFormat.RAW,
         separator: Optional[str] = None,
         track_savings: bool = False,
+        system: Optional[Union[str, Tuple[str, List]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], List]]] = None,
+        history: Optional[Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List]]] = None,
+        query: Optional[Union[str, Tuple[str, List]]] = None,
     ):
         """
         Initialize text packer.
@@ -82,6 +86,39 @@ class TextPacker(BasePacker):
             separator: String to join items (default: "\\n\\n" for clarity)
             track_savings: Enable automatic token savings tracking for refine_with
                 operations (default: False)
+            system: System message. Can be:
+                - str: "You are helpful"
+                - Tuple[str, List]: ("You are helpful", [StripHTML()])
+            context: Context documents. Can be:
+                - List[str]: ["doc1", "doc2"]
+                - Tuple[List[str], List]: (["doc1", "doc2"], [StripHTML()])
+            history: Conversation history. Can be:
+                - List[Dict]: [{"role": "user", "content": "Hi"}]
+                - Tuple[List[Dict], List]: ([{"role": "user", "content": "Hi"}],
+                    [NormalizeWhitespace()])
+            query: Current query. Can be:
+                - str: "What's the weather?"
+                - Tuple[str, List]: ("What's the weather?", [StripHTML()])
+
+        Example (Simple - no refiners):
+            >>> packer = TextPacker(
+            ...     model="llama-2-70b",
+            ...     text_format=TextFormat.MARKDOWN,
+            ...     system="You are helpful.",
+            ...     context=["Doc 1", "Doc 2"],
+            ...     query="What's the weather?"
+            ... )
+            >>> prompt = packer.pack()
+
+        Example (With refiners - tuple syntax):
+            >>> from prompt_refiner import TextPacker, StripHTML
+            >>> packer = TextPacker(
+            ...     text_format=TextFormat.MARKDOWN,
+            ...     system="You are helpful.",
+            ...     context=(["<div>Doc 1</div>"], [StripHTML()]),
+            ...     query="What's the weather?"
+            ... )
+            >>> prompt = packer.pack()
         """
         super().__init__(max_tokens, model, track_savings)
         self.text_format = text_format
@@ -97,6 +134,103 @@ class TextPacker(BasePacker):
             f"separator={repr(self.separator)}, "
             f"unlimited={self.effective_max_tokens is None}"
         )
+
+        # Auto-add items if provided (convenient API)
+        # Extract content and refiner from tuple if provided
+        if system is not None:
+            system_content, system_refiner = self._extract_field(system)
+            self.add(system_content, role="system", refine_with=system_refiner)
+
+        if context is not None:
+            context_docs, context_refiner = self._extract_field(context)
+            for doc in context_docs:
+                self.add(doc, role="context", refine_with=context_refiner)
+
+        if history is not None:
+            history_msgs, history_refiner = self._extract_field(history)
+            for msg in history_msgs:
+                self.add(msg["content"], role=msg["role"], refine_with=history_refiner)
+
+        if query is not None:
+            query_content, query_refiner = self._extract_field(query)
+            self.add(query_content, role="query", refine_with=query_refiner)
+
+    @staticmethod
+    def _extract_field(field: Union[any, Tuple[any, List]]) -> Tuple[any, Optional[List]]:
+        """
+        Extract content and refiner from a field.
+
+        Args:
+            field: Either raw content or (content, refiner) tuple
+
+        Returns:
+            Tuple of (content, refiner)
+        """
+        if isinstance(field, tuple) and len(field) == 2:
+            content, refiner = field
+            return content, refiner
+        else:
+            return field, None
+
+    @classmethod
+    def quick_pack(
+        cls,
+        system: Optional[Union[str, Tuple[str, List]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], List]]] = None,
+        history: Optional[Union[List[Dict[str, str]], Tuple[List[Dict[str, str]], List]]] = None,
+        query: Optional[Union[str, Tuple[str, List]]] = None,
+        model: Optional[str] = None,
+        max_tokens: Optional[int] = None,
+        text_format: TextFormat = TextFormat.RAW,
+        separator: Optional[str] = None,
+        track_savings: bool = False,
+    ) -> str:
+        """
+        One-liner to create packer and pack text immediately.
+
+        Args:
+            system: System message (str or (str, refiner_list) tuple)
+            context: Context documents (list or (list, refiner_list) tuple)
+            history: Conversation history (list or (list, refiner_list) tuple)
+            query: Current query (str or (str, refiner_list) tuple)
+            model: Optional model name for precise token counting
+            max_tokens: Optional token budget
+            text_format: Text formatting strategy (RAW, MARKDOWN, XML)
+            separator: String to join items
+            track_savings: Enable token savings tracking
+
+        Returns:
+            Packed text ready for completion API
+
+        Example (Simple):
+            >>> prompt = TextPacker.quick_pack(
+            ...     text_format=TextFormat.MARKDOWN,
+            ...     system="You are helpful.",
+            ...     context=["Doc 1", "Doc 2"],
+            ...     query="What's the weather?"
+            ... )
+
+        Example (With refiners):
+            >>> from prompt_refiner import TextPacker, StripHTML, TextFormat
+            >>> prompt = TextPacker.quick_pack(
+            ...     text_format=TextFormat.MARKDOWN,
+            ...     system="You are helpful.",
+            ...     context=(["<div>Doc 1</div>"], [StripHTML()]),
+            ...     query="What's the weather?"
+            ... )
+        """
+        packer = cls(
+            max_tokens=max_tokens,
+            model=model,
+            text_format=text_format,
+            separator=separator,
+            track_savings=track_savings,
+            system=system,
+            context=context,
+            history=history,
+            query=query,
+        )
+        return packer.pack()
 
     def _reserve_fixed_headers(self) -> None:
         """

@@ -456,3 +456,233 @@ def test_token_savings_with_model():
     assert savings["original_tokens"] > savings["refined_tokens"]
     assert savings["saved_tokens"] > 0
     assert "%" in savings["saving_percent"]
+
+
+# Tests for new constructor-based API
+
+
+def test_constructor_with_system():
+    """Test constructor with system parameter."""
+    packer = MessagesPacker(max_tokens=100, system="You are a helpful assistant.")
+
+    messages = packer.pack()
+
+    assert len(messages) == 1
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == "You are a helpful assistant."
+
+
+def test_constructor_with_context():
+    """Test constructor with context parameter."""
+    packer = MessagesPacker(max_tokens=200, context=["Doc 1", "Doc 2", "Doc 3"])
+
+    messages = packer.pack()
+
+    assert len(messages) == 3
+    assert all(msg["role"] == "user" for msg in messages)
+    assert messages[0]["content"] == "Doc 1"
+    assert messages[1]["content"] == "Doc 2"
+    assert messages[2]["content"] == "Doc 3"
+
+
+def test_constructor_with_history():
+    """Test constructor with history parameter."""
+    packer = MessagesPacker(
+        max_tokens=200,
+        history=[
+            {"role": "user", "content": "Hello"},
+            {"role": "assistant", "content": "Hi there!"},
+        ],
+    )
+
+    messages = packer.pack()
+
+    assert len(messages) == 2
+    assert messages[0]["role"] == "user"
+    assert messages[0]["content"] == "Hello"
+    assert messages[1]["role"] == "assistant"
+    assert messages[1]["content"] == "Hi there!"
+
+
+def test_constructor_with_query():
+    """Test constructor with query parameter."""
+    packer = MessagesPacker(max_tokens=100, query="What's the weather?")
+
+    messages = packer.pack()
+
+    assert len(messages) == 1
+    assert messages[0]["role"] == "user"
+    assert messages[0]["content"] == "What's the weather?"
+
+
+def test_constructor_with_all_parameters():
+    """Test constructor with all parameters."""
+    packer = MessagesPacker(
+        max_tokens=500,
+        system="You are helpful.",
+        context=["Doc 1", "Doc 2"],
+        history=[{"role": "user", "content": "Hi"}],
+        query="What's the weather?",
+    )
+
+    messages = packer.pack()
+
+    # Should have system + 2 context + 1 history + 1 query = 5 messages
+    assert len(messages) == 5
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == "You are helpful."
+
+
+def test_constructor_with_system_and_refiner():
+    """Test constructor with system and refiner using tuple syntax."""
+    packer = MessagesPacker(
+        max_tokens=200, system=("You    are    helpful.", [NormalizeWhitespace()])
+    )
+
+    messages = packer.pack()
+
+    assert len(messages) == 1
+    assert messages[0]["content"] == "You are helpful."
+
+
+def test_constructor_with_context_and_refiner():
+    """Test constructor with context and refiner using tuple syntax."""
+    packer = MessagesPacker(
+        max_tokens=300, context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], [StripHTML()])
+    )
+
+    messages = packer.pack()
+
+    assert len(messages) == 2
+    assert messages[0]["content"] == "Doc 1"
+    assert messages[1]["content"] == "Doc 2"
+
+
+def test_constructor_with_history_and_refiner():
+    """Test constructor with history and refiner using tuple syntax."""
+    packer = MessagesPacker(
+        max_tokens=200,
+        history=([{"role": "user", "content": "Hello    world"}], [NormalizeWhitespace()]),
+    )
+
+    messages = packer.pack()
+
+    assert len(messages) == 1
+    assert messages[0]["content"] == "Hello world"
+
+
+def test_constructor_with_query_and_refiner():
+    """Test constructor with query and refiner using tuple syntax."""
+    packer = MessagesPacker(max_tokens=100, query=("<div>What's the weather?</div>", [StripHTML()]))
+
+    messages = packer.pack()
+
+    assert len(messages) == 1
+    assert messages[0]["content"] == "What's the weather?"
+
+
+def test_constructor_with_track_savings():
+    """Test constructor with track_savings enabled."""
+    packer = MessagesPacker(
+        max_tokens=200, track_savings=True, context=(["<div>Test</div>"], [StripHTML()])
+    )
+
+    messages = packer.pack()
+    savings = packer.get_token_savings()
+
+    assert messages[0]["content"] == "Test"
+    assert savings["items_refined"] == 1
+    assert savings["saved_tokens"] > 0
+
+
+def test_extract_field_with_plain_value():
+    """Test _extract_field with plain value."""
+    content, refiner = MessagesPacker._extract_field("Hello")
+
+    assert content == "Hello"
+    assert refiner is None
+
+
+def test_extract_field_with_tuple():
+    """Test _extract_field with tuple."""
+    content, refiner = MessagesPacker._extract_field(("Hello", [StripHTML()]))
+
+    assert content == "Hello"
+    assert len(refiner) == 1
+    assert isinstance(refiner[0], StripHTML)
+
+
+def test_extract_field_with_list():
+    """Test _extract_field with list value."""
+    content, refiner = MessagesPacker._extract_field(["Doc1", "Doc2"])
+
+    assert content == ["Doc1", "Doc2"]
+    assert refiner is None
+
+
+def test_quick_pack_basic():
+    """Test quick_pack class method."""
+    messages = MessagesPacker.quick_pack(system="You are helpful.", query="What's the weather?")
+
+    assert len(messages) == 2
+    assert messages[0]["role"] == "system"
+    assert messages[0]["content"] == "You are helpful."
+    assert messages[1]["role"] == "user"
+    assert messages[1]["content"] == "What's the weather?"
+
+
+def test_quick_pack_with_refiners():
+    """Test quick_pack with refiners."""
+    messages = MessagesPacker.quick_pack(
+        system="You are helpful.",
+        context=(["<div>Doc 1</div>"], [StripHTML()]),
+        query="What's the weather?",
+    )
+
+    assert len(messages) == 3
+    # Check that HTML was stripped from context
+    assert any(msg["content"] == "Doc 1" for msg in messages)
+
+
+def test_quick_pack_with_max_tokens():
+    """Test quick_pack with token budget."""
+    messages = MessagesPacker.quick_pack(
+        max_tokens=50, system="System", context=["Very long context " * 100], query="Query"
+    )
+
+    # Should respect token budget
+    assert len(messages) >= 2  # At least system and query
+
+
+def test_quick_pack_with_model():
+    """Test quick_pack with model parameter."""
+    messages = MessagesPacker.quick_pack(model="gpt-4", system="You are helpful.", query="Test")
+
+    assert len(messages) == 2
+
+
+def test_quick_pack_with_track_savings():
+    """Test quick_pack cannot access savings (one-liner returns messages only)."""
+    messages = MessagesPacker.quick_pack(
+        track_savings=True, context=(["<div>Test</div>"], [StripHTML()]), query="Test"
+    )
+
+    # Just verify it works and returns messages
+    assert isinstance(messages, list)
+    assert len(messages) == 2
+
+
+def test_constructor_and_add_method_combined():
+    """Test that constructor parameters and add() method work together."""
+    packer = MessagesPacker(max_tokens=500, system="You are helpful.")
+
+    # Add more items using traditional API
+    packer.add("Additional context", role=ROLE_CONTEXT)
+    packer.add("What's up?", role=ROLE_QUERY)
+
+    messages = packer.pack()
+
+    assert len(messages) == 3
+    assert messages[0]["content"] == "You are helpful."
+    assert messages[1]["content"] == "Additional context"
+    assert messages[2]["content"] == "What's up?"
