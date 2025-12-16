@@ -25,8 +25,8 @@ Get up and running with Prompt Refiner in minutes.
     ```python
     from prompt_refiner import CountTokens, MessagesPacker
 
-    counter = CountTokens(model="gpt-4")
-    packer = MessagesPacker(max_tokens=1000, model="gpt-4")
+    counter = CountTokens(model="gpt-4")  # Precise token counting
+    packer = MessagesPacker()  # Context composition
     ```
 
 ## Your First Pipeline
@@ -162,7 +162,7 @@ For RAG applications, manage context budgets with smart priority-based packing:
 ```python
 from prompt_refiner import MessagesPacker, StripHTML, NormalizeWhitespace
 
-packer = MessagesPacker(max_tokens=1000)
+packer = MessagesPacker()
 
 # System prompt (auto-prioritized: highest)
 packer.add(

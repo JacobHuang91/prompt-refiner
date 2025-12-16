@@ -1,229 +1,295 @@
 # Analyzer Module
 
-The Analyzer module provides operations for measuring optimization impact and tracking metrics.
+The Analyzer module provides utilities for measuring optimization impact and tracking token savings.
 
-## CountTokens
+## TokenTracker
 
-Count tokens and provide before/after statistics to demonstrate optimization value.
+Context manager for tracking token usage before and after refinement operations.
 
-::: prompt_refiner.analyzer.CountTokens
+::: prompt_refiner.analyzer.TokenTracker
     options:
       show_source: true
       members_order: source
       heading_level: 3
 
-### Token Counting Modes
-
-!!! info "Two Counting Modes"
-    CountTokens supports two modes:
-
-    **Estimation Mode (Default)**
-    - Zero dependencies, uses character-based approximation: **~1 token ≈ 4 characters**
-    - Fast and lightweight, good for most use cases
-    - Applies 10% safety buffer in ContextPacker to prevent overflow
-
-    ```python
-    counter = CountTokens()  # Estimation mode
-    ```
-
-    **Precise Mode (Optional)**
-    - Requires `tiktoken`: `pip install llm-prompt-refiner[token]`
-    - Exact token counting using OpenAI's tokenizer
-    - No safety buffer needed, 100% capacity utilization
-    - Opt-in by passing a `model` parameter
-
-    ```python
-    counter = CountTokens(model="gpt-4")  # Precise mode
-    ```
-
-### Examples
-
-#### Basic Token Counting
+### Basic Usage
 
 ```python
-from prompt_refiner import CountTokens
+from prompt_refiner import TokenTracker, StripHTML, character_based_counter
 
-counter = CountTokens()
-counter.process("Hello World")
+refiner = StripHTML()
 
-stats = counter.get_stats()
-print(stats)
-# {'tokens': 2}
+with TokenTracker(refiner, character_based_counter) as tracker:
+    result = tracker.process("<div>Hello World</div>")
+
+print(tracker.stats)
+# {'original_tokens': 6, 'refined_tokens': 3, 'saved_tokens': 3, 'saving_percent': '50.0%'}
 ```
 
-#### Before/After Comparison
+### Pipeline Tracking
 
 ```python
-from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, CountTokens
-
-original_text = "<p>Hello    World   </p>"
-
-# Initialize counter with original text
-counter = CountTokens(original_text=original_text)
-
-# Build pipeline with counter at the end
-refiner = (
-    Refiner()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
-    .pipe(counter)
+from prompt_refiner import (
+    TokenTracker,
+    StripHTML,
+    NormalizeWhitespace,
+    character_based_counter,
 )
 
-result = refiner.run(original_text)
+# Track entire pipeline
+pipeline = StripHTML() | NormalizeWhitespace()
 
-# Get statistics
-stats = counter.get_stats()
-print(stats)
-# {
-#   'original': 6,
-#   'cleaned': 2,
-#   'saved': 4,
-#   'saving_percent': '66.7%'
-# }
+with TokenTracker(pipeline, character_based_counter) as tracker:
+    result = tracker.process("<p>Hello    World   </p>")
 
-# Formatted output
-print(counter.format_stats())
-# Original: 6 tokens
-# Cleaned: 2 tokens
-# Saved: 4 tokens (66.7%)
+stats = tracker.stats
+print(f"Saved {stats['saved_tokens']} tokens ({stats['saving_percent']})")
+# Saved 4 tokens (66.7%)
 ```
 
-#### Cost Calculation Example
+### Strategy Tracking
 
 ```python
-from prompt_refiner import Refiner, StripHTML, NormalizeWhitespace, CountTokens
-
-original_text = """Your long text here..."""
-counter = CountTokens(original_text=original_text)
-
-refiner = (
-    Refiner()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
-    .pipe(counter)
+from prompt_refiner import (
+    TokenTracker,
+    StandardStrategy,
+    character_based_counter,
 )
 
-result = refiner.run(original_text)
-stats = counter.get_stats()
+# Track preset strategies
+strategy = StandardStrategy()
 
-# Calculate cost savings
-# Example: GPT-4 pricing - $0.03 per 1K tokens
-cost_per_token = 0.03 / 1000
-original_cost = stats['original'] * cost_per_token
-cleaned_cost = stats['cleaned'] * cost_per_token
-savings = original_cost - cleaned_cost
+with TokenTracker(strategy, character_based_counter) as tracker:
+    result = tracker.process("<div>Messy    input   text</div>")
 
-print(f"Original cost: ${original_cost:.4f}")
-print(f"Cleaned cost: ${cleaned_cost:.4f}")
-print(f"Savings: ${savings:.4f} per request")
+print(tracker.stats)
 ```
+
+## Token Counter Functions
+
+Built-in token counting functions for different use cases.
+
+### character_based_counter
+
+::: prompt_refiner.analyzer.character_based_counter
+    options:
+      show_source: true
+      heading_level: 4
+
+Fast approximation using ~1 token ≈ 4 characters. Good for general use.
+
+```python
+from prompt_refiner import character_based_counter
+
+tokens = character_based_counter("Hello World")
+print(tokens)  # 3
+```
+
+### word_based_counter
+
+::: prompt_refiner.analyzer.word_based_counter
+    options:
+      show_source: true
+      heading_level: 4
+
+Simple approximation using ~1 token ≈ 1 word. Reasonable for English text.
+
+```python
+from prompt_refiner import word_based_counter
+
+tokens = word_based_counter("Hello World")
+print(tokens)  # 2
+```
+
+### create_tiktoken_counter
+
+::: prompt_refiner.analyzer.create_tiktoken_counter
+    options:
+      show_source: true
+      heading_level: 4
+
+Precise token counting using OpenAI's tiktoken. Requires optional dependency.
+
+```python
+from prompt_refiner import create_tiktoken_counter
+
+# Requires: pip install llm-prompt-refiner[token]
+counter = create_tiktoken_counter(model="gpt-4")
+
+tokens = counter("Hello World")
+print(tokens)  # Exact token count for GPT-4
+```
+
+!!! info "Optional Dependency"
+    `create_tiktoken_counter` requires tiktoken to be installed:
+
+    ```bash
+    pip install llm-prompt-refiner[token]
+    ```
+
+    If tiktoken is not available, use `character_based_counter` or `word_based_counter` instead.
 
 ## Common Use Cases
 
 ### ROI Demonstration
 
+Track token savings to demonstrate optimization value:
+
 ```python
 from prompt_refiner import (
-    Refiner, StripHTML, NormalizeWhitespace,
-    Deduplicate, TruncateTokens, CountTokens
+    TokenTracker,
+    StandardStrategy,
+    character_based_counter,
 )
 
-original_text = """Your messy input..."""
-counter = CountTokens(original_text=original_text)
+# Your messy input
+original = "<div>Lots of HTML and   extra   whitespace</div>"
 
-full_optimization = (
-    Refiner()
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
-    .pipe(Deduplicate())
-    .pipe(TruncateTokens(max_tokens=1000))
-    .pipe(counter)
-)
+# Track optimization
+strategy = StandardStrategy()
+with TokenTracker(strategy, character_based_counter) as tracker:
+    result = tracker.process(original)
 
-result = full_optimization.run(original_text)
-print(counter.format_stats())
+# Show ROI
+stats = tracker.stats
+print(f"Original: {stats['original_tokens']} tokens")
+print(f"Refined: {stats['refined_tokens']} tokens")
+print(f"Saved: {stats['saved_tokens']} tokens ({stats['saving_percent']})")
+
+# Calculate cost savings (example: $0.03 per 1K tokens)
+cost_per_token = 0.03 / 1000
+savings = stats['saved_tokens'] * cost_per_token
+print(f"Cost savings: ${savings:.4f} per request")
 ```
 
 ### A/B Testing Different Strategies
 
+Compare multiple optimization approaches:
+
 ```python
-from prompt_refiner import Refiner, TruncateTokens, Deduplicate, CountTokens
-
-original_text = """Your text..."""
-
-# Strategy A: Just truncate
-counter_a = CountTokens(original_text=original_text)
-strategy_a = (
-    Refiner()
-    .pipe(TruncateTokens(max_tokens=500))
-    .pipe(counter_a)
+from prompt_refiner import (
+    TokenTracker,
+    MinimalStrategy,
+    StandardStrategy,
+    AggressiveStrategy,
+    character_based_counter,
 )
-strategy_a.run(original_text)
 
-# Strategy B: Deduplicate then truncate
-counter_b = CountTokens(original_text=original_text)
-strategy_b = (
-    Refiner()
-    .pipe(Deduplicate())
-    .pipe(TruncateTokens(max_tokens=500))
-    .pipe(counter_b)
-)
-strategy_b.run(original_text)
+original = "Your test text here..."
 
-print("Strategy A:", counter_a.format_stats())
-print("Strategy B:", counter_b.format_stats())
+# Test different strategies
+strategies = {
+    "Minimal": MinimalStrategy(),
+    "Standard": StandardStrategy(),
+    "Aggressive": AggressiveStrategy(),
+}
+
+for name, strategy in strategies.items():
+    with TokenTracker(strategy, character_based_counter) as tracker:
+        result = tracker.process(original)
+
+    stats = tracker.stats
+    print(f"{name}: {stats['saved_tokens']} tokens saved ({stats['saving_percent']})")
 ```
 
 ### Monitoring and Logging
 
+Track optimization in production:
+
 ```python
 import logging
-from prompt_refiner import Refiner, StripHTML, CountTokens
+from prompt_refiner import (
+    TokenTracker,
+    StandardStrategy,
+    character_based_counter,
+)
 
 logger = logging.getLogger(__name__)
 
-def process_user_input(text):
-    counter = CountTokens(original_text=text)
+def process_user_input(text: str) -> str:
+    strategy = StandardStrategy()
 
-    refiner = (
-        Refiner()
-        .pipe(StripHTML())
-        .pipe(counter)
-    )
+    with TokenTracker(strategy, character_based_counter) as tracker:
+        result = tracker.process(text)
 
-    result = refiner.run(text)
-    stats = counter.get_stats()
-
-    # Log optimization impact
+    stats = tracker.stats
     logger.info(
         f"Processed input: "
-        f"original={stats['original']} tokens, "
-        f"cleaned={stats['cleaned']} tokens, "
-        f"saved={stats['saved']} tokens ({stats['saving_percent']})"
+        f"original={stats['original_tokens']} tokens, "
+        f"refined={stats['refined_tokens']} tokens, "
+        f"saved={stats['saved_tokens']} tokens ({stats['saving_percent']})"
     )
 
     return result
 ```
 
+### Packer Token Tracking
+
+Packers have built-in token tracking support:
+
+```python
+from prompt_refiner import MessagesPacker, character_based_counter
+
+packer = MessagesPacker(
+    track_tokens=True,
+    token_counter=character_based_counter,
+    system="<div>You are helpful.</div>",
+    context=["<p>Doc 1</p>", "<p>Doc 2</p>"],
+    query="<span>What's the weather?</span>",
+)
+
+messages = packer.pack()
+
+# Get token savings from automatic cleaning
+stats = packer.token_stats
+print(f"Saved {stats['saved_tokens']} tokens through automatic refinement")
+```
+
+## Choosing a Token Counter
+
+!!! tip "Which Counter Should I Use?"
+
+    **For development and testing:**
+    - Use `character_based_counter` - fast and no dependencies
+
+    **For production cost estimation:**
+    - Use `create_tiktoken_counter(model="gpt-4")` for precise costs
+    - Requires: `pip install llm-prompt-refiner[token]`
+
+    **For simple approximation:**
+    - Use `word_based_counter` for English text
+
 ## Tips
 
-!!! tip "Always Use with Original Text"
-    To see before/after comparisons, always initialize `CountTokens` with the original text:
+!!! tip "Context Manager Best Practice"
+    Always use TokenTracker as a context manager with `with` statement:
 
     ```python
-    counter = CountTokens(original_text=original_text)
+    with TokenTracker(refiner, counter) as tracker:
+        result = tracker.process(text)
+    # Stats available after processing
+    stats = tracker.stats
     ```
 
-    Otherwise, you'll only get the final token count.
-
-!!! tip "Place at End of Pipeline"
-    For accurate "after" measurements, place `CountTokens` as the last operation in your pipeline:
+!!! tip "Custom Token Counters"
+    You can provide any callable that takes a string and returns an int:
 
     ```python
-    refiner = (
-        Refiner()
-        .pipe(Operation1())
-        .pipe(Operation2())
-        .pipe(CountTokens(original_text=text))  # Last!
-    )
+    def my_custom_counter(text: str) -> int:
+        # Your custom logic here
+        return len(text) // 3  # Example: 1 token ≈ 3 chars
+
+    with TokenTracker(refiner, my_custom_counter) as tracker:
+        result = tracker.process(text)
+    ```
+
+!!! tip "Access to Original and Result"
+    TokenTracker provides properties to access the original and refined text:
+
+    ```python
+    with TokenTracker(refiner, counter) as tracker:
+        result = tracker.process(text)
+
+    print(tracker.original_text)  # Original input
+    print(tracker.result)         # Refined output
     ```

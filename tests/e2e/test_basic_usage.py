@@ -26,7 +26,6 @@ def test_messages_packer():
         system="<p>You are a helpful AI assistant.</p>",
         context=["<div>Document   1</div>", "<div>Document   2</div>"],
         query="<span>What's the   weather?</span>",
-        track_savings=True,
     )
 
     messages = packer.pack()
@@ -43,12 +42,7 @@ def test_messages_packer():
     assert "<div>" not in messages[1]["content"], "HTML should be stripped from context"
     assert "   " not in messages[1]["content"], "Whitespace should be normalized"
 
-    # Verify savings tracking
-    savings = packer.get_token_savings()
-    assert "saved_tokens" in savings, "Should have token savings"
-    assert savings["saved_tokens"] > 0, "Should have saved some tokens"
-
-    print(f"✓ MessagesPacker works correctly (saved {savings['saved_tokens']} tokens)")
+    print("✓ MessagesPacker works correctly")
 
 
 def test_text_packer():
@@ -122,23 +116,6 @@ def test_strategies():
     print("✓ All strategies work correctly")
 
 
-def test_token_counting():
-    """Test token counting."""
-    print("\nTesting Token Counting...")
-    from prompt_refiner import CountTokens
-
-    # Test basic counting
-    counter = CountTokens(original_text="Hello World")
-    counter.process("Hello World")
-    stats = counter.format_stats()
-
-    assert "Original:" in stats, "Should have original tokens"
-    assert "Cleaned:" in stats, "Should have cleaned tokens"
-    assert isinstance(stats, str), "format_stats should return a string"
-
-    print("✓ Token counting works correctly")
-
-
 def main():
     """Run all e2e tests."""
     print("=" * 60)
@@ -151,7 +128,6 @@ def main():
         test_text_packer()
         test_pipeline()
         test_strategies()
-        test_token_counting()
 
         print("\n" + "=" * 60)
         print("✓ All E2E tests passed!")

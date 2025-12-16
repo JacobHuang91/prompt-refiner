@@ -1,10 +1,14 @@
 """Prompt Refiner - A lightweight library for optimizing LLM inputs."""
 
-__version__ = "0.2.1"
-
-from .analyzer import CountTokens
+__version__ = "0.2.2"
 
 # Import all operations for convenience
+from .analyzer import (
+    TokenTracker,
+    character_based_counter,
+    create_tiktoken_counter,
+    word_based_counter,
+)
 from .cleaner import FixUnicode, JsonCleaner, NormalizeWhitespace, StripHTML
 from .compressor import Deduplicate, TruncateTokens
 from .packer import (
@@ -34,6 +38,11 @@ from .tools import ResponseCompressor, SchemaCompressor
 __all__ = [
     "Refiner",
     "Pipeline",
+    # Analyzer operations
+    "TokenTracker",
+    "character_based_counter",
+    "word_based_counter",
+    "create_tiktoken_counter",
     # Cleaner operations
     "StripHTML",
     "NormalizeWhitespace",
@@ -44,8 +53,6 @@ __all__ = [
     "Deduplicate",
     # Scrubber operations
     "RedactPII",
-    # Analyzer operations
-    "CountTokens",
     # Tools operations
     "SchemaCompressor",
     "ResponseCompressor",

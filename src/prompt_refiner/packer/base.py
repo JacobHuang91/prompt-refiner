@@ -3,13 +3,9 @@
 import logging
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Union
+from typing import Any, Callable, Dict, List, Literal, Optional
 
-from ..analyzer.counter import CountTokens
 from ..refiner import Refiner
-
-if TYPE_CHECKING:
-    from ..pipeline import Pipeline
 
 logger = logging.getLogger(__name__)
 
@@ -39,14 +35,12 @@ class PackableItem:
 
     Attributes:
         content: The text content
-        tokens: Token count
         priority: Priority value (lower = higher priority, used for sorting)
         insertion_index: Order in which item was added
         role: Optional role for message-based APIs (system, query, context, user, assistant)
     """
 
     content: str
-    tokens: int
     priority: int
     insertion_index: int
     role: Optional[RoleType] = None
@@ -59,7 +53,6 @@ class BasePacker(ABC):
     Provides common functionality:
     - Adding items with priorities
     - JIT refinement with strategies/operations
-    - Token counting and savings tracking
     - Priority-based sorting
 
     Subclasses must implement:
@@ -68,39 +61,35 @@ class BasePacker(ABC):
 
     def __init__(
         self,
-        model: Optional[str] = None,
-        track_savings: bool = False,
+        track_tokens: bool = False,
+        token_counter: Optional[Callable[[str], int]] = None,
     ):
         """
         Initialize packer.
 
         Args:
-            model: Optional model name for precise token counting (requires tiktoken)
-            track_savings: Enable automatic token savings tracking for refine_with
-                operations (default: False)
+            track_tokens: Enable token tracking to measure refinement effectiveness
+            token_counter: Function to count tokens (required if track_tokens=True)
         """
         self._items: List[PackableItem] = []
         self._insertion_counter = 0
-        self._token_counter = CountTokens(model=model)
 
-        # Token savings tracking (opt-in)
-        self.track_savings = track_savings
-        self._savings_stats = {
-            "original_tokens": 0,  # Sum of tokens before refinement
-            "refined_tokens": 0,  # Sum of tokens after refinement
-            "items_refined": 0,  # Count of items that used refine_with
-        }
+        # Token tracking
+        self._track_tokens = track_tokens
+        self._token_counter = token_counter
+        self._raw_tokens = 0
+        self._refined_tokens = 0
 
-    def _count_tokens(self, text: str) -> int:
-        """Count tokens in text using configured counter."""
-        return self._token_counter._estimate_tokens(text)
+        # Validate: if tracking enabled, counter is required
+        if self._track_tokens and self._token_counter is None:
+            raise ValueError("token_counter is required when track_tokens=True")
 
     def add(
         self,
         content: str,
         role: RoleType,
         priority: Optional[int] = None,
-        refine_with: Optional[Union[Refiner, "Pipeline"]] = None,
+        refine_with: Optional[Refiner] = None,
     ) -> "BasePacker":
         """
         Add an item to the packer.
@@ -128,6 +117,10 @@ class BasePacker(ABC):
         Returns:
             Self for method chaining
         """
+        # Token tracking: count raw tokens BEFORE refinement
+        if self._track_tokens:
+            self._raw_tokens += self._token_counter(content)
+
         # Smart priority defaults based on semantic roles
         if priority is None:
             if role == ROLE_SYSTEM:
@@ -141,28 +134,20 @@ class BasePacker(ABC):
             else:
                 priority = PRIORITY_MEDIUM  # 30 - Unknown roles
 
-        # JIT refinement with optional tracking
+        # JIT refinement
+        refined_content = content
         if refine_with:
-            # Track original tokens before refinement (if tracking enabled)
-            original_content = content if self.track_savings else None
-
             # Apply refinement (Refiner or Pipeline both use process() method)
-            content = refine_with.process(content)
+            refined_content = refine_with.process(content)
 
-            # Update savings statistics (if tracking enabled)
-            if self.track_savings and original_content is not None:
-                original_tokens = self._count_tokens(original_content)
-                refined_tokens = self._count_tokens(content)
-                self._savings_stats["original_tokens"] += original_tokens
-                self._savings_stats["refined_tokens"] += refined_tokens
-                self._savings_stats["items_refined"] += 1
+        # Token tracking: count refined tokens AFTER refinement
+        if self._track_tokens:
+            self._refined_tokens += self._token_counter(refined_content)
 
-        # Count base tokens (without format overhead)
-        tokens = self._count_tokens(content)
+        content = refined_content
 
         item = PackableItem(
             content=content,
-            tokens=tokens,
             priority=priority,
             insertion_index=self._insertion_counter,
             role=role,
@@ -171,7 +156,7 @@ class BasePacker(ABC):
         self._items.append(item)
         self._insertion_counter += 1
 
-        logger.debug(f"Added item: {tokens} tokens, priority={priority}, role={role}")
+        logger.debug(f"Added item: priority={priority}, role={role}")
         return self
 
     def add_messages(
@@ -221,7 +206,7 @@ class BasePacker(ABC):
 
     def reset(self) -> "BasePacker":
         """
-        Reset the packer, removing all items and clearing savings statistics.
+        Reset the packer, removing all items and token stats.
 
         Returns:
             Self for method chaining
@@ -229,13 +214,10 @@ class BasePacker(ABC):
         self._items.clear()
         self._insertion_counter = 0
 
-        # Reset savings tracking
-        if self.track_savings:
-            self._savings_stats = {
-                "original_tokens": 0,
-                "refined_tokens": 0,
-                "items_refined": 0,
-            }
+        # Reset token tracking
+        if self._track_tokens:
+            self._raw_tokens = 0
+            self._refined_tokens = 0
 
         logger.debug("Packer reset")
         return self
@@ -250,56 +232,48 @@ class BasePacker(ABC):
         return [
             {
                 "priority": item.priority,
-                "tokens": item.tokens,
                 "insertion_index": item.insertion_index,
                 "role": item.role,
             }
             for item in self._items
         ]
 
-    def get_token_savings(self) -> dict:
+    @property
+    def token_stats(self) -> Dict[str, Any]:
         """
-        Get token savings statistics from refinement operations.
-
-        Only includes items that used refine_with parameter. Items added
-        without refinement are not counted.
+        Get token savings statistics (only available when track_tokens=True).
 
         Returns:
-            Dictionary with savings statistics:
-            - original_tokens: Total tokens before refinement
-            - refined_tokens: Total tokens after refinement
-            - saved_tokens: Tokens saved (original - refined)
-            - saving_percent: Percentage saved as formatted string (e.g., "12.5%")
-            - items_refined: Number of items that were refined
+            Dictionary with the following keys:
+                - raw_tokens: int - Total tokens before refinement
+                - refined_tokens: int - Total tokens after refinement
+                - saved_tokens: int - Tokens saved by refinement
+                - saving_percent: str - Percentage saved (e.g., "25.5%")
 
-            Returns empty dict if track_savings=False or no items refined.
+        Raises:
+            ValueError: If token tracking is not enabled
 
         Example:
-            >>> packer = MessagesPacker(max_tokens=1000, track_savings=True)
-            >>> packer.add(html_doc, role=ROLE_CONTEXT, refine_with=StripHTML())
-            >>> messages = packer.pack()
-            >>> stats = packer.get_token_savings()
-            >>> print(f"Saved {stats['saved_tokens']} tokens ({stats['saving_percent']})")
+            >>> packer = MessagesPacker(track_tokens=True, token_counter=character_based_counter)
+            >>> packer.add("<div>Hello</div>", role="user", refine_with=StripHTML())
+            >>> stats = packer.token_stats
+            >>> print(stats)
+            {'raw_tokens': 17, 'refined_tokens': 5, 'saved_tokens': 12, 'saving_percent': '70.6%'}
         """
-        if not self.track_savings:
-            logger.debug("Token savings tracking is disabled. Enable with track_savings=True")
-            return {}
+        if not self._track_tokens:
+            raise ValueError(
+                "Token tracking is not enabled. "
+                "Create packer with track_tokens=True and provide a token_counter."
+            )
 
-        if self._savings_stats["items_refined"] == 0:
-            logger.debug("No items have been refined yet")
-            return {}
-
-        original = self._savings_stats["original_tokens"]
-        refined = self._savings_stats["refined_tokens"]
-        saved = original - refined
-        saving_percent = (saved / original * 100) if original > 0 else 0.0
+        saved = self._raw_tokens - self._refined_tokens
+        percent = (saved / self._raw_tokens * 100) if self._raw_tokens > 0 else 0.0
 
         return {
-            "original_tokens": original,
-            "refined_tokens": refined,
+            "raw_tokens": self._raw_tokens,
+            "refined_tokens": self._refined_tokens,
             "saved_tokens": saved,
-            "saving_percent": f"{saving_percent:.1f}%",
-            "items_refined": self._savings_stats["items_refined"],
+            "saving_percent": f"{percent:.1f}%",
         }
 
     @abstractmethod

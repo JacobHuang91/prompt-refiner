@@ -2,6 +2,9 @@
 
 Advanced examples for managing context budgets with MessagesPacker and TextPacker.
 
+!!! warning "Documentation Update in Progress"
+    These examples are being updated for v0.2.2 which removed the `model` and `max_tokens` parameters. Packers now include all items without token budget constraints - let LLM APIs handle final token limits. See [API Reference](../api-reference/packer.md) for current v0.2.2 syntax.
+
 !!! tip "When to Use Packer"
     Packer is ideal for:
 

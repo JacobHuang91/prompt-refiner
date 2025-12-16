@@ -1,16 +1,13 @@
 """MessagesPacker for chat completion APIs (OpenAI, Anthropic, etc.)."""
 
 import logging
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
-from .base import ROLE_CONTEXT, ROLE_QUERY, BasePacker
-
-if TYPE_CHECKING:
-    from ..pipeline import Pipeline
-    from ..refiner import Refiner
+from ..refiner import Refiner
 
 # Import default strategies for auto-refinement
 from ..strategy import MinimalStrategy, StandardStrategy
+from .base import ROLE_CONTEXT, ROLE_QUERY, BasePacker
 
 logger = logging.getLogger(__name__)
 
@@ -46,17 +43,17 @@ class MessagesPacker(BasePacker):
 
     def __init__(
         self,
-        model: Optional[str] = None,
-        track_savings: bool = False,
-        system: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
-        context: Optional[Union[List[str], Tuple[List[str], Union["Refiner", "Pipeline"]]]] = None,
+        track_tokens: bool = False,
+        token_counter: Optional[Callable[[str], int]] = None,
+        system: Optional[Union[str, Tuple[str, Refiner]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], Refiner]]] = None,
         history: Optional[
             Union[
                 List[Dict[str, str]],
-                Tuple[List[Dict[str, str]], Union["Refiner", "Pipeline"]],
+                Tuple[List[Dict[str, str]], Refiner],
             ]
         ] = None,
-        query: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
+        query: Optional[Union[str, Tuple[str, Refiner]]] = None,
     ):
         """
         Initialize messages packer.
@@ -70,9 +67,8 @@ class MessagesPacker(BasePacker):
         For raw content with no refinement, use .add() method with refine_with=None.
 
         Args:
-            model: Optional model name for precise token counting
-            track_savings: Enable automatic token savings tracking to measure
-                optimization impact (default: False)
+            track_tokens: Enable token tracking to measure refinement effectiveness
+            token_counter: Function to count tokens (required if track_tokens=True)
             system: System message. Can be:
                 - str: "You are helpful"  (automatically refined with MinimalStrategy)
                 - Tuple[str, Refiner]: ("You are helpful", StripHTML())
@@ -94,7 +90,6 @@ class MessagesPacker(BasePacker):
 
         Example (Simple - no refiners):
             >>> packer = MessagesPacker(
-            ...     model="gpt-4o-mini",
             ...     system="You are helpful.",
             ...     context=["<div>Doc 1</div>", "<p>Doc 2</p>"],
             ...     history=[{"role": "user", "content": "Hi"}],
@@ -105,7 +100,6 @@ class MessagesPacker(BasePacker):
         Example (With single Refiner):
             >>> from prompt_refiner import MessagesPacker, StripHTML
             >>> packer = MessagesPacker(
-            ...     model="gpt-4o-mini",
             ...     system="You are helpful.",
             ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], StripHTML()),
             ...     query="What's the weather?"
@@ -117,7 +111,6 @@ class MessagesPacker(BasePacker):
             >>> cleaner = StripHTML() | NormalizeWhitespace()
             >>> # Or: cleaner = Pipeline([StripHTML(), NormalizeWhitespace()])
             >>> packer = MessagesPacker(
-            ...     model="gpt-4o-mini",
             ...     system="You are helpful.",
             ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], cleaner),
             ...     query="What's the weather?"
@@ -125,12 +118,12 @@ class MessagesPacker(BasePacker):
             >>> messages = packer.pack()
 
         Example (Traditional API - still supported):
-            >>> packer = MessagesPacker(model="gpt-4o-mini")
+            >>> packer = MessagesPacker()
             >>> packer.add("You are helpful.", role="system")
             >>> packer.add("Doc 1", role="context")
             >>> messages = packer.pack()
         """
-        super().__init__(model, track_savings)
+        super().__init__(track_tokens, token_counter)
         logger.debug("MessagesPacker initialized")
 
         # Auto-add items if provided (convenient API)
@@ -168,8 +161,8 @@ class MessagesPacker(BasePacker):
 
     @staticmethod
     def _extract_field(
-        field: Union[any, Tuple[any, Union["Refiner", "Pipeline"]]],
-    ) -> Tuple[any, Optional[Union["Refiner", "Pipeline"]]]:
+        field: Union[any, Tuple[any, Refiner]],
+    ) -> Tuple[any, Optional[Refiner]]:
         """
         Extract content and refiner/pipeline from a field.
 
@@ -190,17 +183,15 @@ class MessagesPacker(BasePacker):
     @classmethod
     def quick_pack(
         cls,
-        system: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
-        context: Optional[Union[List[str], Tuple[List[str], Union["Refiner", "Pipeline"]]]] = None,
+        system: Optional[Union[str, Tuple[str, Refiner]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], Refiner]]] = None,
         history: Optional[
             Union[
                 List[Dict[str, str]],
-                Tuple[List[Dict[str, str]], Union["Refiner", "Pipeline"]],
+                Tuple[List[Dict[str, str]], Refiner],
             ]
         ] = None,
-        query: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
-        model: Optional[str] = None,
-        track_savings: bool = False,
+        query: Optional[Union[str, Tuple[str, Refiner]]] = None,
     ) -> List[Dict[str, str]]:
         """
         One-liner to create packer and pack messages immediately.
@@ -214,8 +205,6 @@ class MessagesPacker(BasePacker):
             context: Context documents (list or (list, Refiner/Pipeline) tuple)
             history: Conversation history (list or (list, Refiner/Pipeline) tuple)
             query: Current query (str or (str, Refiner/Pipeline) tuple)
-            model: Optional model name for precise token counting
-            track_savings: Enable token savings tracking
 
         Returns:
             Packed messages ready for LLM API
@@ -232,8 +221,7 @@ class MessagesPacker(BasePacker):
             >>> messages = MessagesPacker.quick_pack(
             ...     system="You are helpful.",
             ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], StripHTML()),
-            ...     query="What's the weather?",
-            ...     model="gpt-4o-mini"
+            ...     query="What's the weather?"
             ... )
 
         Example (With Pipeline - multiple refiners):
@@ -243,14 +231,11 @@ class MessagesPacker(BasePacker):
             >>> messages = MessagesPacker.quick_pack(
             ...     system="You are helpful.",
             ...     context=(["<div>Doc 1</div>", "<p>Doc 2</p>"], cleaner),
-            ...     query="What's the weather?",
-            ...     model="gpt-4o-mini"
+            ...     query="What's the weather?"
             ... )
             >>> # Ready to use: client.chat.completions.create(messages=messages)
         """
         packer = cls(
-            model=model,
-            track_savings=track_savings,
             system=system,
             context=context,
             history=history,

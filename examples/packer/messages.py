@@ -29,8 +29,8 @@ def main():
     </div>
     """
 
-    # Initialize packer with automatic token savings tracking
-    packer = MessagesPacker(model="gpt-4o", track_savings=True)
+    # Initialize packer
+    packer = MessagesPacker()
 
     # Add system prompt
     packer.add(
@@ -60,18 +60,8 @@ def main():
     # Pack messages with priority-based selection
     messages = packer.pack()
 
-    # Get automatic token savings
-    savings = packer.get_token_savings()
-
-    if savings:
-        print("Token Optimization (automatic tracking):")
-        print(f"  Before: {savings['original_tokens']} tokens")
-        print(f"  After:  {savings['refined_tokens']} tokens")
-        print(f"  Saved:  {savings['saved_tokens']} tokens ({savings['saving_percent']})")
-        print()
-
     print(f"Context Management:")
-    print(f"  Packed {len(messages)}/{len(packer.get_items())} messages")
+    print(f"  Packed {len(messages)} messages")
     print()
 
     # Call OpenAI API

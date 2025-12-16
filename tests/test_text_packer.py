@@ -1,5 +1,7 @@
 """Tests for TextPacker (text completion APIs)."""
 
+import pytest
+
 from prompt_refiner import (
     PRIORITY_HIGH,
     PRIORITY_LOW,
@@ -398,134 +400,6 @@ def test_text_packer_unknown_role():
     assert "Custom content" in text
 
 
-def test_token_savings_tracking_enabled():
-    """Test that token savings are tracked when enabled."""
-    packer = TextPacker(track_savings=True)
-
-    # Add item with refinement
-    dirty_html = "<div><p>This is a test</p></div>"
-    packer.add(dirty_html, role=ROLE_CONTEXT, refine_with=StripHTML())
-
-    # Get savings
-    savings = packer.get_token_savings()
-
-    # Should have savings data
-    assert savings != {}
-    assert "original_tokens" in savings
-    assert "refined_tokens" in savings
-    assert "saved_tokens" in savings
-    assert "saving_percent" in savings
-    assert "items_refined" in savings
-
-    # Should have positive savings
-    assert savings["original_tokens"] > savings["refined_tokens"]
-    assert savings["saved_tokens"] > 0
-    assert savings["items_refined"] == 1
-
-
-def test_token_savings_tracking_disabled():
-    """Test that token savings are not tracked when disabled by default."""
-    packer = TextPacker()  # track_savings defaults to False
-
-    # Add item with refinement
-    dirty_html = "<div><p>This is a test</p></div>"
-    packer.add(dirty_html, role=ROLE_CONTEXT, refine_with=StripHTML())
-
-    # Get savings
-    savings = packer.get_token_savings()
-
-    # Should return empty dict
-    assert savings == {}
-
-
-def test_token_savings_no_refinement():
-    """Test that empty dict is returned when no items are refined."""
-    packer = TextPacker(track_savings=True)
-
-    # Add items WITHOUT refinement
-    packer.add("Clean content", role=ROLE_SYSTEM)
-    packer.add("Another clean content", role=ROLE_CONTEXT)
-
-    # Get savings
-    savings = packer.get_token_savings()
-
-    # Should return empty dict (no items refined)
-    assert savings == {}
-
-
-def test_token_savings_multiple_items():
-    """Test that savings are aggregated across multiple refined items."""
-    packer = TextPacker(track_savings=True)
-
-    # Add multiple items with refinement
-    dirty_html1 = "<div><p>First document</p></div>"
-    dirty_html2 = "<div><p>Second document with more content</p></div>"
-    messy_whitespace = "Text   with   excessive   whitespace"
-
-    packer.add(dirty_html1, role=ROLE_CONTEXT, refine_with=StripHTML())
-    packer.add(dirty_html2, role=ROLE_CONTEXT, refine_with=StripHTML())
-    packer.add(messy_whitespace, role=ROLE_CONTEXT, refine_with=NormalizeWhitespace())
-
-    # Add one item without refinement (should not be counted)
-    packer.add("Clean content", role=ROLE_SYSTEM)
-
-    # Get savings
-    savings = packer.get_token_savings()
-
-    # Should aggregate savings from all 3 refined items
-    assert savings["items_refined"] == 3
-    assert savings["original_tokens"] > savings["refined_tokens"]
-    assert savings["saved_tokens"] > 0
-
-
-def test_token_savings_reset():
-    """Test that reset clears savings statistics."""
-    packer = TextPacker(track_savings=True)
-
-    # Add item with refinement
-    dirty_html = "<div><p>This is a test</p></div>"
-    packer.add(dirty_html, role=ROLE_CONTEXT, refine_with=StripHTML())
-
-    # Verify savings exist
-    savings = packer.get_token_savings()
-    assert savings["items_refined"] == 1
-    assert savings["saved_tokens"] > 0
-
-    # Reset packer
-    packer.reset()
-
-    # Savings should be cleared
-    savings_after_reset = packer.get_token_savings()
-    assert savings_after_reset == {}
-
-    # Add new item with refinement
-    packer.add("<p>New content</p>", role=ROLE_CONTEXT, refine_with=StripHTML())
-
-    # Should track new savings
-    new_savings = packer.get_token_savings()
-    assert new_savings["items_refined"] == 1
-
-
-def test_token_savings_with_model():
-    """Test that token savings work with precise token counting."""
-    # Note: This test works whether or not tiktoken is installed
-    packer = TextPacker(model="gpt-4", track_savings=True)
-
-    # Add item with refinement
-    dirty_html = "<div><p>This is a test with precise counting</p></div>"
-    packer.add(dirty_html, role=ROLE_CONTEXT, refine_with=StripHTML())
-
-    # Get savings
-    savings = packer.get_token_savings()
-
-    # Should have savings data
-    assert savings != {}
-    assert savings["items_refined"] == 1
-    assert savings["original_tokens"] > savings["refined_tokens"]
-    assert savings["saved_tokens"] > 0
-    assert "%" in savings["saving_percent"]
-
-
 # Tests for new constructor-based API
 
 
@@ -655,18 +529,6 @@ def test_constructor_with_query_and_refiner():
     assert "<div>" not in text
 
 
-def test_constructor_with_track_savings():
-    """Test constructor with track_savings enabled."""
-    packer = TextPacker(track_savings=True, context=(["<div>Test</div>"], Pipeline([StripHTML()])))
-
-    text = packer.pack()
-    savings = packer.get_token_savings()
-
-    assert "Test" in text
-    assert savings["items_refined"] == 1
-    assert savings["saved_tokens"] > 0
-
-
 def test_extract_field_with_plain_value():
     """Test _extract_field with plain value."""
     content, refiner = TextPacker._extract_field("Hello")
@@ -717,9 +579,9 @@ def test_quick_pack_with_refiners():
 
 
 def test_quick_pack_with_model():
-    """Test quick_pack with model parameter."""
+    """Test quick_pack basic usage."""
     text = TextPacker.quick_pack(
-        model="gpt-4", text_format=TextFormat.RAW, system="You are helpful.", query="Test"
+        text_format=TextFormat.RAW, system="You are helpful.", query="Test"
     )
 
     assert "You are helpful." in text
@@ -735,20 +597,6 @@ def test_quick_pack_with_markdown_format():
     assert "# INSTRUCTIONS" in text
     assert "# CONTEXT" in text
     assert "# INPUT" in text
-
-
-def test_quick_pack_with_track_savings():
-    """Test quick_pack cannot access savings (one-liner returns text only)."""
-    text = TextPacker.quick_pack(
-        track_savings=True,
-        text_format=TextFormat.RAW,
-        context=(["<div>Test</div>"], Pipeline([StripHTML()])),
-        query="Test",
-    )
-
-    # Just verify it works and returns text
-    assert isinstance(text, str)
-    assert "Test" in text
 
 
 def test_constructor_and_add_method_combined():
@@ -841,3 +689,143 @@ class TestTextPackerWithRefiner:
 
         assert "Test content" in result
         assert "<div>" not in result
+
+
+class TestTextPackerTokenTracking:
+    """Tests for token tracking in TextPacker."""
+
+    def test_token_tracking_enabled(self):
+        """Test basic token tracking with refinement."""
+
+        def counter(text: str) -> int:
+            return len(text)
+
+        packer = TextPacker(track_tokens=True, token_counter=counter)
+        packer.add("<div>Hello</div>", role="user", refine_with=StripHTML())
+
+        stats = packer.token_stats
+        assert stats["raw_tokens"] == 16  # "<div>Hello</div>"
+        assert stats["refined_tokens"] == 5  # "Hello"
+        assert stats["saved_tokens"] == 11
+        assert "68.8%" in stats["saving_percent"]
+
+    def test_token_tracking_disabled_by_default(self):
+        """Test that tracking is disabled by default."""
+        packer = TextPacker()
+        packer.add("content", role="user")
+
+        # Should raise error when accessing stats
+        with pytest.raises(ValueError, match="Token tracking is not enabled"):
+            _ = packer.token_stats
+
+    def test_token_tracking_without_refinement(self):
+        """Test tracking when no refinement applied (no savings)."""
+
+        def counter(text: str) -> int:
+            return len(text)
+
+        packer = TextPacker(track_tokens=True, token_counter=counter)
+        packer.add("Hello World", role="user")  # No refine_with
+
+        stats = packer.token_stats
+        assert stats["raw_tokens"] == 11
+        assert stats["refined_tokens"] == 11
+        assert stats["saved_tokens"] == 0
+        assert stats["saving_percent"] == "0.0%"
+
+    def test_token_tracking_with_text_formats(self):
+        """Test that text format doesn't affect token counting (only refinement matters)."""
+
+        def counter(text: str) -> int:
+            return len(text)
+
+        # Test with different text formats
+        for text_format in [TextFormat.RAW, TextFormat.MARKDOWN, TextFormat.XML]:
+            packer = TextPacker(text_format=text_format, track_tokens=True, token_counter=counter)
+            packer.add("<div>Test</div>", role="user", refine_with=StripHTML())
+
+            stats = packer.token_stats
+            # Token savings should be same regardless of format
+            # (format affects pack() output, not token tracking)
+            assert stats["raw_tokens"] == 15  # "<div>Test</div>"
+            assert stats["refined_tokens"] == 4  # "Test"
+            assert stats["saved_tokens"] == 11
+
+    def test_token_tracking_multiple_items(self):
+        """Test tracking aggregates across multiple items."""
+
+        def counter(text: str) -> int:
+            return len(text)
+
+        packer = TextPacker(track_tokens=True, token_counter=counter)
+        packer.add("<div>Doc 1</div>", role="context", refine_with=StripHTML())
+        packer.add("<p>Doc 2</p>", role="context", refine_with=StripHTML())
+        packer.add("Clean query", role="query")  # No refinement
+
+        stats = packer.token_stats
+        # <div>Doc 1</div> = 16, <p>Doc 2</p> = 12, "Clean query" = 11
+        assert stats["raw_tokens"] == 39
+        # "Doc 1" = 5, "Doc 2" = 5, "Clean query" = 11
+        assert stats["refined_tokens"] == 21
+        assert stats["saved_tokens"] == 18
+
+    def test_token_tracking_reset(self):
+        """Test that reset clears token counters."""
+
+        def counter(text: str) -> int:
+            return len(text)
+
+        packer = TextPacker(track_tokens=True, token_counter=counter)
+        packer.add("<div>Test</div>", role="user", refine_with=StripHTML())
+
+        stats = packer.token_stats
+        assert stats["raw_tokens"] > 0
+
+        # Reset should clear counters
+        packer.reset()
+        stats = packer.token_stats
+        assert stats["raw_tokens"] == 0
+        assert stats["refined_tokens"] == 0
+        assert stats["saved_tokens"] == 0
+
+    def test_token_tracking_with_pipeline(self):
+        """Test tracking with pipeline refinement."""
+
+        def counter(text: str) -> int:
+            return len(text)
+
+        pipeline = StripHTML() | NormalizeWhitespace()
+        packer = TextPacker(track_tokens=True, token_counter=counter)
+        packer.add("<div>Hello   World</div>", role="user", refine_with=pipeline)
+
+        stats = packer.token_stats
+        assert stats["raw_tokens"] == 24  # Original
+        assert stats["refined_tokens"] == 11  # "Hello World"
+        assert stats["saved_tokens"] == 13
+
+    def test_token_tracking_error_without_counter(self):
+        """Test that error is raised when track_tokens=True but no counter provided."""
+        with pytest.raises(ValueError, match="token_counter is required"):
+            TextPacker(track_tokens=True)
+
+    def test_token_tracking_with_constructor_fields(self):
+        """Test tracking when using constructor fields with default strategies."""
+
+        def counter(text: str) -> int:
+            return len(text)
+
+        packer = TextPacker(
+            track_tokens=True,
+            token_counter=counter,
+            system="<div>System</div>",
+            context=["<p>Doc 1</p>", "<p>Doc 2</p>"],
+            query="<span>Query</span>",
+        )
+
+        packer.pack()
+
+        # Default strategies applied: MinimalStrategy for system/query, StandardStrategy for context
+        stats = packer.token_stats
+        assert stats["raw_tokens"] > 0
+        assert stats["refined_tokens"] > 0
+        assert stats["saved_tokens"] > 0
