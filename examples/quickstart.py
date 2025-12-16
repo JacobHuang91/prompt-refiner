@@ -56,8 +56,6 @@ def main():
     # - Example: context=(["<div>Doc</div>"], StripHTML() | NormalizeWhitespace())
 
     packer = MessagesPacker(
-        model="gpt-4o-mini",
-        track_savings=True,
         # system uses default MinimalStrategy (StripHTML + NormalizeWhitespace)
         system="<p>You are a helpful AI assistant    that    helps users find books.</p>",
         # context with explicit pipeline (overrides default StandardStrategy)
@@ -75,10 +73,7 @@ def main():
 
     messages = packer.pack()
 
-    savings_info = packer.get_token_savings()
-    saved = savings_info["saved_tokens"]
-    percent = (saved / savings_info["original_tokens"] * 100) if savings_info["original_tokens"] > 0 else 0
-    print(f"✓ MessagesPacker: {percent:.1f}% tokens saved")
+    print(f"✓ MessagesPacker: Messages packed successfully")
     print()
 
     # 2. Generate and compress tool schema from function

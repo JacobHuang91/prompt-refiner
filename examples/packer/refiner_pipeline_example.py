@@ -44,7 +44,6 @@ def main():
 
     print("\n2. Using pipeline with MessagesPacker:")
     messages_packer = MessagesPacker(
-        model="gpt-4o-mini",
         system="You are a helpful assistant.",
         context=(dirty_context, cleaner),  # Reuse cleaner
         query=(dirty_query, cleaner),  # Reuse cleaner again
@@ -57,7 +56,6 @@ def main():
 
     print("\n3. Using pipeline with TextPacker:")
     text_packer = TextPacker(
-        model="gpt-4o-mini",
         text_format=TextFormat.MARKDOWN,
         system="You are a helpful assistant.",
         context=(dirty_context, cleaner),  # Reuse cleaner

@@ -46,7 +46,30 @@ Each core module contains specialized operations that can be composed into pipel
 
 ## Version History
 
-### v0.2.1 (Current) - Packer Simplification & Default Strategies
+### v0.2.2 (Current) - Code Cleanup & Documentation Polish
+
+**Non-Breaking Changes:**
+- **Removed unused `model` parameter**: Cleaned up packer constructors
+  - Removed from `BasePacker.__init__()`, `MessagesPacker.__init__()`, `MessagesPacker.quick_pack()`, `TextPacker.__init__()`, `TextPacker.quick_pack()`
+  - Model parameter was never used internally, only stored
+  - Follows YAGNI principle (You Aren't Gonna Need It)
+  - Note: `model` parameter still exists in `CountTokens` operation for precise token counting
+
+- **Removed unused TYPE_CHECKING blocks**: Cleaned up empty type checking imports in packer files
+
+- **Documentation updates**:
+  - Updated all examples to remove `model` parameter
+  - Fixed README.md quickstart example
+  - Updated API reference documentation
+  - Clarified that `model` parameter is only for `CountTokens` operation
+
+**Benefits:**
+- Simpler, cleaner API
+- No functional changes - purely cleanup
+- Better code maintainability
+- Reduced confusion about unused parameters
+
+### v0.2.1 - Packer Simplification & Default Strategies
 **BREAKING CHANGES:**
 
 **Packer Simplification**
@@ -236,7 +259,7 @@ extended = StandardStrategy().pipe(RedactPII())
 
 - **tiktoken** (optional): For precise token counting
   - Install with: `pip install llm-prompt-refiner[token]`
-  - Opt-in by passing `model` parameter to CountTokens or ContextPacker
+  - Opt-in by passing `model` parameter to CountTokens operation
   - Falls back to character-based estimation if unavailable
 
 ## Code Style

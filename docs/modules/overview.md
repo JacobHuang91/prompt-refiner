@@ -103,7 +103,8 @@ The Analyzer module **measures optimization impact but does not transform prompt
 
 **Operations:**
 
-- **[CountTokens](../api-reference/analyzer.md#counttokens)** - Measure token savings and calculate ROI
+- **[TokenTracker](../api-reference/analyzer.md#tokentracker)** - Measure token savings and calculate ROI
+- **[Token Counters](../api-reference/analyzer.md#token-counter-functions)** - Built-in functions for counting tokens
 
 **When to use:**
 
@@ -124,31 +125,31 @@ The real power comes from combining modules:
 
 ```python
 from prompt_refiner import (
-    Refiner,
-    StripHTML, NormalizeWhitespace,  # Cleaner
-    TruncateTokens,                  # Compressor
-    RedactPII,                       # Scrubber
-    CountTokens                      # Analyzer
+    TokenTracker,              # Analyzer
+    StripHTML,                 # Cleaner
+    NormalizeWhitespace,       # Cleaner
+    TruncateTokens,            # Compressor
+    RedactPII,                 # Scrubber
+    character_based_counter,   # Token counter
 )
 
 original_text = "Your text here..."
-counter = CountTokens(original_text=original_text)
 
+# Build pipeline
 pipeline = (
-    Refiner()
-    # Clean first
-    .pipe(StripHTML())
-    .pipe(NormalizeWhitespace())
-    # Then compress
-    .pipe(TruncateTokens(max_tokens=1000))
-    # Secure
-    .pipe(RedactPII())
-    # Analyze
-    .pipe(counter)
+    StripHTML()
+    | NormalizeWhitespace()
+    | TruncateTokens(max_tokens=1000)
+    | RedactPII()
 )
 
-result = pipeline.run(original_text)
-print(counter.format_stats())
+# Track optimization with TokenTracker
+with TokenTracker(pipeline, character_based_counter) as tracker:
+    result = tracker.process(original_text)
+
+# Show token savings
+stats = tracker.stats
+print(f"Saved {stats['saved_tokens']} tokens ({stats['saving_percent']})")
 ```
 
 ### Packer Example
@@ -156,34 +157,24 @@ print(counter.format_stats())
 ```python
 from prompt_refiner import (
     MessagesPacker,
-    PRIORITY_SYSTEM,
-    PRIORITY_USER,
-    PRIORITY_HIGH,
-    StripHTML
+    ROLE_SYSTEM,
+    ROLE_QUERY,
+    ROLE_CONTEXT,
+    StripHTML,
 )
 
-# Manage RAG context budget for chat APIs
-packer = MessagesPacker(max_tokens=1000)
-
-packer.add(
-    "You are a helpful assistant.",
-    role="system",
-    priority=PRIORITY_SYSTEM
+# Manage RAG context for chat APIs with automatic priorities
+packer = MessagesPacker(
+    system="You are a helpful assistant.",
+    query="What is prompt-refiner?",
 )
 
-packer.add(
-    "What is prompt-refiner?",
-    role="user",
-    priority=PRIORITY_USER
-)
-
-# Clean documents before packing
+# Add retrieved documents with automatic cleaning
 for doc in retrieved_docs:
     packer.add(
         doc.content,
-        role="system",
-        priority=PRIORITY_HIGH,
-        refine_with=StripHTML()
+        role=ROLE_CONTEXT,  # Auto-assigned PRIORITY_HIGH
+        refine_with=StripHTML(),
     )
 
 messages = packer.pack()  # Returns List[Dict] directly
@@ -210,5 +201,5 @@ graph LR
 1. **Order matters**: Clean before compressing, compress before redacting
 2. **Use Packer for RAG**: When managing multiple documents with priorities
 3. **Test your pipeline**: Different inputs may need different operations
-4. **Measure, don't transform**: Use CountTokens to track savings without changing output
+4. **Measure impact**: Use TokenTracker to track token savings and demonstrate ROI
 5. **Start simple**: Begin with one module and add more as needed

@@ -2,8 +2,12 @@
 
 import logging
 from enum import Enum
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
+from ..refiner import Refiner
+
+# Import default strategies for auto-refinement
+from ..strategy import MinimalStrategy, StandardStrategy
 from .base import (
     ROLE_ASSISTANT,
     ROLE_CONTEXT,
@@ -13,13 +17,6 @@ from .base import (
     BasePacker,
     PackableItem,
 )
-
-if TYPE_CHECKING:
-    from ..pipeline import Pipeline
-    from ..refiner import Refiner
-
-# Import default strategies for auto-refinement
-from ..strategy import MinimalStrategy, StandardStrategy
 
 logger = logging.getLogger(__name__)
 
@@ -76,19 +73,19 @@ class TextPacker(BasePacker):
 
     def __init__(
         self,
-        model: Optional[str] = None,
+        track_tokens: bool = False,
+        token_counter: Optional[Callable[[str], int]] = None,
         text_format: TextFormat = TextFormat.RAW,
         separator: Optional[str] = None,
-        track_savings: bool = False,
-        system: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
-        context: Optional[Union[List[str], Tuple[List[str], Union["Refiner", "Pipeline"]]]] = None,
+        system: Optional[Union[str, Tuple[str, Refiner]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], Refiner]]] = None,
         history: Optional[
             Union[
                 List[Dict[str, str]],
-                Tuple[List[Dict[str, str]], Union["Refiner", "Pipeline"]],
+                Tuple[List[Dict[str, str]], Refiner],
             ]
         ] = None,
-        query: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
+        query: Optional[Union[str, Tuple[str, Refiner]]] = None,
     ):
         """
         Initialize text packer.
@@ -102,11 +99,10 @@ class TextPacker(BasePacker):
         For raw content with no refinement, use .add() method with refine_with=None.
 
         Args:
-            model: Optional model name for precise token counting
+            track_tokens: Enable token tracking to measure refinement effectiveness
+            token_counter: Function to count tokens (required if track_tokens=True)
             text_format: Text formatting strategy (RAW, MARKDOWN, XML)
             separator: String to join items (default: "\\n\\n" for clarity)
-            track_savings: Enable automatic token savings tracking to measure
-                optimization impact (default: False)
             system: System message. Can be:
                 - str: "You are helpful"
                 - Tuple[str, Refiner]: ("You are helpful", StripHTML())
@@ -128,7 +124,6 @@ class TextPacker(BasePacker):
 
         Example (Simple - no refiners):
             >>> packer = TextPacker(
-            ...     model="llama-2-70b",
             ...     text_format=TextFormat.MARKDOWN,
             ...     system="You are helpful.",
             ...     context=["Doc 1", "Doc 2"],
@@ -158,7 +153,7 @@ class TextPacker(BasePacker):
             ... )
             >>> prompt = packer.pack()
         """
-        super().__init__(model, track_savings)
+        super().__init__(track_tokens, token_counter)
         self.text_format = text_format
         self.separator = separator if separator is not None else "\n\n"
 
@@ -202,8 +197,8 @@ class TextPacker(BasePacker):
 
     @staticmethod
     def _extract_field(
-        field: Union[any, Tuple[any, Union["Refiner", "Pipeline"]]],
-    ) -> Tuple[any, Optional[Union["Refiner", "Pipeline"]]]:
+        field: Union[any, Tuple[any, Refiner]],
+    ) -> Tuple[any, Optional[Refiner]]:
         """
         Extract content and refiner/pipeline from a field.
 
@@ -224,19 +219,17 @@ class TextPacker(BasePacker):
     @classmethod
     def quick_pack(
         cls,
-        system: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
-        context: Optional[Union[List[str], Tuple[List[str], Union["Refiner", "Pipeline"]]]] = None,
+        system: Optional[Union[str, Tuple[str, Refiner]]] = None,
+        context: Optional[Union[List[str], Tuple[List[str], Refiner]]] = None,
         history: Optional[
             Union[
                 List[Dict[str, str]],
-                Tuple[List[Dict[str, str]], Union["Refiner", "Pipeline"]],
+                Tuple[List[Dict[str, str]], Refiner],
             ]
         ] = None,
-        query: Optional[Union[str, Tuple[str, Union["Refiner", "Pipeline"]]]] = None,
-        model: Optional[str] = None,
+        query: Optional[Union[str, Tuple[str, Refiner]]] = None,
         text_format: TextFormat = TextFormat.RAW,
         separator: Optional[str] = None,
-        track_savings: bool = False,
     ) -> str:
         """
         One-liner to create packer and pack text immediately.
@@ -250,10 +243,8 @@ class TextPacker(BasePacker):
             context: Context documents (list or (list, Refiner/Pipeline) tuple)
             history: Conversation history (list or (list, Refiner/Pipeline) tuple)
             query: Current query (str or (str, Refiner/Pipeline) tuple)
-            model: Optional model name for precise token counting
             text_format: Text formatting strategy (RAW, MARKDOWN, XML)
             separator: String to join items
-            track_savings: Enable token savings tracking
 
         Returns:
             Packed text ready for completion API
@@ -289,10 +280,8 @@ class TextPacker(BasePacker):
             ... )
         """
         packer = cls(
-            model=model,
             text_format=text_format,
             separator=separator,
-            track_savings=track_savings,
             system=system,
             context=context,
             history=history,
@@ -357,11 +346,7 @@ class TextPacker(BasePacker):
                 parts.append(formatted)
             result = self.separator.join(parts)
 
-        logger.info(
-            f"Packed {len(selected_items)} items into "
-            f"{self._count_tokens(result)} token text "
-            f"(format={self.text_format.value})"
-        )
+        logger.info(f"Packed {len(selected_items)} items (format={self.text_format.value})")
         return result
 
     def _pack_markdown_grouped(self, selected_items: list) -> str:

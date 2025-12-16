@@ -1,6 +1,6 @@
 # Packer Module API Reference
 
-The Packer module provides specialized packers for composing prompts with automatic refinement and priority-based ordering. **Version 0.1.3+** introduces two specialized packers following the Single Responsibility Principle. **Version 0.2.1+** adds default refining strategies and removes token budget constraints.
+The Packer module provides specialized packers for composing prompts with automatic refinement and priority-based ordering. **Version 0.1.3+** introduces two specialized packers following the Single Responsibility Principle. **Version 0.2.1+** adds default refining strategies and removes token budget constraints. **Version 0.2.2** removes unused `model` parameter for API simplification.
 
 ## MessagesPacker
 
@@ -146,7 +146,7 @@ from prompt_refiner import MessagesPacker, StripHTML
 from openai import OpenAI
 
 client = OpenAI()
-packer = MessagesPacker(model="gpt-4o", track_savings=True)
+packer = MessagesPacker(track_savings=True)
 
 # Add multiple RAG documents with automatic cleaning
 for doc in scraped_html_docs:
@@ -198,7 +198,7 @@ response = client.chat.completions.create(
 ```python
 from prompt_refiner import MessagesPacker
 
-packer = MessagesPacker(max_tokens=500)
+packer = MessagesPacker()
 
 packer.add(
     "You are a helpful assistant.",
@@ -219,9 +219,9 @@ messages = packer.pack()  # List[Dict[str, str]]
 ```python
 from prompt_refiner import MessagesPacker, StripHTML
 
-packer = MessagesPacker(max_tokens=1000)
+packer = MessagesPacker()
 
-# System prompt (must include)
+# System prompt
 packer.add(
     "Answer based on provided context.",
     role="system"  # Auto: PRIORITY_SYSTEM (0)
@@ -234,14 +234,14 @@ packer.add(
     refine_with=StripHTML()
 )
 
-# Old conversation history (can be dropped if needed)
+# Old conversation history
 old_messages = [
     {"role": "user", "content": "What is this library?"},
     {"role": "assistant", "content": "It's a tool for optimizing prompts."}
 ]
 packer.add_messages(old_messages)  # Auto: PRIORITY_LOW (40) for history
 
-# Current query (must include)
+# Current query
 packer.add(
     "How does it reduce costs?",
     role="query"  # Auto: PRIORITY_QUERY (10)
@@ -257,10 +257,7 @@ messages = packer.pack()
 ```python
 from prompt_refiner import TextPacker, TextFormat
 
-packer = TextPacker(
-    max_tokens=500,
-    text_format=TextFormat.MARKDOWN
-)
+packer = TextPacker(text_format=TextFormat.MARKDOWN)
 
 packer.add(
     "You are a QA assistant.",
@@ -287,7 +284,7 @@ prompt = packer.pack()  # str
 from prompt_refiner import TextPacker, TextFormat
 
 # RAW format (simple concatenation)
-packer = TextPacker(max_tokens=200, text_format=TextFormat.RAW)
+packer = TextPacker(text_format=TextFormat.RAW)
 packer.add("System prompt", role="system")
 packer.add("User query", role="query")
 prompt = packer.pack()
@@ -297,7 +294,7 @@ prompt = packer.pack()
 # User query
 
 # MARKDOWN format (grouped sections in v0.1.3+)
-packer = TextPacker(max_tokens=200, text_format=TextFormat.MARKDOWN)
+packer = TextPacker(text_format=TextFormat.MARKDOWN)
 packer.add("System prompt", role="system")
 packer.add("Doc 1", role="context")
 packer.add("Doc 2", role="context")
@@ -315,7 +312,7 @@ prompt = packer.pack()
 # User query
 
 # XML format
-packer = TextPacker(max_tokens=200, text_format=TextFormat.XML)
+packer = TextPacker(text_format=TextFormat.XML)
 packer.add("System prompt", role="system")
 packer.add("User query", role="query")
 prompt = packer.pack()
@@ -359,7 +356,7 @@ packer.add(
 from prompt_refiner import MessagesPacker
 
 messages = (
-    MessagesPacker(max_tokens=500)
+    MessagesPacker()
     .add("System prompt", role="system")
     .add("User query", role="query")
     .pack()
@@ -371,14 +368,14 @@ messages = (
 ```python
 from prompt_refiner import MessagesPacker
 
-packer = MessagesPacker(max_tokens=1000)
+packer = MessagesPacker()
 packer.add("Item 1", role="system")
 packer.add("Item 2", role="query")
 
 # Inspect items before packing
 items = packer.get_items()
 for item in items:
-    print(f"Priority: {item['priority']}, Tokens: {item['tokens']}, Role: {item['role']}")
+    print(f"Priority: {item['priority']}, Role: {item['role']}")
 ```
 
 ### Reset
@@ -386,7 +383,7 @@ for item in items:
 ```python
 from prompt_refiner import MessagesPacker
 
-packer = MessagesPacker(max_tokens=1000)
+packer = MessagesPacker()
 packer.add("First batch", role="context")
 messages1 = packer.pack()
 

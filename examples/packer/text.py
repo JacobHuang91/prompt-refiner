@@ -29,12 +29,10 @@ def main():
     </div>
     """
 
-    # Initialize packer with MARKDOWN format and automatic token savings tracking
+    # Initialize packer with MARKDOWN format
     packer = TextPacker(
         text_format=TextFormat.MARKDOWN,
         separator="\n\n",
-        model="gpt-3.5-turbo-instruct",
-        track_savings=True,
     )
 
     # Add system instructions
@@ -64,16 +62,6 @@ def main():
 
     # Pack into text format with priority-based selection
     prompt = packer.pack()
-
-    # Get automatic token savings
-    savings = packer.get_token_savings()
-
-    if savings:
-        print("Token Optimization (automatic tracking):")
-        print(f"  Before: {savings['original_tokens']} tokens")
-        print(f"  After:  {savings['refined_tokens']} tokens")
-        print(f"  Saved:  {savings['saved_tokens']} tokens ({savings['saving_percent']})")
-        print()
 
     print(f"Context Management:")
     print(f"  Packed {len(packer.get_items())} items")

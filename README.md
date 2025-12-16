@@ -35,8 +35,7 @@ from prompt_refiner import MessagesPacker, SchemaCompressor, ResponseCompressor,
 
 # 1. Pack messages (automatic refining with default strategies)
 packer = MessagesPacker(
-    model="gpt-4o-mini",
-    track_savings=True,
+    track_tokens=True,
     system="<p>You are a helpful AI assistant.</p>",
     context=(["<div>Installation Guide...</div>"], StripHTML() | NormalizeWhitespace()),
     query="<span>Search for Python books.</span>"

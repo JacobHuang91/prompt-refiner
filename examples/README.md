@@ -277,14 +277,10 @@ refiner = (
 
 ### Enterprise Data Protection
 ```python
-from prompt_refiner import Refiner, RedactPII, CountTokens
+from prompt_refiner import Refiner, RedactPII
 
-counter = CountTokens(original_text=original)
-refiner = (
-    Refiner()
-    .pipe(RedactPII())
-    .pipe(counter)
-)
+refiner = Refiner().pipe(RedactPII())
+result = refiner.run(sensitive_text)
 ```
 
 ### Tool Schema Compression
