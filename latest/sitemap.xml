@@ -2,118 +2,118 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/benchmark/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/contributing/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/getting-started/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/api-reference/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/api-reference/analyzer/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/api-reference/cleaner/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/api-reference/compressor/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/api-reference/packer/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/api-reference/refiner/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/api-reference/scrubber/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/api-reference/strategy/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/examples/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/examples/complete-pipeline/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/examples/deduplication/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/examples/html-cleaning/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/examples/json-cleaning/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/examples/packer/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/examples/pii-redaction/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/examples/token-analysis/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/modules/analyzer/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/modules/cleaner/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/modules/compressor/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/modules/overview/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/modules/packer/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/modules/scrubber/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/user-guide/custom-operations/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/user-guide/overview/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
     <url>
          <loc>https://jacobhuang91.github.io/prompt-refiner/latest/user-guide/pipelines/</loc>
-         <lastmod>2025-12-13</lastmod>
+         <lastmod>2025-12-16</lastmod>
     </url>
 </urlset>
