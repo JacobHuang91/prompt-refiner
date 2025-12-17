@@ -77,6 +77,7 @@ nav:
       - Cleaner: modules/cleaner.md
       - Compressor: modules/compressor.md
       - Scrubber: modules/scrubber.md
+      - Tools: modules/tools.md
       - Analyzer: modules/analyzer.md
       - Packer: modules/packer.md
   - API Reference:
@@ -85,6 +86,7 @@ nav:
       - Cleaner: api-reference/cleaner.md
       - Compressor: api-reference/compressor.md
       - Scrubber: api-reference/scrubber.md
+      - Tools: api-reference/tools.md
       - Analyzer: api-reference/analyzer.md
       - Packer: api-reference/packer.md
       - Strategy: api-reference/strategy.md

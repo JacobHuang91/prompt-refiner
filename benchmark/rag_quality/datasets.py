@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 
 def load_squad_samples(n: int = 15) -> List[Dict[str, Any]]:

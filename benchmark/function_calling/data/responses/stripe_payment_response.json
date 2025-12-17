@@ -1,0 +1,90 @@
+{
+  "id": "pi_3OYqH82eZvKYlo2C0kGJzBhD",
+  "object": "payment_intent",
+  "amount": 2000,
+  "amount_capturable": 0,
+  "amount_details": {
+    "tip": {}
+  },
+  "amount_received": 2000,
+  "application": null,
+  "application_fee_amount": null,
+  "automatic_payment_methods": null,
+  "canceled_at": null,
+  "cancellation_reason": null,
+  "capture_method": "automatic",
+  "client_secret": "pi_3OYqH82eZvKYlo2C0kGJzBhD_secret_xxxxxxxxxxxxxxxxxxx",
+  "confirmation_method": "automatic",
+  "created": 1704312842,
+  "currency": "usd",
+  "customer": "cus_PQR8St9uvwxy12",
+  "description": "Payment for order #ORD-2024-12345",
+  "invoice": null,
+  "last_payment_error": null,
+  "latest_charge": "ch_3OYqH82eZvKYlo2C0kGJzBhD",
+  "livemode": false,
+  "metadata": {
+    "order_id": "ORD-2024-12345",
+    "customer_email": "john.doe@example.com"
+  },
+  "next_action": null,
+  "on_behalf_of": null,
+  "payment_method": "pm_1OYqH82eZvKYlo2C0kGJzBhD",
+  "payment_method_configuration_details": null,
+  "payment_method_options": {
+    "card": {
+      "installments": null,
+      "mandate_options": null,
+      "network": null,
+      "request_three_d_secure": "automatic"
+    }
+  },
+  "payment_method_types": [
+    "card"
+  ],
+  "processing": null,
+  "receipt_email": "john.doe@example.com",
+  "review": null,
+  "setup_future_usage": null,
+  "shipping": null,
+  "source": null,
+  "statement_descriptor": null,
+  "statement_descriptor_suffix": null,
+  "status": "succeeded",
+  "transfer_data": null,
+  "transfer_group": null,
+  "debug_info": {
+    "request_id": "req_abcdef123456",
+    "api_version": "2024-01-01",
+    "query_time_ms": 245,
+    "cache_hit": true,
+    "server": "stripe-api-prod-03",
+    "region": "us-east-1",
+    "latency_breakdown": {
+      "routing": 12,
+      "validation": 34,
+      "processing": 156,
+      "database": 43
+    }
+  },
+  "logs": [
+    "2024-01-03T15:47:22.123Z [INFO] Payment intent created",
+    "2024-01-03T15:47:22.234Z [INFO] Customer cus_PQR8St9uvwxy12 validated",
+    "2024-01-03T15:47:22.345Z [INFO] Payment method pm_1OYqH82eZvKYlo2C0kGJzBhD attached",
+    "2024-01-03T15:47:22.456Z [INFO] Card validation successful",
+    "2024-01-03T15:47:22.567Z [INFO] Amount authorization requested: $20.00",
+    "2024-01-03T15:47:22.678Z [INFO] 3D Secure check: not required",
+    "2024-01-03T15:47:22.789Z [INFO] Payment processing initiated",
+    "2024-01-03T15:47:22.890Z [INFO] Charge ch_3OYqH82eZvKYlo2C0kGJzBhD created",
+    "2024-01-03T15:47:22.991Z [INFO] Payment captured successfully",
+    "2024-01-03T15:47:23.102Z [INFO] Receipt email queued",
+    "2024-01-03T15:47:23.213Z [INFO] Webhook notifications dispatched",
+    "2024-01-03T15:47:23.324Z [INFO] Payment intent status updated: succeeded"
+  ],
+  "_trace_id": "trace-stripe-xyz-789-abc-def",
+  "_request_context": {
+    "user_agent": "Stripe/v1 NodeBindings/8.0.1",
+    "ip_address": "203.0.113.42",
+    "timestamp": "2024-01-03T15:47:22.123456Z"
+  }
+}

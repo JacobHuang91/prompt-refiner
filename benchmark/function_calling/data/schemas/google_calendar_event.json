@@ -1,0 +1,89 @@
+{
+  "type": "function",
+  "function": {
+    "name": "create_calendar_event",
+    "description": "Create a new event in Google Calendar. This function allows you to programmatically add events to a user's Google Calendar, perfect for scheduling appointments, meetings, reminders, deadlines, and any time-based activities. The created event will appear in the specified calendar with full details including title, description, start/end times, location, attendees, and more. You can set up recurring events, add video conferencing links (Google Meet), invite attendees who will receive email notifications, set reminders, and customize visibility. The event supports rich descriptions with formatting, attachment links, and timezone handling. Perfect for appointment booking systems, meeting schedulers, event management applications, calendar integrations, automated scheduling workflows, and any scenario where you need to create calendar entries programmatically.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "calendar_id": {
+          "type": "string",
+          "description": "The calendar ID where the event will be created. Use 'primary' to create the event in the user's primary calendar (most common). For other calendars, use the calendar's unique identifier which looks like 'abc123@group.calendar.google.com' or an email address for user calendars. You can get calendar IDs from the Calendar List API. The user must have write access to the specified calendar, or the request will fail. Using 'primary' is the simplest and most reliable option for personal calendars. For shared team calendars or domain calendars, you'll need the specific calendar ID."
+        },
+        "summary": {
+          "type": "string",
+          "description": "The title of the event that appears in the calendar view. This is the main identifier for the event and should be concise but descriptive. Examples: 'Team Standup', 'Client Presentation - Acme Corp', 'Dentist Appointment', 'Project Deadline: Q1 Report', 'Birthday: John Smith'. Keep it under 100 characters for best display across devices. This field is required and is what users see at a glance when browsing their calendar. Make it specific enough to quickly understand what the event is about without needing to open the details."
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description or notes about the event. This is the body text that appears when viewing the event details. You can include agenda items, meeting notes, preparation instructions, links to documents, dial-in numbers, or any other relevant information. Basic formatting is supported including line breaks and URLs (which Google Calendar will automatically make clickable). For meetings, include the agenda, required preparation, or materials to review. For appointments, include confirmation numbers, special instructions, or things to bring. For deadlines, include deliverables or requirements. Maximum length is 8192 characters, but keep it focused and scannable for better user experience."
+        },
+        "start": {
+          "type": "object",
+          "properties": {
+            "dateTime": {
+              "type": "string"
+            },
+            "timeZone": {
+              "type": "string"
+            }
+          },
+          "description": "The start date and time of the event. The 'dateTime' field should be an RFC3339 formatted timestamp (e.g., '2024-03-15T09:00:00-07:00' or '2024-03-15T16:00:00Z' for UTC). Include timezone information in the timestamp or specify it separately in the 'timeZone' field using IANA timezone names (e.g., 'America/Los_Angeles', 'Europe/London', 'Asia/Tokyo'). For all-day events, use 'date' field instead (format: 'YYYY-MM-DD') and omit 'dateTime'. Google Calendar will handle timezone conversions automatically - users see the event in their local timezone while it's stored with the specified timezone. Always be explicit about timezone to avoid confusion for events with attendees in different locations."
+        },
+        "end": {
+          "type": "object",
+          "properties": {
+            "dateTime": {
+              "type": "string"
+            },
+            "timeZone": {
+              "type": "string"
+            }
+          },
+          "description": "The end date and time of the event. Same format requirements as the 'start' field - use RFC3339 formatted timestamp with timezone information. The end time must be after the start time, or the API will return an error. For typical meetings and appointments, set this to the expected duration (e.g., 1 hour after start for a 1-hour meeting). For all-day events, use the 'date' field with the next day (all-day events are exclusive of the end date). Google Calendar will show the duration and busy/free status based on this time. If you're unsure of the exact end time, err on the side of longer duration - users can always end early, but overrunning is more problematic."
+        },
+        "location": {
+          "type": "string",
+          "description": "The geographic location or meeting place for the event. This can be a physical address (e.g., '1600 Amphitheatre Parkway, Mountain View, CA 94043'), a building name and room number (e.g., 'Building 40, Conference Room A'), a general location (e.g., 'Coffee shop on Main Street'), or a virtual meeting indicator (e.g., 'Google Meet', 'Zoom', 'Phone'). If you provide a structured address, Google Calendar will show a map and offer navigation options on mobile devices. For virtual meetings, consider including the meeting link in both the location field and the description for easy access. Maximum length is 1024 characters. This field is optional but highly recommended for in-person events."
+        },
+        "attendees": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Array of attendee email addresses to invite to the event. Each attendee object should include an 'email' field with a valid email address. When you add attendees, Google Calendar automatically sends them email invitations with event details and options to accept, decline, or tentatively accept. Attendees can view the event in their own calendars, receive reminders, and get updates if the event changes. Their RSVP status will be visible to the organizer. You can invite both Google account users (who get full Calendar integration) and non-Google users (who receive email invitations). Be mindful of privacy when sharing event details with multiple attendees. For large events or meetings with many participants, consider whether all invitees need the full details or if some should be optional attendees."
+        },
+        "reminders": {
+          "type": "object",
+          "properties": {
+            "useDefault": {
+              "type": "boolean"
+            },
+            "overrides": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": ["email", "popup"]
+                  },
+                  "minutes": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Reminder settings for the event. Set 'useDefault' to true to use the user's default calendar reminder settings (recommended for most cases as it respects user preferences). To customize reminders for this specific event, set 'useDefault' to false and provide an 'overrides' array with reminder objects. Each reminder object has a 'method' field ('email' for email notifications or 'popup' for in-app/browser notifications) and a 'minutes' field indicating how many minutes before the event to trigger the reminder (e.g., 30 for 30 minutes before, 1440 for 1 day before). You can set multiple reminders with different methods and times. Common patterns: 15 minutes and 1 hour before for meetings, 1 day before for appointments, 1 week before for deadlines."
+        }
+      },
+      "required": ["calendar_id", "summary", "start", "end"]
+    }
+  }
+}

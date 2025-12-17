@@ -1,0 +1,164 @@
+{
+  "query": "SELECT u.id, u.name, u.email, COUNT(o.id) as order_count FROM users u LEFT JOIN orders o ON u.id = o.user_id WHERE u.created_at >= '2024-01-01' GROUP BY u.id ORDER BY order_count DESC LIMIT 10",
+  "database": "production_db",
+  "table": "users",
+  "rows_returned": 10,
+  "rows_affected": 0,
+  "execution_time_ms": 234,
+  "results": [
+    {
+      "id": 10245,
+      "name": "Alice Johnson",
+      "email": "alice.j@example.com",
+      "order_count": 15
+    },
+    {
+      "id": 10378,
+      "name": "Bob Smith",
+      "email": "bob.smith@example.com",
+      "order_count": 12
+    },
+    {
+      "id": 10512,
+      "name": "Carol Davis",
+      "email": "carol.d@example.com",
+      "order_count": 10
+    },
+    {
+      "id": 10689,
+      "name": "David Wilson",
+      "email": "d.wilson@example.com",
+      "order_count": 9
+    },
+    {
+      "id": 10723,
+      "name": "Eve Martinez",
+      "email": "eve.m@example.com",
+      "order_count": 8
+    },
+    {
+      "id": 10856,
+      "name": "Frank Anderson",
+      "email": "frank.a@example.com",
+      "order_count": 7
+    },
+    {
+      "id": 10934,
+      "name": "Grace Taylor",
+      "email": "grace.t@example.com",
+      "order_count": 6
+    },
+    {
+      "id": 11012,
+      "name": "Henry Thomas",
+      "email": "h.thomas@example.com",
+      "order_count": 5
+    },
+    {
+      "id": 11145,
+      "name": "Ivy Moore",
+      "email": "ivy.moore@example.com",
+      "order_count": 4
+    },
+    {
+      "id": 11289,
+      "name": "Jack Jackson",
+      "email": "j.jackson@example.com",
+      "order_count": 4
+    }
+  ],
+  "columns": [
+    {
+      "name": "id",
+      "type": "integer",
+      "nullable": false
+    },
+    {
+      "name": "name",
+      "type": "varchar(255)",
+      "nullable": false
+    },
+    {
+      "name": "email",
+      "type": "varchar(255)",
+      "nullable": false
+    },
+    {
+      "name": "order_count",
+      "type": "bigint",
+      "nullable": false
+    }
+  ],
+  "query_plan": {
+    "plan_type": "hash_join",
+    "cost_estimate": 1234.56,
+    "rows_estimate": 250,
+    "execution_nodes": [
+      "Seq Scan on users",
+      "Hash Join",
+      "Aggregate",
+      "Sort",
+      "Limit"
+    ]
+  },
+  "debug_info": {
+    "request_id": "db-req-bcd789efg012",
+    "api_version": "v1.0",
+    "processing_time_ms": 267,
+    "database_engine": "PostgreSQL 15.3",
+    "database_host": "prod-db-primary-01.internal",
+    "database_port": 5432,
+    "connection_pool_id": "pool-7",
+    "query_hash": "md5:a1b2c3d4e5f6g7h8i9j0",
+    "cache_status": "miss",
+    "read_replica_used": true,
+    "transaction_id": "txn-567890",
+    "statement_timeout_ms": 30000,
+    "index_usage": {
+      "users_pkey": true,
+      "users_created_at_idx": true,
+      "orders_user_id_idx": true
+    },
+    "buffer_statistics": {
+      "shared_hit": 145,
+      "shared_read": 23,
+      "shared_dirtied": 0,
+      "shared_written": 0,
+      "temp_read": 0,
+      "temp_written": 0
+    }
+  },
+  "logs": [
+    "[11:30:45.001] Database query request received",
+    "[11:30:45.023] SQL syntax validation: passed",
+    "[11:30:45.045] Permission check: user has SELECT on users and orders",
+    "[11:30:45.067] Connection acquired from pool-7",
+    "[11:30:45.089] Query plan generated and cached",
+    "[11:30:45.111] Index scan on users.created_at_idx",
+    "[11:30:45.156] Hash join with orders table (234 rows scanned)",
+    "[11:30:45.189] Aggregation completed (187 groups)",
+    "[11:30:45.212] Sort by order_count DESC (187 rows)",
+    "[11:30:45.234] Limit applied: 10 rows returned",
+    "[11:30:45.256] Result set serialized to JSON",
+    "[11:30:45.267] Connection released to pool"
+  ],
+  "_trace": {
+    "trace_id": "db-trace-hij345klm678",
+    "span_id": "span-db-901",
+    "parent_span_id": null,
+    "sampled": true,
+    "database": "production_db"
+  },
+  "_performance": {
+    "parse_time_ms": 22,
+    "plan_time_ms": 44,
+    "execution_time_ms": 234,
+    "serialization_ms": 11,
+    "total_ms": 267
+  },
+  "_metadata": {
+    "client": "psycopg2/2.9.9",
+    "application_name": "api_server",
+    "query_source": "api_endpoint_/users/top_customers"
+  }
+}

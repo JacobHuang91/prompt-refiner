@@ -16,7 +16,7 @@
 </div>
 
 > 🚀 **Lightweight Python library for AI Agents, RAG apps, and chatbots with smart context management and automatic token optimization.**
-> **Save 10-20% on API costs** while fitting RAG docs, chat history, and prompts into your token budget.
+> **Save 5-70% on API costs** - 57% average reduction on function calling, 5-15% on RAG contexts.
 
 ---
 
@@ -66,10 +66,10 @@ compressed_response = ResponseCompressor().process(tool_response)
 **Key benefits:**
 
 - **Default strategies** - Automatic refining (MinimalStrategy for system/query, StandardStrategy for context/history)
-- **Tool schema compression** - Save 10-15% tokens on AI agent function definitions
+- **Tool schema compression** - Save **10-70% tokens** on AI agent function definitions (avg: 57%)
 - **Tool response compression** - Save 30-70% tokens on agent tool outputs
 - **Compose operations** with `|` - Chain multiple cleaners into a pipeline
-- **Save 10-20% tokens** - Remove HTML, whitespace, duplicates, and redact PII automatically
+- **Save 5-15% tokens** on RAG contexts - Remove HTML, whitespace, duplicates automatically
 - **All items included** - No token budget limits, let LLM APIs handle final truncation
 - **Track savings** - Measure token optimization impact with built-in savings tracking
 - **Production ready** - Output goes directly to OpenAI without extra steps
@@ -82,7 +82,7 @@ compressed_response = ResponseCompressor().process(tool_response)
 | **Compressor** | Reduce size aggressively | `TruncateTokens()`, `Deduplicate()` |
 | **Scrubber** | Protect sensitive data | `RedactPII()` |
 | **Tools** | Optimize AI agent function calling (tool schemas & responses) | `SchemaCompressor()`, `ResponseCompressor()` |
-| **Packer** | Fit content within token budgets | `MessagesPacker` (chat APIs), `TextPacker` (completion APIs) |
+| **Packer** | Smart message composition with priority-based ordering | `MessagesPacker` (chat APIs), `TextPacker` (completion APIs) |
 | **Strategy** | Benchmark-tested presets for quick setup | `MinimalStrategy`, `StandardStrategy`, `AggressiveStrategy` |
 
 ## Installation
@@ -111,39 +111,79 @@ Check out the [`examples/`](examples/) folder for detailed examples:
 
 ## 📊 Proven Effectiveness
 
-We benchmarked Prompt Refiner on 30 real-world test cases (SQuAD + RAG scenarios) to measure token reduction and response quality:
+Prompt Refiner has been rigorously tested across **3 comprehensive benchmark suites** covering function calling, RAG applications, and performance. Here's what the data shows:
+
+### 🎯 Function Calling Benchmark: 57% Average Token Reduction
+
+**SchemaCompressor** was tested on **20 real-world API schemas** from Stripe, Salesforce, HubSpot, Slack, OpenAI, Anthropic, and more:
 
 <div align="center">
 
-| Strategy | Token Reduction | Quality (Cosine) | Judge Approval | Overall Equivalent |
-|----------|----------------|------------------|----------------|--------------------|
-| **Minimal** | 4.3% | 0.987 | 86.7% | 86.7% |
-| **Standard** | 4.8% | 0.984 | 90.0% | 86.7% |
-| **Aggressive** | **15.0%** | 0.964 | 80.0% | 66.7% |
+| Category | Schemas | Avg Reduction | Top Performer |
+|----------|---------|---------------|---------------|
+| **Very Verbose** (Enterprise APIs) | 11 | **67.4%** | HubSpot: 73.2% |
+| **Complex** (Rich APIs) | 6 | **61.7%** | Slack: 70.8% |
+| **Medium** (Standard APIs) | 2 | **13.1%** | Weather: 20.1% |
+| **Simple** (Minimal APIs) | 1 | **0.0%** | Calculator (already minimal) |
+| **Overall Average** | **20** | **56.9%** | — |
+
+</div>
+
+**Key Highlights:**
+- ✨ **56.9% average reduction** across all schemas (15,342 tokens saved)
+- 🔒 **100% lossless compression** - all protocol fields preserved (name, type, required, enum)
+- ✅ **100% callable (20/20 validated)** - all compressed schemas work correctly with OpenAI function calling
+- 🏢 **Enterprise APIs see 70%+ reduction** - HubSpot, Salesforce, OpenAI File Search
+- 📊 **Real-world schemas** from production APIs, not synthetic examples
+- ⚡ **Zero API cost** - local processing with tiktoken
+
+<div align="center">
+
+![Token Reduction by Category](benchmark/function_calling/results/plots/reduction_by_category.png)
+*SchemaCompressor achieves 60%+ reduction on complex APIs*
+
+![Cost Savings Projection](benchmark/function_calling/results/plots/cost_savings.png)
+*Estimated monthly savings for different agent sizes (GPT-4 pricing)*
+
+</div>
+
+**✅ Functional Validation:**
+
+We tested all 20 compressed schemas with real OpenAI function calling to prove they work correctly:
+
+- **100% callable (20/20)**: Every compressed schema successfully triggers function calls
+- **60% identical (12/20)**: Majority produce exactly the same arguments as original schemas
+- **40% different but valid (8/20)**: Compressed descriptions may influence LLM's choice among valid options (e.g., default values, placeholders)
+- **Bottom line**: Compression is safe for production - schemas remain functionally correct
+
+> 💰 **Cost Savings Example:** A medium agent (10 tools, 500 calls/day) saves **$541/month** with SchemaCompressor.
+>
+> 📖 **See full benchmark:** [benchmark/README.md#function-calling-benchmark](benchmark/README.md#function-calling-benchmark)
+
+---
+
+### 📚 RAG & Text Optimization Benchmark: 5-15% Token Reduction
+
+Tested on **30 real-world test cases** (SQuAD + RAG scenarios) to measure token reduction and quality preservation:
+
+<div align="center">
+
+| Strategy | Token Reduction | Quality (Cosine) | Judge Approval |
+|----------|----------------|------------------|----------------|
+| **Minimal** | 4.3% | 0.987 | 86.7% |
+| **Standard** | 4.8% | 0.984 | 90.0% |
+| **Aggressive** | **15.0%** | 0.964 | 80.0% |
 
 </div>
 
 **Key Insights:**
-- **Aggressive strategy achieves 3x more savings (15%) vs Minimal** while maintaining 96.4% quality
-- Individual RAG tests showed **17-74% token savings** with aggressive strategy
-- **Deduplicate** (Standard) shows minimal gains on typical RAG contexts
-- **TruncateTokens** (Aggressive) provides the largest cost reduction for long contexts
-- **Trade-off**: More aggressive = more savings but slightly lower judge approval
+- ✅ **Standard strategy**: 5% reduction with 98.4% cosine similarity and 90% judge approval
+- 🚀 **Aggressive strategy**: 15% reduction while maintaining 96.4% semantic quality
+- 📊 **Individual tests**: Up to 74% token savings on contexts with HTML and duplicates
 
-**Example: RAG with duplicates**
-- Minimal (HTML + Whitespace): 17% reduction
-- Standard (+ Deduplicate): 31% reduction
-- **Aggressive (+ Truncate 150 tokens): 49% reduction** 🎉
-
-<div align="center">
-
-![Token Reduction vs Quality](benchmark/custom/results/benchmark_results.png)
-
-</div>
-
-> 💰 **Cost Savings:** At scale (1M tokens/month), 15% reduction saves **~$54/month** on GPT-4 input tokens.
+> 💰 **Cost Savings:** At 1M tokens/month, 15% reduction saves **$54/month** on GPT-4 input tokens.
 >
-> 📖 **See full benchmark:** [benchmark/custom/README.md](benchmark/custom/README.md)
+> 📖 **See full benchmark:** [benchmark/README.md#rag-quality-benchmark](benchmark/README.md#rag-quality-benchmark)
 
 ## ⚡ Performance & Latency
 

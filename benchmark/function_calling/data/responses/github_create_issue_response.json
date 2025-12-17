@@ -1,0 +1,161 @@
+{
+  "id": 2345678901,
+  "node_id": "I_kwDOABcD1234567890",
+  "url": "https://api.github.com/repos/acme-corp/web-app/issues/456",
+  "repository_url": "https://api.github.com/repos/acme-corp/web-app",
+  "labels_url": "https://api.github.com/repos/acme-corp/web-app/issues/456/labels{/name}",
+  "comments_url": "https://api.github.com/repos/acme-corp/web-app/issues/456/comments",
+  "events_url": "https://api.github.com/repos/acme-corp/web-app/issues/456/events",
+  "html_url": "https://github.com/acme-corp/web-app/issues/456",
+  "number": 456,
+  "state": "open",
+  "state_reason": null,
+  "title": "Add user authentication rate limiting",
+  "body": "## Description\n\nImplement rate limiting for authentication endpoints to prevent brute force attacks.\n\n## Requirements\n\n- Limit login attempts to 5 per minute per IP\n- Limit password reset requests to 3 per hour per email\n- Return appropriate HTTP 429 status codes\n- Log rate limit violations for security monitoring\n\n## Technical Details\n\n- Use Redis for distributed rate limiting\n- Implement using `express-rate-limit` middleware\n- Add rate limit headers to responses",
+  "user": {
+    "login": "jane-developer",
+    "id": 1234567,
+    "node_id": "U_kgDOABcD123",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1234567?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/jane-developer",
+    "html_url": "https://github.com/jane-developer",
+    "type": "User",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 123456789,
+      "node_id": "LA_kwDOABcD123",
+      "url": "https://api.github.com/repos/acme-corp/web-app/labels/security",
+      "name": "security",
+      "color": "d73a4a",
+      "default": false,
+      "description": "Security-related issues"
+    },
+    {
+      "id": 123456790,
+      "node_id": "LA_kwDOABcD124",
+      "url": "https://api.github.com/repos/acme-corp/web-app/labels/enhancement",
+      "name": "enhancement",
+      "color": "a2eeef",
+      "default": true,
+      "description": "New feature or request"
+    }
+  ],
+  "assignees": [
+    {
+      "login": "bob-security",
+      "id": 7654321,
+      "node_id": "U_kgDOABcD456",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7654321?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/bob-security",
+      "html_url": "https://github.com/bob-security",
+      "type": "User",
+      "site_admin": false
+    }
+  ],
+  "milestone": {
+    "url": "https://api.github.com/repos/acme-corp/web-app/milestones/12",
+    "html_url": "https://github.com/acme-corp/web-app/milestone/12",
+    "labels_url": "https://api.github.com/repos/acme-corp/web-app/milestones/12/labels",
+    "id": 8901234,
+    "node_id": "MI_kwDOABcD789",
+    "number": 12,
+    "title": "v2.5.0",
+    "description": "Security and performance improvements",
+    "creator": {
+      "login": "product-manager",
+      "id": 9876543,
+      "node_id": "U_kgDOABcD789",
+      "type": "User"
+    },
+    "open_issues": 8,
+    "closed_issues": 23,
+    "state": "open",
+    "created_at": "2023-12-01T10:00:00Z",
+    "updated_at": "2024-01-03T15:30:00Z",
+    "due_on": "2024-02-15T00:00:00Z",
+    "closed_at": null
+  },
+  "locked": false,
+  "active_lock_reason": null,
+  "comments": 0,
+  "created_at": "2024-01-03T15:30:45Z",
+  "updated_at": "2024-01-03T15:30:45Z",
+  "closed_at": null,
+  "author_association": "CONTRIBUTOR",
+  "reactions": {
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0,
+    "url": "https://api.github.com/repos/acme-corp/web-app/issues/456/reactions"
+  },
+  "timeline_url": "https://api.github.com/repos/acme-corp/web-app/issues/456/timeline",
+  "performed_via_github_app": null,
+  "debug_info": {
+    "request_id": "github-req-fgh234ijk567",
+    "api_version": "2022-11-28",
+    "processing_time_ms": 345,
+    "rate_limit": {
+      "limit": 5000,
+      "remaining": 4876,
+      "reset": 1704301200,
+      "used": 124,
+      "resource": "core"
+    },
+    "server": "github-api-prod-089",
+    "datacenter": "us-east-1",
+    "database_queries": 12,
+    "cache_status": "miss",
+    "webhook_dispatches": 3,
+    "notification_recipients": 5,
+    "search_index_update_queued": true
+  },
+  "logs": [
+    "[15:30:45.001] Issue creation request received",
+    "[15:30:45.023] OAuth token validated for user jane-developer",
+    "[15:30:45.045] Repository permissions verified: write access",
+    "[15:30:45.067] Issue data validation: passed",
+    "[15:30:45.089] Markdown content sanitized",
+    "[15:30:45.111] Labels validated: security, enhancement",
+    "[15:30:45.133] Assignee validation: bob-security has write access",
+    "[15:30:45.155] Milestone validation: v2.5.0 exists and is open",
+    "[15:30:45.177] Issue created: #456",
+    "[15:30:45.199] Labels applied: 2 labels",
+    "[15:30:45.221] Assignees added: 1 assignee",
+    "[15:30:45.243] Milestone attached: v2.5.0",
+    "[15:30:45.265] Activity timeline initialized",
+    "[15:30:45.287] Webhook dispatched: issue.opened (3 subscriptions)",
+    "[15:30:45.309] Notifications queued: 5 recipients",
+    "[15:30:45.331] Search index update queued",
+    "[15:30:45.345] Response assembled"
+  ],
+  "_trace": {
+    "trace_id": "github-trace-lmn890opq123",
+    "span_id": "span-github-456",
+    "parent_span_id": null,
+    "sampled": true,
+    "repository": "acme-corp/web-app"
+  },
+  "_performance": {
+    "validation_ms": 88,
+    "database_write_ms": 122,
+    "label_processing_ms": 44,
+    "webhook_dispatch_ms": 44,
+    "notification_queue_ms": 22,
+    "total_ms": 345
+  },
+  "_metadata": {
+    "github_enterprise": false,
+    "api_client": "octokit.js/v19.0.7",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+    "client_ip": "203.0.113.123"
+  }
+}

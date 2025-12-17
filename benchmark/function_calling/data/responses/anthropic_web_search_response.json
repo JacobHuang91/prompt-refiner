@@ -1,0 +1,131 @@
+{
+  "query": "latest developments in quantum computing 2024",
+  "search_engine": "Google",
+  "total_results": 8470000,
+  "results_shown": 10,
+  "search_time_seconds": 0.42,
+  "results": [
+    {
+      "position": 1,
+      "title": "Major Quantum Computing Breakthroughs in 2024 | Nature",
+      "url": "https://www.nature.com/articles/quantum-computing-2024",
+      "display_url": "www.nature.com › articles › quantum-computing-2024",
+      "snippet": "Scientists achieved quantum error correction milestone with 1000-qubit system. New developments show 10x improvement in coherence times compared to 2023...",
+      "date": "2024-01-02",
+      "domain": "nature.com",
+      "cached_url": "https://webcache.googleusercontent.com/...",
+      "related_searches": [
+        "quantum computing applications 2024",
+        "quantum supremacy latest news"
+      ]
+    },
+    {
+      "position": 2,
+      "title": "IBM Unveils Next-Gen Quantum Processor - TechCrunch",
+      "url": "https://techcrunch.com/2024/01/02/ibm-quantum-processor",
+      "display_url": "techcrunch.com › 2024 › 01 › ibm-quantum-processor",
+      "snippet": "IBM announced the Quantum Condor processor with 1,121 qubits, marking a significant leap in quantum computing capacity. The processor demonstrates...",
+      "date": "2024-01-02",
+      "domain": "techcrunch.com",
+      "cached_url": "https://webcache.googleusercontent.com/...",
+      "related_searches": [
+        "IBM quantum roadmap 2024",
+        "quantum processor comparison"
+      ]
+    },
+    {
+      "position": 3,
+      "title": "Quantum Computing Industry Report Q4 2023 | McKinsey",
+      "url": "https://www.mckinsey.com/industries/technology/quantum-computing-q4-2023",
+      "display_url": "www.mckinsey.com › industries › quantum-computing",
+      "snippet": "Investment in quantum computing reached $4.2B in 2023, with major developments expected in drug discovery and financial modeling applications...",
+      "date": "2023-12-28",
+      "domain": "mckinsey.com",
+      "cached_url": "https://webcache.googleusercontent.com/...",
+      "related_searches": [
+        "quantum computing investment 2024",
+        "quantum computing market size"
+      ]
+    }
+  ],
+  "related_questions": [
+    "What is quantum computing used for?",
+    "When will quantum computers be available?",
+    "Who is leading in quantum computing?",
+    "How does quantum computing work?"
+  ],
+  "knowledge_panel": {
+    "title": "Quantum Computing",
+    "summary": "Quantum computing is a type of computation that harnesses the collective properties of quantum states to perform calculations...",
+    "key_facts": [
+      "Based on quantum mechanics principles",
+      "Uses qubits instead of classical bits",
+      "Can solve certain problems exponentially faster"
+    ]
+  },
+  "news_results": [
+    {
+      "title": "Google's Quantum AI Lab Reports Error Correction Milestone",
+      "source": "Reuters",
+      "date": "3 hours ago",
+      "url": "https://reuters.com/technology/google-quantum-milestone"
+    },
+    {
+      "title": "Quantum Computing Startup Raises $150M Series C",
+      "source": "Bloomberg",
+      "date": "1 day ago",
+      "url": "https://bloomberg.com/news/quantum-startup-funding"
+    }
+  ],
+  "debug_info": {
+    "request_id": "web-search-req-zab123cde456",
+    "api_version": "v1.0",
+    "processing_time_ms": 487,
+    "search_provider": "Google Custom Search API",
+    "api_key_hash": "sha256:abc...def",
+    "rate_limit_remaining": 97,
+    "rate_limit_reset": "2024-01-03T17:00:00Z",
+    "query_complexity": "medium",
+    "safe_search": "moderate",
+    "language": "en",
+    "region": "us",
+    "results_filtering": [
+      "spam_filter",
+      "adult_content_filter"
+    ],
+    "personalization_disabled": true,
+    "cache_status": "miss",
+    "datacenter": "us-east-1",
+    "server": "search-proxy-42"
+  },
+  "logs": [
+    "[16:30:15.001] Web search request received",
+    "[16:30:15.023] Query sanitization: removed special characters",
+    "[16:30:15.045] Safe search filter applied",
+    "[16:30:15.067] Query sent to Google Custom Search API",
+    "[16:30:15.487] Search results received (10 organic results)",
+    "[16:30:15.509] Related questions extracted",
+    "[16:30:15.531] Knowledge panel parsed",
+    "[16:30:15.553] News results aggregated",
+    "[16:30:15.575] URLs validated and cached",
+    "[16:30:15.597] Snippets sanitized for XSS",
+    "[16:30:15.619] Response assembled"
+  ],
+  "_trace": {
+    "trace_id": "search-trace-fgh789ijk012",
+    "span_id": "span-search-345",
+    "parent_span_id": null,
+    "sampled": true
+  },
+  "_performance": {
+    "query_preprocessing_ms": 44,
+    "google_api_call_ms": 420,
+    "result_processing_ms": 23,
+    "total_ms": 487
+  },
+  "_metadata": {
+    "user_agent": "Anthropic-Search-Bot/1.0",
+    "client_ip": "198.51.100.200",
+    "timestamp": "2024-01-03T16:30:15.619Z"
+  }
+}

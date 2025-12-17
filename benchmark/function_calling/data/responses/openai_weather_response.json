@@ -1,0 +1,108 @@
+{
+  "location": "San Francisco, CA",
+  "coordinates": {
+    "latitude": 37.7749,
+    "longitude": -122.4194
+  },
+  "current_weather": {
+    "temperature": 62,
+    "temperature_unit": "fahrenheit",
+    "feels_like": 59,
+    "humidity": 72,
+    "pressure": 1015,
+    "pressure_unit": "mb",
+    "wind_speed": 12,
+    "wind_speed_unit": "mph",
+    "wind_direction": "WSW",
+    "wind_direction_degrees": 245,
+    "visibility": 10,
+    "visibility_unit": "miles",
+    "cloud_cover": 45,
+    "uv_index": 3,
+    "precipitation": 0,
+    "precipitation_unit": "inches",
+    "condition": "Partly Cloudy",
+    "condition_code": "partly-cloudy",
+    "icon": "partly-cloudy-day",
+    "observation_time": "2024-01-03T15:00:00-08:00",
+    "last_updated": "2024-01-03T15:00:00-08:00"
+  },
+  "forecast": {
+    "today": {
+      "date": "2024-01-03",
+      "high": 65,
+      "low": 52,
+      "condition": "Partly Cloudy",
+      "precipitation_chance": 10,
+      "sunrise": "07:25 AM",
+      "sunset": "05:15 PM"
+    },
+    "tomorrow": {
+      "date": "2024-01-04",
+      "high": 63,
+      "low": 50,
+      "condition": "Mostly Sunny",
+      "precipitation_chance": 5
+    }
+  },
+  "air_quality": {
+    "aqi": 42,
+    "category": "Good",
+    "pm2_5": 10.2,
+    "pm10": 18.5,
+    "o3": 35.1,
+    "no2": 12.3,
+    "so2": 2.1,
+    "co": 0.3
+  },
+  "debug_info": {
+    "request_id": "weather-req-fgh901ijk234",
+    "api_version": "v2.5",
+    "processing_time_ms": 178,
+    "data_sources": [
+      "NOAA",
+      "Weather Underground",
+      "Airport METAR"
+    ],
+    "station_id": "KSFO",
+    "station_distance_miles": 3.2,
+    "data_freshness_seconds": 180,
+    "cache_hit": true,
+    "cache_ttl_seconds": 300,
+    "geocoding_time_ms": 23,
+    "weather_fetch_ms": 89,
+    "air_quality_fetch_ms": 45,
+    "datacenter": "us-west-1",
+    "server": "weather-api-12"
+  },
+  "logs": [
+    "[15:30:12.001] Weather request received for 'San Francisco, CA'",
+    "[15:30:12.024] Geocoding: San Francisco, CA → 37.7749, -122.4194",
+    "[15:30:12.047] Cache lookup: cache hit for coordinates",
+    "[15:30:12.070] Weather data retrieved from cache (age: 3 minutes)",
+    "[15:30:12.093] Current conditions: 62°F, Partly Cloudy",
+    "[15:30:12.116] Forecast data available: 7 days",
+    "[15:30:12.139] Air quality data fetched from AQI API",
+    "[15:30:12.162] UV index calculated: 3 (Moderate)",
+    "[15:30:12.178] Response assembled and ready"
+  ],
+  "_trace": {
+    "trace_id": "weather-trace-lmn567opq890",
+    "span_id": "span-weather-345",
+    "parent_span_id": null,
+    "sampled": true
+  },
+  "_performance": {
+    "geocoding_ms": 23,
+    "cache_lookup_ms": 23,
+    "weather_fetch_ms": 89,
+    "air_quality_ms": 45,
+    "total_ms": 178
+  },
+  "_metadata": {
+    "attribution": "Data provided by NOAA and Weather Underground",
+    "terms_of_service": "https://weather-api.example.com/tos",
+    "rate_limit_remaining": 4987,
+    "rate_limit_reset": 1704317412
+  }
+}

@@ -1,7 +1,7 @@
 """Quality evaluation metrics for benchmark."""
 
-from typing import Dict, Any, Optional
-import numpy as np
+from typing import Any, Dict, Optional
+
 from sklearn.metrics.pairwise import cosine_similarity
 
 

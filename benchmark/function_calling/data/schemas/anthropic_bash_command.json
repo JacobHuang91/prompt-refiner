@@ -1,0 +1,29 @@
+{
+  "type": "function",
+  "function": {
+    "name": "execute_bash",
+    "description": "Execute bash shell commands on the system. This function provides direct access to the operating system's command-line interface, allowing you to run any bash command or shell script. You can use this to interact with the file system (list files, create directories, move files), run system utilities (grep, sed, awk), manage processes, install packages, configure services, run build tools, execute scripts, and perform any other operation available through the bash shell. Commands are executed in a bash shell environment with access to standard Unix utilities and any installed command-line tools. The function captures both stdout and stderr output and returns them along with the exit code. Use this for system administration, development operations, file management, data processing, automation tasks, and any scenario requiring command-line interaction. Security note: Commands run with the permissions of the system user, so be cautious with destructive operations.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "description": "The bash command or shell script to execute. This can be a single command (e.g., 'ls -la /home'), a pipeline of commands connected with pipes (e.g., 'cat file.txt | grep error | wc -l'), multiple commands separated by semicolons or && operators (e.g., 'cd /tmp && mkdir test && ls'), or even a multi-line bash script with loops, conditionals, and functions. The command will be executed in a bash shell environment, so you have access to all bash features including variables, command substitution, process substitution, here documents, and shell builtins. Be careful with commands that might hang or run indefinitely - use timeout mechanisms if needed. Always validate and sanitize any user input included in commands to prevent injection attacks."
+        },
+        "working_directory": {
+          "type": "string",
+          "description": "The directory to use as the current working directory when executing the command. The command will run as if you had first run 'cd /path/to/directory' before executing it. This is useful for running commands that are path-dependent or when you need to work with files in a specific directory. Use absolute paths for clarity (e.g., '/home/user/projects/myapp') or relative paths from the default directory. If not specified, commands run in the default working directory (typically the home directory of the system user, e.g., /home/username or /root). The directory must exist and be accessible, or the command will fail."
+        },
+        "timeout": {
+          "type": "integer",
+          "description": "Maximum time in seconds to allow the command to run before forcefully terminating it. This is critical for preventing commands from hanging indefinitely or consuming excessive resources. If the command doesn't complete within this time limit, it will be killed (SIGTERM, then SIGKILL if necessary) and an error will be returned. Recommended values: 5 seconds for simple file operations, 30 seconds for network operations or package installations, 300 seconds (5 minutes) for builds or long-running scripts, 3600 seconds (1 hour) for heavy data processing. Default is 60 seconds if not specified. Set to 0 for no timeout (use with extreme caution)."
+        },
+        "capture_output": {
+          "type": "boolean",
+          "description": "Whether to capture and return the command's stdout and stderr output. When set to true (default), the function will collect all output produced by the command and return it in the response, allowing you to see what the command printed. This is useful for commands that produce information you need (like 'ls', 'cat', 'grep', etc.). When set to false, output is not captured (though the exit code is still returned), which can improve performance for commands that produce large amounts of output you don't need. The output is truncated if it exceeds 100KB to prevent memory issues."
+        }
+      },
+      "required": ["command"]
+    }
+  }
+}

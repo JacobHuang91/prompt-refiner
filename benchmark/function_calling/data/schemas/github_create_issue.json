@@ -1,0 +1,36 @@
+{
+  "type": "function",
+  "function": {
+    "name": "create_github_issue",
+    "description": "Create a new issue in a GitHub repository. This function allows you to programmatically create issues for bug reports, feature requests, questions, or any other type of issue in your GitHub projects. The created issue will appear in the repository's Issues tab and can be assigned, labeled, and managed like any manually created issue.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "owner": {
+          "type": "string",
+          "description": "The account owner of the repository (username or organization name)"
+        },
+        "repo": {
+          "type": "string",
+          "description": "The name of the repository where the issue will be created"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the issue - should be concise and descriptive"
+        },
+        "body": {
+          "type": "string",
+          "description": "The detailed description of the issue. Can include markdown formatting, code blocks, images, and links to provide comprehensive information about the problem or request."
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of label names to assign to the issue, such as 'bug', 'enhancement', 'documentation', etc."
+        }
+      },
+      "required": ["owner", "repo", "title"]
+    }
+  }
+}

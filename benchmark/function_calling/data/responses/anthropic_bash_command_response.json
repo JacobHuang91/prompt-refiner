@@ -1,0 +1,99 @@
+{
+  "command": "find /var/log -name '*.log' -mtime -7 -type f -exec wc -l {} \\;",
+  "exit_code": 0,
+  "status": "success",
+  "stdout": "1247 /var/log/system.log\n3456 /var/log/application.log\n892 /var/log/error.log\n2341 /var/log/access.log\n567 /var/log/security.log\n",
+  "stderr": "",
+  "execution_time_seconds": 2.341,
+  "working_directory": "/home/user",
+  "environment": {
+    "PATH": "/usr/local/bin:/usr/bin:/bin",
+    "HOME": "/home/user",
+    "SHELL": "/bin/bash",
+    "USER": "user"
+  },
+  "process_info": {
+    "pid": 12345,
+    "parent_pid": 1234,
+    "user": "user",
+    "group": "user",
+    "nice": 0,
+    "priority": 20
+  },
+  "resource_usage": {
+    "cpu_time_user_seconds": 0.234,
+    "cpu_time_system_seconds": 1.107,
+    "max_memory_kb": 4096,
+    "page_faults": 234,
+    "io_read_bytes": 2457600,
+    "io_write_bytes": 0
+  },
+  "files_accessed": [
+    "/var/log/system.log",
+    "/var/log/application.log",
+    "/var/log/error.log",
+    "/var/log/access.log",
+    "/var/log/security.log"
+  ],
+  "debug_info": {
+    "request_id": "bash-req-lmn345opq678",
+    "api_version": "v1.0",
+    "processing_time_ms": 2389,
+    "execution_engine": "docker",
+    "container_id": "abc123def456",
+    "container_image": "ubuntu:22.04",
+    "sandbox_enabled": true,
+    "timeout_seconds": 30,
+    "timeout_reached": false,
+    "command_length": 62,
+    "output_length": 151,
+    "datacenter": "us-west-2",
+    "server": "bash-executor-07",
+    "security_checks": {
+      "dangerous_commands": false,
+      "path_traversal": false,
+      "privilege_escalation": false,
+      "network_access": false
+    }
+  },
+  "logs": [
+    "[14:22:45.001] Bash command execution request received",
+    "[14:22:45.023] Command validation: passed security checks",
+    "[14:22:45.045] Sandbox environment initialized (container: abc123def456)",
+    "[14:22:45.067] Working directory set: /home/user",
+    "[14:22:45.089] Environment variables configured",
+    "[14:22:45.111] Command: find /var/log -name '*.log' -mtime -7 -type f -exec wc -l {} \\;",
+    "[14:22:45.133] Process spawned (PID: 12345)",
+    "[14:22:47.474] Process completed with exit code 0",
+    "[14:22:47.496] Output captured: 151 bytes stdout, 0 bytes stderr",
+    "[14:22:47.518] Resource usage recorded",
+    "[14:22:47.540] Sandbox cleanup initiated",
+    "[14:22:47.562] Container stopped and removed",
+    "[14:22:47.584] Response assembled"
+  ],
+  "_trace": {
+    "trace_id": "bash-trace-rst901uvw234",
+    "span_id": "span-bash-567",
+    "parent_span_id": null,
+    "sampled": true,
+    "container_id": "abc123def456"
+  },
+  "_performance": {
+    "validation_ms": 44,
+    "sandbox_init_ms": 66,
+    "command_execution_ms": 2341,
+    "cleanup_ms": 22,
+    "total_ms": 2389
+  },
+  "_security": {
+    "sandboxed": true,
+    "network_isolated": true,
+    "filesystem_readonly": false,
+    "user_namespaced": true,
+    "capabilities_dropped": [
+      "CAP_SYS_ADMIN",
+      "CAP_NET_ADMIN",
+      "CAP_SYS_MODULE"
+    ]
+  }
+}

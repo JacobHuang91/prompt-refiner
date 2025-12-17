@@ -1,0 +1,58 @@
+{
+  "type": "function",
+  "function": {
+    "name": "create_salesforce_account",
+    "description": "Create a new Account record in Salesforce CRM. Accounts represent companies, organizations, or individuals (for B2C) that you do business with or want to do business with. This function creates a new Account with comprehensive details including company information, contact details, address, industry classification, relationship status, and custom fields specific to your Salesforce configuration. Accounts are central to Salesforce's data model - they can have associated Contacts (people at the company), Opportunities (potential deals), Cases (support tickets), and other related records. Creating accurate, complete Account records is essential for effective customer relationship management, sales pipeline tracking, territory management, reporting and analytics, and maintaining clean CRM data. The function validates required fields, checks for duplicates, enforces business rules, assigns ownership, and triggers any configured automation (workflows, process builders, flows). Perfect for CRM integration, lead conversion, data migration, partner onboarding, and automated account creation from web forms or other systems.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the company or organization (required field). This is the primary identifier for the Account and appears throughout Salesforce in lists, reports, search results, and related records. Use the official registered business name for consistency and professionalism. Examples: 'Acme Corporation', 'Smith Consulting LLC', 'TechStart Inc', 'Global Industries International'. For individual consumers in B2C scenarios, use the person's full name or a combination format like 'LastName, FirstName Household'. The name should be unique enough to distinguish this account from others - if multiple locations exist, consider including city or region (e.g., 'Acme Corporation - San Francisco'). Maximum length is 255 characters. This field is indexed for fast searching and is required for record creation. Avoid abbreviations unless they're part of the official name."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["Prospect", "Customer", "Partner", "Competitor", "Other"],
+          "description": "The type of account representing your business relationship. 'Prospect' indicates a potential customer you're pursuing but haven't yet won (for pipeline and forecasting). 'Customer' indicates an active paying customer or client (for retention, upsell, support tracking). 'Partner' indicates a company you collaborate with - resellers, integrators, affiliates, or strategic partners (for partner management and co-selling). 'Competitor' indicates a competing company (for competitive intelligence and win/loss analysis). 'Other' is for accounts that don't fit standard categories. This field is crucial for segmentation, reporting, and filtering - it affects which accounts appear in sales pipelines vs customer success dashboards. Choose the type that best represents the current relationship stage. The type can change over time as relationships evolve (e.g., Prospect → Customer)."
+        },
+        "industry": {
+          "type": "string",
+          "description": "The primary industry or business sector of the account. This field helps with market segmentation, industry-specific sales strategies, vertical reporting, and territory assignment. Use standardized industry classifications for consistency. Common values: 'Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 'Retail', 'Education', 'Government', 'Nonprofit', 'Real Estate', 'Professional Services', 'Media & Entertainment', 'Telecommunications', 'Energy & Utilities', 'Agriculture', 'Transportation & Logistics', 'Hospitality', 'Construction', etc. More specific classifications are better for targeting (e.g., 'SaaS Technology' vs just 'Technology'). This field is often a picklist in Salesforce with predefined values from your org's configuration. Choose the most specific industry that applies. Industry information helps sales reps understand customer context and identify relevant solutions."
+        },
+        "website": {
+          "type": "string",
+          "description": "The company's primary website URL. Include the full URL with protocol for clickable links: 'https://www.example.com' or 'https://example.com'. This provides a quick reference to learn about the company, verify legitimacy, find contact information, understand products/services, and assess company size and sophistication. Sales reps use this for research before calls. Marketing uses it for firmographic data enrichment. The website field helps identify duplicate accounts - different entries for the same company often share a website. Validate that the URL is correct and accessible. For companies without websites (rare but exists for local businesses or startups), leave blank. Maximum length is 255 characters. The field accepts any URL but typically should be the main corporate website, not social media profiles or landing pages."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The main phone number for the account, typically the company's general line or headquarters number. Use a consistent format for better data quality - recommended: international format with country code like '+1-555-555-5555' or E.164 format '+15555555555'. For US numbers, '(555) 555-5555' is also common. Including country codes is essential for international businesses and enables features like click-to-dial from Salesforce. This is often the reception or main switchboard number rather than a direct line. For specific contact phone numbers, those should be stored on Contact records associated with this Account. The phone field helps with outbound calling, verification of account validity, and is displayed prominently in Account layouts. Maximum length is 40 characters which accommodates extensions (e.g., '+1-555-555-5555 ext. 123')."
+        },
+        "billing_street": {
+          "type": "string",
+          "description": "The street address line for the account's billing address. This is where invoices should be sent and where billing correspondence is directed. Include the full street address with building number, street name, suite/unit/floor if applicable. Examples: '123 Main Street Suite 400', '1 Market Street', '500 Tech Park Drive Building C'. For companies with separate physical and billing addresses, this is the billing location. Be specific and complete - this address may be used for invoice generation, tax calculations, and legal correspondence. If the billing and shipping addresses are the same, you'll typically populate both address sets with identical information. Maximum length is 255 characters. This field, along with billing_city, billing_state, billing_postal_code, and billing_country, forms the complete billing address used throughout the Salesforce system."
+        },
+        "billing_city": {
+          "type": "string",
+          "description": "The city name for the billing address. Use the official city name as it appears on official documents and postal systems. Examples: 'San Francisco', 'New York', 'London', 'Tokyo'. Spell out city names fully rather than using abbreviations (use 'Los Angeles' not 'LA', 'Saint Louis' not 'St. Louis' unless that's the official form). This field is used for geographic reporting, territory assignment, tax calculations, and address validation. Consistent city naming is important for reporting accuracy - ensure your team uses standardized names. Maximum length is 40 characters. Combined with state/province and country, this enables geographic analysis and market segmentation. Some Salesforce features like Maps and Einstein Territory Management rely on accurate city data."
+        },
+        "billing_state": {
+          "type": "string",
+          "description": "The state, province, or region for the billing address. For US addresses, use the two-letter state abbreviation (e.g., 'CA', 'NY', 'TX'). For Canadian addresses, use province abbreviations (e.g., 'ON', 'BC', 'QC'). For other countries, use the appropriate state/province name or abbreviation according to local conventions. This field is critical for tax calculations, territory assignment, and compliance with state-specific regulations. It's also used for geographic reporting and market analysis. Maximum length is 80 characters which accommodates longer state names in some countries. Leave blank for countries without state/province divisions. Consistent formatting (uppercase for abbreviations) helps with data quality and reporting accuracy."
+        },
+        "billing_postal_code": {
+          "type": "string",
+          "description": "The postal code or ZIP code for the billing address. Format according to the country's postal system: US ZIP codes are 5 digits or 5+4 format ('94105' or '94105-1234'), Canadian postal codes are letter-number format ('M5H 2N2'), UK postcodes are alphanumeric ('SW1A 1AA'), etc. This field is essential for accurate address validation, tax calculations (especially sales tax in the US which can vary by ZIP code), territory management, shipping cost calculations, and geographic analysis. Postal codes enable Salesforce features like Maps and location-based assignment rules. Maximum length is 20 characters. Be precise - using the correct postal code ensures accurate geolocation, proper tax handling, and reliable mail delivery for invoices and other correspondence."
+        },
+        "billing_country": {
+          "type": "string",
+          "description": "The country for the billing address. Use full country names for clarity (e.g., 'United States', 'Canada', 'United Kingdom', 'Japan') or ISO country codes if your org is configured for them (e.g., 'US', 'CA', 'GB', 'JP'). This field is fundamental for international business operations, affecting currency handling, tax compliance, legal entity assignment, language preferences, and data sovereignty requirements. It's used for geographic reporting, market segmentation, and territory assignment. For multinational companies, ensure you use the country where the billing entity is located, which may differ from the headquarters country. Maximum length is 80 characters. Consistent country naming or code usage is critical for accurate reporting and compliance with international regulations."
+        },
+        "owner_id": {
+          "type": "string",
+          "description": "The Salesforce User ID of the account owner (typically a sales representative or account manager). This is a required field that determines who has primary responsibility for this account, who it counts against for quotas, and who receives account-related notifications. The format is a 15 or 18-character Salesforce ID that looks like '00561000001hGcdAAE'. The owner appears in reports, list views, and assignment rules often reference owner for automation. Account ownership affects record access and sharing - the owner always has full access, and sharing rules may grant access to others. Use the default owner for new accounts in your territory assignment system, or assign to the appropriate sales rep based on geography, industry, company size, or other criteria. The owner can be changed later as accounts are reassigned or territories are restructured."
+        }
+      },
+      "required": ["name"]
+    }
+  }
+}

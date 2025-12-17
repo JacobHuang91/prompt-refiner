@@ -1,22 +1,23 @@
 """Main benchmark orchestrator for evaluating prompt-refiner effectiveness."""
 
 import os
-import time
-from typing import Dict, Any, List, Optional
-from pathlib import Path
-import pandas as pd
-from tqdm import tqdm
-
-from datasets import create_test_dataset
-from evaluators import CosineEvaluator, LLMJudgeEvaluator, evaluate_responses
-from visualizer import create_all_visualizations
 
 # Import prompt_refiner from project root
 import sys
+import time
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import pandas as pd
+from datasets import create_test_dataset
+from evaluators import CosineEvaluator, LLMJudgeEvaluator, evaluate_responses
+from tqdm import tqdm
+from visualizer import create_all_visualizations
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 from prompt_refiner import Refiner
-from prompt_refiner.cleaner import StripHTML, NormalizeWhitespace
-from prompt_refiner.compressor import TruncateTokens, Deduplicate
+from prompt_refiner.cleaner import NormalizeWhitespace, StripHTML
+from prompt_refiner.compressor import Deduplicate, TruncateTokens
 
 
 class Benchmark:
@@ -340,7 +341,7 @@ Answer:"""
             f.write(f"- Judge Approval: **{best_strategy[1]['quality_judge']:.1f}%**\n\n")
 
             f.write("### 💰 Cost Savings\n\n")
-            f.write(f"For **1,000 API calls** using GPT-4 ($0.03/1k input tokens):\n\n")
+            f.write("For **1,000 API calls** using GPT-4 ($0.03/1k input tokens):\n\n")
 
             for strategy, stats in summary.items():
                 avg_tokens_saved = stats['token_reduction'] / 100 * 1000  # Assume 1000 token avg

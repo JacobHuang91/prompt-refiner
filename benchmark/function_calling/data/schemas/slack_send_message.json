@@ -1,0 +1,33 @@
+{
+  "type": "function",
+  "function": {
+    "name": "send_slack_message",
+    "description": "Send a message to a Slack channel or direct message conversation. This function posts messages to Slack using the Slack API, allowing you to communicate with team members, send notifications, share updates, post alerts, deliver reports, and integrate your applications with Slack conversations. Messages can include plain text, formatted text using Slack's mrkdwn syntax (similar to Markdown), emoji, mentions (@username or @channel), links, and more. The message will appear in the specified channel or DM with your app's name and icon. Perfect for chatbots, notification systems, monitoring alerts, automated reports, team updates, and any scenario where you need to communicate information to Slack users programmatically.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "channel": {
+          "type": "string",
+          "description": "The channel, direct message, or multi-party direct message to send the message to. This can be specified in multiple formats: Channel ID (e.g., 'C1234567890' - most reliable and recommended), channel name (e.g., '#general', '#random'), or user ID for direct messages (e.g., 'U1234567890'). For channel names, include the # prefix. For private channels, your app must be invited to the channel first. For direct messages, use the user ID. Channel IDs are the most reliable because they don't change even if the channel is renamed. You can find channel IDs in the Slack web interface or through the API's channel list endpoint."
+        },
+        "text": {
+          "type": "string",
+          "description": "The message text to send. This is the main content of your message and will be displayed in the Slack channel. You can use Slack's mrkdwn formatting to add style and structure: *bold*, _italic_, ~strikethrough~, `code`, ```code block```, > blockquote, and bullet lists. You can mention users with <@USER_ID> (e.g., '<@U1234567890>'), mention channels with <#CHANNEL_ID>, mention special groups like <!channel>, <!here>, or <!everyone>, and include links with <https://example.com|Link Text>. Emoji can be added with :emoji_name: (e.g., ':smile:', ':rocket:', ':white_check_mark:'). The text is required but can be an empty string if you're using blocks for rich layout. Maximum length is 40,000 characters."
+        },
+        "thread_ts": {
+          "type": "string",
+          "description": "The timestamp of the parent message if you want to send this message as a reply in a thread. Thread timestamps (thread_ts) uniquely identify messages in Slack and have the format of a Unix timestamp with microseconds (e.g., '1234567890.123456'). When you provide a thread_ts, your message will appear as a threaded reply under the parent message instead of as a standalone message in the channel. This is great for organizing conversations, keeping channels clean, and maintaining context. You can get the timestamp of a message from previous API responses or from message events. If not provided, the message will be posted directly to the channel as a new top-level message."
+        },
+        "username": {
+          "type": "string",
+          "description": "A custom username to display as the sender of this message. This overrides your app's default name and allows you to customize how the message appears to users. For example, you might use 'Monitoring Bot', 'Sales Alert', 'CI/CD Pipeline', or 'GitHub Notifications' to indicate the source or type of message. This is purely cosmetic and doesn't affect permissions or message delivery. The username appears next to the message with your app's icon. Maximum length is 80 characters. If not provided, your app's default name will be used. Note: This requires the chat:write.customize scope for your Slack app."
+        },
+        "icon_emoji": {
+          "type": "string",
+          "description": "An emoji to use as the icon for this message, overriding your app's default icon. Specify the emoji using colon notation, like ':robot_face:', ':bell:', ':chart_with_upwards_trend:', ':warning:', ':white_check_mark:', etc. This is useful for visually categorizing messages or adding personality to your bot. For example, use ':bell:' for notifications, ':warning:' for alerts, ':white_check_mark:' for success messages, ':x:' for errors. The emoji will appear next to the message as the sender's avatar. If not provided, your app's default icon is used. Note: You cannot use both icon_emoji and icon_url - icon_emoji takes precedence if both are provided."
+        }
+      },
+      "required": ["channel", "text"]
+    }
+  }
+}

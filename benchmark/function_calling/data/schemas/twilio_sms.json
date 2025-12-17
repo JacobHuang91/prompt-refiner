@@ -1,0 +1,36 @@
+{
+  "type": "function",
+  "function": {
+    "name": "send_sms",
+    "description": "Send an SMS text message using the Twilio API. This function allows you to programmatically send text messages to mobile phone numbers worldwide. Perfect for sending notifications, alerts, verification codes, appointment reminders, marketing messages, customer support communications, and any scenario where you need to reach users via SMS. Twilio provides reliable message delivery with automatic retry logic, delivery receipts, and support for long messages (automatically split into multiple SMS segments if needed). The function supports sending to individual phone numbers and returns delivery status information. Messages are sent from your Twilio phone number or short code and delivered through Twilio's global carrier network with high reliability and low latency.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "to": {
+          "type": "string",
+          "description": "The destination phone number in E.164 format (e.g., '+14155552671' for US numbers, '+442071838750' for UK numbers, '+81312345678' for Japan). The E.164 format requires a plus sign (+) followed by the country code (1-3 digits) and the phone number without spaces, dashes, or parentheses. This is the internationally standardized format that ensures proper message delivery. The number must be a valid mobile number capable of receiving SMS messages. Landline numbers and some VoIP numbers may not support SMS. Always validate phone numbers before sending to avoid delivery failures and unnecessary charges."
+        },
+        "from": {
+          "type": "string",
+          "description": "The Twilio phone number or alphanumeric sender ID to send from, in E.164 format (e.g., '+14155552671'). This must be a phone number or short code you own in your Twilio account that is SMS-enabled. For US numbers, you can use any Twilio number you've purchased. For international sending, you may need to register your sender ID or use specific Twilio numbers based on destination country regulations. Some countries support alphanumeric sender IDs (up to 11 characters, like 'YourBrand'), which appear as the sender name instead of a phone number - but these are typically one-way (recipients can't reply). Check Twilio's documentation for country-specific sending requirements and restrictions."
+        },
+        "body": {
+          "type": "string",
+          "description": "The text message content to send. This is the actual message text that will be delivered to the recipient's phone. Standard SMS messages support up to 160 characters for basic Latin characters (GSM-7 encoding). If your message exceeds 160 characters, Twilio automatically splits it into multiple message segments (each 153 characters to accommodate concatenation headers), and you'll be charged for each segment. Messages with Unicode characters (emoji, non-Latin scripts like Chinese/Arabic/Russian) use UCS-2 encoding with a 70 character limit per segment. Keep messages concise for cost efficiency. Include clear sender identification and call-to-action when needed. Avoid excessive URLs or spam-like content which may be filtered by carriers. Maximum total length is 1600 characters (10 segments)."
+        },
+        "media_url": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Array of publicly accessible URLs to media files (images, GIFs, videos) to include with the message. When you include media URLs, the message becomes an MMS (Multimedia Messaging Service) instead of SMS, allowing you to send rich media content. Supported formats include JPEG, PNG, GIF for images (up to 5MB), and 3GP, MP4 for videos. URLs must be publicly accessible (no authentication required) and served over HTTPS. Each URL should point directly to the media file, not a webpage. You can include up to 10 media files per message. Note: MMS costs more than SMS and requires MMS-capable phones and carrier support. Not all countries/carriers support MMS - check Twilio's coverage for your destination."
+        },
+        "status_callback": {
+          "type": "string",
+          "description": "A webhook URL where Twilio will POST delivery status updates for this message. This URL must be publicly accessible and accept POST requests. Twilio will send HTTP POST callbacks as the message progresses through delivery states: queued → sent → delivered (or failed/undelivered). Each callback includes detailed information like message SID, status, error codes (if any), timestamps, and carrier information. Use this to track delivery success, handle failures, update your database, trigger follow-up actions, or provide delivery confirmation to users. The callback is especially important for critical messages where you need to verify delivery. Your endpoint should respond with HTTP 200 to acknowledge receipt. Twilio will retry failed callback requests with exponential backoff."
+        }
+      },
+      "required": ["to", "from", "body"]
+    }
+  }
+}

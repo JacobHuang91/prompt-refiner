@@ -1,0 +1,171 @@
+{
+  "action": "click",
+  "target": {
+    "type": "button",
+    "text": "Submit Form",
+    "coordinates": {
+      "x": 450,
+      "y": 650
+    },
+    "selector": "#submit-btn",
+    "bounding_box": {
+      "x": 420,
+      "y": 635,
+      "width": 120,
+      "height": 40
+    }
+  },
+  "success": true,
+  "execution_time_ms": 287,
+  "screen_state_before": {
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "active_window": {
+      "title": "Contact Form - Example Website",
+      "application": "Google Chrome",
+      "url": "https://example.com/contact",
+      "pid": 8765
+    },
+    "cursor_position": {
+      "x": 234,
+      "y": 456
+    }
+  },
+  "screen_state_after": {
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "active_window": {
+      "title": "Thank You - Example Website",
+      "application": "Google Chrome",
+      "url": "https://example.com/thank-you",
+      "pid": 8765
+    },
+    "cursor_position": {
+      "x": 450,
+      "y": 650
+    }
+  },
+  "screenshot_before": "/screenshots/before_20240103_142530_abc123.png",
+  "screenshot_after": "/screenshots/after_20240103_142530_def456.png",
+  "dom_changes": {
+    "nodes_added": 15,
+    "nodes_removed": 8,
+    "attributes_changed": 3,
+    "major_changes": [
+      "URL changed from /contact to /thank-you",
+      "Page title changed",
+      "Form elements removed",
+      "Success message displayed"
+    ]
+  },
+  "network_activity": [
+    {
+      "url": "https://example.com/api/submit-form",
+      "method": "POST",
+      "status_code": 200,
+      "response_time_ms": 234,
+      "request_size_bytes": 512,
+      "response_size_bytes": 1024
+    },
+    {
+      "url": "https://example.com/thank-you",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 145,
+      "request_size_bytes": 256,
+      "response_size_bytes": 4567
+    }
+  ],
+  "console_logs": [
+    {
+      "timestamp": "2024-01-03T14:25:30.123Z",
+      "level": "info",
+      "message": "Form validation passed"
+    },
+    {
+      "timestamp": "2024-01-03T14:25:30.456Z",
+      "level": "info",
+      "message": "Submitting form data to API"
+    },
+    {
+      "timestamp": "2024-01-03T14:25:30.789Z",
+      "level": "info",
+      "message": "Form submitted successfully, redirecting..."
+    }
+  ],
+  "accessibility": {
+    "role": "button",
+    "label": "Submit Form",
+    "keyboard_accessible": true,
+    "aria_attributes": {
+      "aria-label": "Submit contact form",
+      "aria-disabled": "false"
+    }
+  },
+  "debug_info": {
+    "request_id": "computer-use-req-hij012klm345",
+    "api_version": "v1.0",
+    "processing_time_ms": 334,
+    "automation_engine": "playwright",
+    "browser": "chromium",
+    "browser_version": "120.0.6099.109",
+    "viewport": {
+      "width": 1920,
+      "height": 1080
+    },
+    "session_id": "session-xyz789",
+    "context_id": "context-abc123",
+    "page_load_state": "load",
+    "javascript_enabled": true,
+    "cookies_enabled": true,
+    "datacenter": "us-west-1",
+    "server": "automation-server-15",
+    "retry_count": 0,
+    "screenshot_format": "png",
+    "screenshot_quality": 80
+  },
+  "logs": [
+    "[14:25:30.001] Computer use action request received",
+    "[14:25:30.023] Action: click on button 'Submit Form'",
+    "[14:25:30.045] Session validated: session-xyz789",
+    "[14:25:30.067] Browser context active: chromium 120.0",
+    "[14:25:30.089] Element located: #submit-btn at (450, 650)",
+    "[14:25:30.111] Element visibility check: visible",
+    "[14:25:30.133] Element enabled check: enabled",
+    "[14:25:30.155] Screenshot captured: before_20240103_142530_abc123.png",
+    "[14:25:30.177] Mouse moved to (450, 650)",
+    "[14:25:30.199] Click action executed",
+    "[14:25:30.287] Page navigation detected: /contact → /thank-you",
+    "[14:25:30.334] Page load complete",
+    "[14:25:30.356] Screenshot captured: after_20240103_142530_def456.png",
+    "[14:25:30.378] Network activity recorded: 2 requests",
+    "[14:25:30.400] DOM changes detected: 15 nodes added, 8 removed",
+    "[14:25:30.422] Console logs captured: 3 messages",
+    "[14:25:30.444] Action completed successfully"
+  ],
+  "_trace": {
+    "trace_id": "computer-trace-nop678qrs901",
+    "span_id": "span-computer-234",
+    "parent_span_id": null,
+    "sampled": true,
+    "session_id": "session-xyz789"
+  },
+  "_performance": {
+    "element_location_ms": 66,
+    "element_validation_ms": 44,
+    "click_execution_ms": 88,
+    "page_navigation_ms": 135,
+    "screenshot_capture_ms": 44,
+    "total_ms": 334
+  },
+  "_metadata": {
+    "automation_framework": "playwright/1.40.0",
+    "operating_system": "Ubuntu 22.04",
+    "display_server": "xvfb",
+    "user_id": "user-456"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "sid": "SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "date_created": "Wed, 03 Jan 2024 15:30:45 +0000",
+  "date_updated": "Wed, 03 Jan 2024 15:30:45 +0000",
+  "date_sent": "Wed, 03 Jan 2024 15:30:47 +0000",
+  "account_sid": "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "to": "+15555551234",
+  "from": "+15555559876",
+  "messaging_service_sid": "MG1234567890abcdef1234567890abcdef",
+  "body": "Your verification code is 123456. Valid for 10 minutes.",
+  "status": "sent",
+  "num_segments": "1",
+  "num_media": "0",
+  "direction": "outbound-api",
+  "api_version": "2010-04-01",
+  "price": "-0.00750",
+  "price_unit": "USD",
+  "error_code": null,
+  "error_message": null,
+  "uri": "/2010-04-01/Accounts/ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/Messages/SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.json",
+  "subresource_uris": {
+    "media": "/2010-04-01/Accounts/ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/Messages/SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/Media.json",
+    "feedback": "/2010-04-01/Accounts/ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/Messages/SMxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx/Feedback.json"
+  },
+  "debug_info": {
+    "request_id": "twilio-req-xyz789abc123",
+    "api_version": "2010-04-01",
+    "processing_time_ms": 234,
+    "carrier_lookup_time_ms": 67,
+    "queue_time_ms": 12,
+    "delivery_attempt_count": 1,
+    "carrier": "Verizon Wireless",
+    "carrier_type": "mobile",
+    "country_code": "US",
+    "region": "us1",
+    "edge_location": "ashburn",
+    "server_instance": "twilio-api-prod-042",
+    "rate_limit_remaining": 998,
+    "rate_limit_reset": "2024-01-03T15:31:00Z"
+  },
+  "logs": [
+    "[15:30:45.001] SMS send request received",
+    "[15:30:45.015] Account validation: passed",
+    "[15:30:45.032] Balance check: sufficient ($127.50 remaining)",
+    "[15:30:45.056] Phone number validation: from number active",
+    "[15:30:45.078] Phone number validation: to number valid",
+    "[15:30:45.123] Carrier lookup: Verizon Wireless detected",
+    "[15:30:45.145] Message content validation: 63 characters, 1 segment",
+    "[15:30:45.167] Messaging Service capabilities check: SMS enabled",
+    "[15:30:45.189] Compliance check: A2P registration verified",
+    "[15:30:45.201] Message queued for delivery",
+    "[15:30:45.234] Message handed off to carrier",
+    "[15:30:47.012] Delivery confirmation received from carrier",
+    "[15:30:47.034] Status updated to 'sent'",
+    "[15:30:47.056] Billing event recorded: -$0.0075",
+    "[15:30:47.078] Analytics event dispatched"
+  ],
+  "_trace": {
+    "trace_id": "twilio-trace-def456ghi789",
+    "span_id": "span-tw-123",
+    "parent_span_id": null,
+    "sampled": true
+  },
+  "_performance_metrics": {
+    "validation_time_ms": 77,
+    "carrier_lookup_ms": 67,
+    "queue_time_ms": 12,
+    "handoff_time_ms": 33,
+    "total_processing_ms": 234
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "type": "function",
+  "function": {
+    "name": "edit_text_file",
+    "description": "Edit a text file by performing various text manipulation operations. This powerful text editor function allows you to read, modify, and write text files with precision using a variety of editing commands. You can insert text at specific positions, delete lines or ranges, replace text using regex patterns, append or prepend content, and perform complex transformations. The function operates on files line-by-line with precise line number addressing, supports both simple string replacements and advanced regex-based substitutions, handles large files efficiently, preserves file encoding, and provides detailed feedback about changes made. Perfect for configuration file management, code editing, batch text processing, log file manipulation, automated refactoring, template processing, and any scenario where programmatic text file modification is needed. The editor supports all common text file formats and encodings, with special handling for different line ending conventions across operating systems.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "The absolute or relative path to the text file to edit. This should be a valid filesystem path to an existing file, or to a location where you want to create a new file if it doesn't exist. Use forward slashes (/) for path separators even on Windows (they'll be converted automatically). Examples: '/home/user/config.txt', './data/settings.json', '../logs/app.log'. The path can include directories which will be created if they don't exist (when creating new files). The file must be a text file - binary files are not supported. Common file types: .txt, .json, .xml, .yaml, .md, .csv, .log, .conf, .ini, .py, .js, .html, .css, etc. Always verify the path is correct to avoid accidentally editing the wrong file."
+        },
+        "operation": {
+          "type": "string",
+          "enum": ["read", "insert", "delete", "replace", "append", "prepend", "write"],
+          "description": "The type of editing operation to perform on the file. 'read' returns the current file content without modifications (useful for viewing before editing). 'insert' adds new text at a specific line number, shifting existing content down. 'delete' removes one or more lines from the file. 'replace' substitutes text matching a pattern with new text (supports regex). 'append' adds content to the end of the file. 'prepend' adds content to the beginning of the file. 'write' completely overwrites the file with new content (destructive - use with caution). Choose the operation that matches your editing intent. Most operations preserve the rest of the file content unchanged, except 'write' which replaces everything."
+        },
+        "line_number": {
+          "type": "integer",
+          "description": "The line number where the operation should be performed (for insert, delete operations). Line numbers start at 1 (first line is 1, not 0). For 'insert', the new content will be inserted BEFORE this line number - existing content at this line and below shifts down. For 'delete', this specifies the first line to delete. You can use 'end_line_number' to delete a range. For other operations, this parameter is ignored. Use 'read' operation first to see line numbers if you're unsure. Be careful with line numbers in automated scripts as they can change after each edit operation. If the specified line number exceeds the file length, insert operations append to the end, and delete operations return an error."
+        },
+        "end_line_number": {
+          "type": "integer",
+          "description": "The ending line number for range-based delete operations. When specified with 'line_number' for a delete operation, all lines from 'line_number' to 'end_line_number' (inclusive) will be removed. For example, line_number=5 and end_line_number=10 deletes lines 5, 6, 7, 8, 9, and 10. If omitted during delete, only the single line specified by 'line_number' is deleted. This parameter is ignored for all operations except 'delete'. Use this for removing blocks of content like old configuration sections, multiple log entries, or chunks of code. The end line must be greater than or equal to the start line."
+        },
+        "content": {
+          "type": "string",
+          "description": "The text content to use for the operation. For 'insert', 'append', 'prepend', this is the text that will be added to the file. For 'write', this becomes the entire new file content. For 'replace', this is the replacement text (combined with 'pattern'). The content can be a single line or multiple lines (use \\n for line breaks in the string). Supports Unicode characters and special characters. For multi-line content, consider whether you want a trailing newline or not - this affects how the text integrates with existing content. Be mindful of file format conventions (e.g., JSON requires valid JSON structure, YAML requires proper indentation). This parameter is required for all operations except 'read' and 'delete'."
+        },
+        "pattern": {
+          "type": "string",
+          "description": "The search pattern for replace operations. This can be a simple string to find (exact match) or a regular expression pattern for more complex matching. When using regex, follow Python regex syntax: use \\d for digits, \\w for word characters, .* for any characters, ^ for start of line, $ for end of line, etc. The pattern is matched against each line of the file. For simple replacements, use a plain string. For complex patterns, use regex. Examples: 'old_value' (simple), 'version = .*' (regex matching version lines), '^DEBUG:' (lines starting with DEBUG:), '\\d{3}-\\d{3}-\\d{4}' (phone number pattern). This parameter is only used with 'replace' operation and is required for that operation."
+        },
+        "replacement": {
+          "type": "string",
+          "description": "The replacement text for replace operations. This is what will replace content matching the 'pattern'. Can be a simple string or include regex backreferences if using regex patterns (e.g., \\1, \\2 to reference captured groups from the pattern). For simple replacements, just provide the new text. For regex replacements with capture groups, you can rearrange or reuse parts of the matched text. Examples: 'new_value' (simple), 'version = 2.0.0' (fixed replacement), 'INFO: \\1' (using captured group from pattern). This parameter is only used with 'replace' operation and is required along with 'pattern' for that operation. The replacement is applied to all matches found in the file."
+        },
+        "create_if_missing": {
+          "type": "boolean",
+          "description": "Whether to create the file if it doesn't exist. When set to true, if the specified file_path doesn't exist, the operation will create a new empty file (for 'read') or a file with the provided content (for other operations). This is useful for initialization scripts or ensuring configuration files exist. When set to false (default), operations on non-existent files will return an error. Use true when you want to ensure a file exists regardless of initial state. For 'write', 'append', and 'prepend' operations, this is particularly useful for creating new files. Always set this explicitly based on whether you expect the file to exist or want to handle both cases."
+        }
+      },
+      "required": ["file_path", "operation"]
+    }
+  }
+}

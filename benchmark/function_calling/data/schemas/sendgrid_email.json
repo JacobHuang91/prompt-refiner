@@ -1,0 +1,90 @@
+{
+  "type": "function",
+  "function": {
+    "name": "send_email",
+    "description": "Send transactional emails using the SendGrid API. This powerful email delivery function allows you to send professional, reliable emails to your users including welcome emails, password resets, order confirmations, notifications, newsletters, invoices, and any other transactional or marketing communications. SendGrid provides enterprise-grade email infrastructure with high deliverability rates, automatic handling of bounces and spam complaints, detailed analytics and tracking, support for attachments and HTML templates, and scalable delivery for millions of emails. The function supports rich HTML content, plain text fallbacks, multiple recipients (to, cc, bcc), file attachments, custom headers, tracking options, and scheduling. Emails are sent from your verified sender identity through SendGrid's global email network with SPF, DKIM, and DMARC authentication to ensure maximum inbox placement and minimize spam folder placement.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "to": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Array of recipient email addresses and names. Each recipient object should include an 'email' field with a valid email address (e.g., 'user@example.com') and optionally a 'name' field with the recipient's display name (e.g., 'John Smith'). The name will appear in the email client's 'To' field for a more personalized experience. You can send to multiple recipients in a single API call, but be aware that all recipients will see each other's addresses (they're not BCC'd by default). For privacy, consider sending individual emails or using the BCC field. Email addresses must be valid, properly formatted, and not on your suppression list. Maximum 1000 recipients per API call."
+        },
+        "from": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "description": "The sender email address and name that will appear in the recipient's inbox. The 'email' field must be a verified sender identity in your SendGrid account - you cannot send from arbitrary email addresses due to anti-spam requirements. Use an email address on a domain you control and have verified with SendGrid (via domain authentication or single sender verification). The 'name' field sets the friendly name that appears with the email address, like 'Support Team' or 'John from Acme Corp'. This name helps with email recognition and improves open rates. Both fields are required. Use a recognizable sender name and a no-reply or support email address for transactional emails."
+        },
+        "subject": {
+          "type": "string",
+          "description": "The email subject line that appears in the recipient's inbox. This is one of the most important fields as it significantly impacts open rates. Keep it concise (40-50 characters ideal), clear, and relevant to the email content. Avoid spam trigger words like 'FREE!!!', excessive punctuation, or ALL CAPS which may trigger spam filters and reduce deliverability. Personalization in subject lines (like including the recipient's name) can increase open rates. For transactional emails, be direct and informative (e.g., 'Your Order #12345 Has Shipped', 'Password Reset Request'). Maximum length is 998 characters but shorter is better for mobile display and user experience."
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["text/plain", "text/html"]
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Array of content objects defining the email body. Each content object has a 'type' field ('text/plain' for plain text or 'text/html' for HTML content) and a 'value' field with the actual content. Best practice: include both plain text and HTML versions. The plain text version serves as a fallback for email clients that don't support HTML, for accessibility (screen readers), and for users who prefer text-only emails. The HTML version can include rich formatting, images, buttons, tables, and styling for better visual presentation. SendGrid recommends the plain text version comes first in the array. HTML content should be well-formed, tested across email clients, and include proper alt text for images. Avoid JavaScript or forms in HTML emails as they're blocked by most clients."
+        },
+        "attachments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string"
+              },
+              "filename": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Array of file attachments to include with the email. Each attachment object requires three fields: 'content' (the file content encoded in base64 format), 'filename' (the name of the file as it will appear to recipients, including the extension like 'invoice.pdf' or 'report.xlsx'), and 'type' (the MIME type like 'application/pdf', 'image/png', 'text/csv', etc.). Common use cases include PDF invoices, CSV reports, product images, contracts, or documentation. Be mindful of attachment size - large attachments increase send time, may be blocked by recipient email servers (many limit to 10-25MB total), and count against your bandwidth. Consider hosting large files elsewhere and including download links instead. Maximum total email size including attachments is 30MB."
+        },
+        "reply_to": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "description": "The email address and name to use for replies. When a recipient clicks 'Reply' in their email client, their response will be sent to this address instead of the 'from' address. This is useful when sending from a no-reply address but wanting replies to go to a monitored support inbox, or when centralizing responses to a specific team email. The 'email' should be a valid, monitored email address where you want to receive replies. The 'name' is optional but helpful for context. If not specified, replies will go to the 'from' address by default. This is particularly important for transactional emails where you want to enable two-way communication with customers."
+        }
+      },
+      "required": ["to", "from", "subject", "content"]
+    }
+  }
+}

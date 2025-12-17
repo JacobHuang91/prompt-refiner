@@ -1,0 +1,46 @@
+{
+  "type": "function",
+  "function": {
+    "name": "search_products",
+    "description": "Search for products in the e-commerce catalog. This powerful search function allows you to find products based on various criteria including category, price range, keywords, ratings, availability, and more. It returns a comprehensive list of matching products with their complete details including names, descriptions, prices, images, ratings, stock availability, and shipping information. This function is essential for helping users discover and find the exact products they're looking for in your online store.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query string that contains keywords describing the product you're looking for. This can include product names, brands, categories, features, or any relevant terms. For example: 'wireless headphones', 'blue running shoes size 10', 'organic coffee beans', etc. The search engine will use these keywords to find the most relevant products in the catalog."
+        },
+        "category": {
+          "type": "string",
+          "description": "Filter results by product category. This narrows down the search to specific departments or product types in your store. Common categories include: Electronics, Clothing, Home & Garden, Sports & Outdoors, Books, Toys, Beauty, etc. You can also use subcategories for more precise filtering, such as 'Electronics > Audio > Headphones'."
+        },
+        "min_price": {
+          "type": "number",
+          "description": "The minimum price threshold for filtering products. Only products with prices greater than or equal to this value will be included in the search results. This is useful when users want to filter out items that are below a certain price point. The value should be provided as a decimal number representing the price in the store's currency."
+        },
+        "max_price": {
+          "type": "number",
+          "description": "The maximum price threshold for filtering products. Only products with prices less than or equal to this value will be included in the search results. This helps users find products within their budget by excluding items that are too expensive. The value should be provided as a decimal number representing the price in the store's currency."
+        },
+        "min_rating": {
+          "type": "number",
+          "description": "Filter products by minimum customer rating. Only products with average customer ratings greater than or equal to this value will be shown. Ratings typically range from 1.0 (lowest) to 5.0 (highest). For example, setting this to 4.0 will only show products that customers have rated 4 stars or higher, helping users find high-quality, well-reviewed items."
+        },
+        "in_stock": {
+          "type": "boolean",
+          "description": "Filter to show only products that are currently available in stock and ready for immediate purchase and shipment. When set to true, out-of-stock items and items on backorder will be excluded from the search results. When set to false or not specified, all products will be shown regardless of their stock status."
+        },
+        "sort_by": {
+          "type": "string",
+          "enum": ["relevance", "price_low_to_high", "price_high_to_low", "rating", "newest", "bestselling"],
+          "description": "Specify how the search results should be sorted and ordered. Available options are: 'relevance' (default, sorts by how well products match the search query), 'price_low_to_high' (cheapest items first), 'price_high_to_low' (most expensive items first), 'rating' (highest rated products first), 'newest' (recently added products first), 'bestselling' (most popular items based on sales data)."
+        },
+        "limit": {
+          "type": "integer",
+          "description": "The maximum number of product results to return in a single response. This helps with pagination and prevents overwhelming the user with too many results at once. The value should be a positive integer, typically between 10 and 100. Default is usually 20 if not specified."
+        }
+      },
+      "required": ["query"]
+    }
+  }
+}

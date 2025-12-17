@@ -1,0 +1,26 @@
+{
+  "type": "function",
+  "function": {
+    "name": "calculate",
+    "description": "Perform basic arithmetic calculations including addition, subtraction, multiplication, and division",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": ["add", "subtract", "multiply", "divide"],
+          "description": "The mathematical operation to perform"
+        },
+        "a": {
+          "type": "number",
+          "description": "First number"
+        },
+        "b": {
+          "type": "number",
+          "description": "Second number"
+        }
+      },
+      "required": ["operation", "a", "b"]
+    }
+  }
+}

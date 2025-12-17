@@ -1,0 +1,145 @@
+{
+  "kind": "calendar#event",
+  "etag": "\"3402345678901234\"",
+  "id": "abc123xyz789def456ghi",
+  "status": "confirmed",
+  "htmlLink": "https://www.google.com/calendar/event?eid=YWJjMTIzeHl6Nzg5ZGVmNDU2Z2hp",
+  "created": "2024-01-03T14:15:00.000Z",
+  "updated": "2024-01-03T14:15:00.000Z",
+  "summary": "Product Planning Meeting",
+  "description": "Quarterly product roadmap planning session with the engineering team.",
+  "location": "Conference Room B, Building 2",
+  "creator": {
+    "email": "organizer@example.com",
+    "displayName": "Jane Organizer",
+    "self": true
+  },
+  "organizer": {
+    "email": "organizer@example.com",
+    "displayName": "Jane Organizer",
+    "self": true
+  },
+  "start": {
+    "dateTime": "2024-01-15T10:00:00-08:00",
+    "timeZone": "America/Los_Angeles"
+  },
+  "end": {
+    "dateTime": "2024-01-15T11:30:00-08:00",
+    "timeZone": "America/Los_Angeles"
+  },
+  "recurringEventId": null,
+  "originalStartTime": null,
+  "transparency": "opaque",
+  "visibility": "default",
+  "iCalUID": "abc123xyz789def456ghi@google.com",
+  "sequence": 0,
+  "attendees": [
+    {
+      "email": "engineer1@example.com",
+      "displayName": "Alice Engineer",
+      "responseStatus": "needsAction",
+      "self": false
+    },
+    {
+      "email": "engineer2@example.com",
+      "displayName": "Bob Developer",
+      "responseStatus": "needsAction",
+      "self": false
+    },
+    {
+      "email": "pm@example.com",
+      "displayName": "Charlie PM",
+      "responseStatus": "needsAction",
+      "self": false
+    }
+  ],
+  "hangoutLink": null,
+  "conferenceData": {
+    "createRequest": {
+      "requestId": "meet-req-xyz123",
+      "conferenceSolutionKey": {
+        "type": "hangoutsMeet"
+      },
+      "status": {
+        "statusCode": "success"
+      }
+    },
+    "entryPoints": [
+      {
+        "entryPointType": "video",
+        "uri": "https://meet.google.com/abc-defg-hij",
+        "label": "meet.google.com/abc-defg-hij"
+      }
+    ],
+    "conferenceSolution": {
+      "key": {
+        "type": "hangoutsMeet"
+      },
+      "name": "Google Meet",
+      "iconUri": "https://fonts.gstatic.com/s/i/productlogos/meet_2020q4/v6/web-512dp/logo_meet_2020q4_color_2x_web_512dp.png"
+    },
+    "conferenceId": "abc-defg-hij"
+  },
+  "reminders": {
+    "useDefault": false,
+    "overrides": [
+      {
+        "method": "email",
+        "minutes": 1440
+      },
+      {
+        "method": "popup",
+        "minutes": 30
+      }
+    ]
+  },
+  "debug_info": {
+    "request_id": "gcal-req-vwx234yza567",
+    "api_version": "v3",
+    "processing_time_ms": 267,
+    "calendar_id": "primary",
+    "user_id": "user123456789",
+    "datacenter": "us-central1",
+    "server": "calendar-api-prod-23",
+    "quota_project": "project-calendar-prod",
+    "rate_limit_remaining": 8923,
+    "cache_hit": false,
+    "database_queries": 5,
+    "notification_dispatch_ms": 78,
+    "conflict_check_ms": 45,
+    "authorization_time_ms": 32
+  },
+  "logs": [
+    "[14:15:00.001] Event creation request received",
+    "[14:15:00.033] OAuth2 authentication validated",
+    "[14:15:00.065] Calendar access permissions verified",
+    "[14:15:00.097] Event data validation: passed",
+    "[14:15:00.129] Time zone normalization: America/Los_Angeles",
+    "[14:15:00.161] Conflict detection: checking 3 overlapping events",
+    "[14:15:00.206] No conflicts found",
+    "[14:15:00.238] Attendee email validation: 3 valid addresses",
+    "[14:15:00.270] Google Meet conference created: meet.google.com/abc-defg-hij",
+    "[14:15:00.302] Event inserted into calendar database",
+    "[14:15:00.334] Calendar notifications queued for 3 attendees",
+    "[14:15:00.366] Email invitations scheduled for dispatch",
+    "[14:15:00.398] Event indexing for search",
+    "[14:15:00.430] Reminder jobs scheduled: 2 reminders",
+    "[14:15:00.462] Sync to mobile devices initiated",
+    "[14:15:00.494] Event creation completed successfully"
+  ],
+  "_trace": {
+    "trace_id": "gcal-trace-bcd890efg123",
+    "span_id": "span-cal-678",
+    "parent_span_id": null,
+    "sampled": true,
+    "flags": "01"
+  },
+  "_performance": {
+    "auth_time_ms": 32,
+    "validation_time_ms": 64,
+    "conflict_check_ms": 45,
+    "database_write_ms": 68,
+    "notification_dispatch_ms": 78,
+    "total_time_ms": 267
+  }
+}

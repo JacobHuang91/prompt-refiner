@@ -1,0 +1,42 @@
+{
+  "type": "function",
+  "function": {
+    "name": "create_payment_intent",
+    "description": "Create a Stripe PaymentIntent to initiate a payment transaction. PaymentIntents are the foundation of Stripe's payment processing system and track the lifecycle of a payment from creation through completion. This function creates a new PaymentIntent that represents your intent to collect payment from a customer, which can then be confirmed using various payment methods (credit cards, debit cards, digital wallets, bank transfers, etc.). The PaymentIntent tracks the payment status through states like requires_payment_method, requires_confirmation, requires_action (for 3D Secure), processing, succeeded, or failed. Use this function to build checkout flows, accept one-time payments, handle complex payment scenarios with authentication requirements, process recurring payments, capture authorized payments, and integrate with Stripe's extensive payment ecosystem. The function returns a client_secret that you can use on the frontend to complete the payment securely without exposing sensitive credentials.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "amount": {
+          "type": "integer",
+          "description": "The amount to charge in the smallest currency unit (e.g., cents for USD, yen for JPY). For example, to charge $10.50 USD, pass 1050. For currencies without decimal places like JPY, pass the amount directly (e.g., 1000 for ¥1000). The amount must be a positive integer. Minimum amount varies by currency (typically $0.50 or 50 cents for USD). Maximum amount depends on your account configuration and the payment method used. For high-value transactions, additional verification may be required. Always validate the amount on your server to prevent tampering."
+        },
+        "currency": {
+          "type": "string",
+          "description": "Three-letter ISO currency code in lowercase. Must be a supported currency for your Stripe account. Common currencies include 'usd' (US Dollar), 'eur' (Euro), 'gbp' (British Pound), 'jpy' (Japanese Yen), 'cad' (Canadian Dollar), 'aud' (Australian Dollar), 'chf' (Swiss Franc), 'cny' (Chinese Yuan), 'inr' (Indian Rupee), and many more. The currency affects how the amount is interpreted (whether decimal places are used), which payment methods are available, and how currency conversion is handled. Once a PaymentIntent is created, its currency cannot be changed - you must create a new PaymentIntent to charge in a different currency."
+        },
+        "customer": {
+          "type": "string",
+          "description": "The ID of an existing Stripe Customer to associate with this payment. This should be a Customer ID like 'cus_xxxxx' that you previously created in your Stripe account. Associating a customer enables you to save payment methods for future use, view the customer's payment history, charge saved payment methods, send email receipts, manage subscriptions, and provide a better user experience with saved information. The customer must exist in your Stripe account before you can reference them. If you don't provide a customer ID, the payment will be processed as a guest checkout without storing payment method details."
+        },
+        "payment_method": {
+          "type": "string",
+          "description": "The ID of a PaymentMethod to attach to this PaymentIntent. This should be a PaymentMethod ID like 'pm_xxxxx' that represents a customer's payment instrument (card, bank account, etc.). If provided, Stripe will automatically attempt to confirm the PaymentIntent using this payment method. If not provided, the customer will need to provide payment details during checkout. You can create PaymentMethods on the frontend using Stripe.js or through the API. The PaymentMethod must be compatible with the PaymentIntent's amount and currency, and must support the required payment flow (e.g., some methods don't support authorization/capture workflows)."
+        },
+        "description": {
+          "type": "string",
+          "description": "An arbitrary string describing the purpose of this payment. This description helps you identify the payment in your Stripe Dashboard and in your records. It may also appear on your customer's bank or card statement (depending on the payment method and your account settings), so keep it clear and recognizable. Good examples: 'Order #12345 - Blue T-Shirt (L)', 'Premium Subscription - Monthly', 'Invoice #INV-2024-001', 'Consultation Fee - January 2024'. Maximum length is 1000 characters. This is optional but highly recommended for tracking and customer recognition."
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Set of key-value pairs that you can attach to the PaymentIntent for storing additional structured information. Metadata is useful for storing your own internal references, user IDs, order numbers, product IDs, or any other custom data you want to associate with the payment. This data is returned when you retrieve the PaymentIntent and can be used for reconciliation, reporting, webhooks, and business logic. All keys must be strings, and values must be strings, numbers, or booleans. You can store up to 50 keys with a maximum of 500 characters per value. Example: {\"order_id\": \"12345\", \"customer_email\": \"user@example.com\", \"product_sku\": \"TSHIRT-BLUE-L\"}. Metadata is never shown to customers and is only visible in your Stripe Dashboard and API responses."
+        },
+        "capture_method": {
+          "type": "string",
+          "enum": ["automatic", "manual"],
+          "description": "Controls when the funds will be captured from the customer's account. 'automatic' (default) means the payment will be immediately captured when the PaymentIntent is confirmed - the funds are taken from the customer right away and settled to your account. This is the most common option for standard e-commerce checkouts. 'manual' means the payment will only be authorized when confirmed, but not captured - the funds are reserved on the customer's account but not yet transferred to you. You must manually capture the payment later (within 7 days for most payment methods) using a separate API call. Use manual capture for scenarios where you need to fulfill an order or verify availability before charging, like hotel reservations, custom orders, or marketplace transactions where you charge after service completion."
+        }
+      },
+      "required": ["amount", "currency"]
+    }
+  }
+}

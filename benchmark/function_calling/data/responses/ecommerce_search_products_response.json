@@ -1,0 +1,244 @@
+{
+  "query": "wireless bluetooth headphones",
+  "total_results": 1247,
+  "results_shown": 20,
+  "page": 1,
+  "pages_total": 63,
+  "search_time_ms": 234,
+  "filters_applied": {
+    "category": "Electronics > Audio > Headphones",
+    "price_range": {
+      "min": 50,
+      "max": 300
+    },
+    "rating_min": 4.0,
+    "in_stock": true
+  },
+  "sort_by": "relevance",
+  "products": [
+    {
+      "id": "prod_abc123xyz789",
+      "sku": "WH-1000XM5-BLK",
+      "name": "Premium Wireless Noise-Cancelling Headphones",
+      "brand": "AudioTech",
+      "price": 249.99,
+      "original_price": 349.99,
+      "discount_percentage": 29,
+      "currency": "USD",
+      "availability": "in_stock",
+      "stock_quantity": 156,
+      "rating": 4.7,
+      "review_count": 3456,
+      "image_url": "https://cdn.example.com/products/wh1000xm5-main.jpg",
+      "category": "Electronics > Audio > Headphones",
+      "features": [
+        "Active Noise Cancellation",
+        "30-hour battery life",
+        "Bluetooth 5.2",
+        "Multipoint connection",
+        "Premium sound quality"
+      ],
+      "tags": [
+        "wireless",
+        "bluetooth",
+        "noise-cancelling",
+        "over-ear",
+        "premium"
+      ],
+      "shipping": {
+        "free_shipping": true,
+        "estimated_days": 2,
+        "express_available": true
+      }
+    },
+    {
+      "id": "prod_def456uvw012",
+      "sku": "BT-PRO-200-WHT",
+      "name": "Sport Wireless Earbuds with Charging Case",
+      "brand": "FitSound",
+      "price": 89.99,
+      "original_price": 129.99,
+      "discount_percentage": 31,
+      "currency": "USD",
+      "availability": "in_stock",
+      "stock_quantity": 423,
+      "rating": 4.5,
+      "review_count": 1892,
+      "image_url": "https://cdn.example.com/products/bt-pro-200-main.jpg",
+      "category": "Electronics > Audio > Earbuds",
+      "features": [
+        "Waterproof IPX7",
+        "24-hour playtime with case",
+        "Bluetooth 5.0",
+        "Touch controls",
+        "Secure fit for sports"
+      ],
+      "tags": [
+        "wireless",
+        "bluetooth",
+        "sport",
+        "waterproof",
+        "earbuds"
+      ],
+      "shipping": {
+        "free_shipping": true,
+        "estimated_days": 3,
+        "express_available": true
+      }
+    },
+    {
+      "id": "prod_ghi789mno345",
+      "sku": "HD-STUDIO-PRO",
+      "name": "Professional Studio Wireless Headphones",
+      "brand": "StudioMax",
+      "price": 199.99,
+      "original_price": 199.99,
+      "discount_percentage": 0,
+      "currency": "USD",
+      "availability": "in_stock",
+      "stock_quantity": 78,
+      "rating": 4.8,
+      "review_count": 567,
+      "image_url": "https://cdn.example.com/products/hd-studio-pro-main.jpg",
+      "category": "Electronics > Audio > Headphones",
+      "features": [
+        "Studio-grade sound",
+        "50mm drivers",
+        "Bluetooth 5.3",
+        "Wired mode option",
+        "Professional monitoring"
+      ],
+      "tags": [
+        "wireless",
+        "bluetooth",
+        "studio",
+        "professional",
+        "monitoring"
+      ],
+      "shipping": {
+        "free_shipping": false,
+        "estimated_days": 5,
+        "express_available": false
+      }
+    }
+  ],
+  "facets": {
+    "brands": [
+      {
+        "name": "AudioTech",
+        "count": 234
+      },
+      {
+        "name": "FitSound",
+        "count": 189
+      },
+      {
+        "name": "StudioMax",
+        "count": 156
+      },
+      {
+        "name": "BeatsPro",
+        "count": 145
+      }
+    ],
+    "price_ranges": [
+      {
+        "range": "50-100",
+        "count": 456
+      },
+      {
+        "range": "100-200",
+        "count": 523
+      },
+      {
+        "range": "200-300",
+        "count": 268
+      }
+    ],
+    "features": [
+      {
+        "name": "Noise Cancellation",
+        "count": 345
+      },
+      {
+        "name": "Waterproof",
+        "count": 234
+      },
+      {
+        "name": "Long Battery Life",
+        "count": 567
+      }
+    ]
+  },
+  "suggestions": [
+    "wireless noise cancelling headphones",
+    "bluetooth headphones with microphone",
+    "over ear wireless headphones"
+  ],
+  "debug_info": {
+    "request_id": "ecom-search-req-rst567uvw890",
+    "api_version": "v3.0",
+    "processing_time_ms": 267,
+    "search_engine": "Elasticsearch 8.11.0",
+    "index_name": "products_v5",
+    "query_type": "multi_match",
+    "boost_factors": {
+      "title": 3.0,
+      "brand": 2.0,
+      "description": 1.0,
+      "tags": 1.5
+    },
+    "filters_complexity": "medium",
+    "total_shards": 10,
+    "successful_shards": 10,
+    "failed_shards": 0,
+    "took_elasticsearch_ms": 234,
+    "cache_hit": false,
+    "personalization_applied": true,
+    "user_segment": "premium_shopper",
+    "ab_test_variant": "variant_b",
+    "datacenter": "us-west-2",
+    "server": "search-api-34",
+    "inventory_check_ms": 23,
+    "pricing_calculation_ms": 12
+  },
+  "logs": [
+    "[16:45:23.001] Product search request received",
+    "[16:45:23.023] Query parsing: 'wireless bluetooth headphones'",
+    "[16:45:23.045] Filters validated: category, price_range, rating, stock",
+    "[16:45:23.067] User segmentation: premium_shopper",
+    "[16:45:23.089] Personalization rules applied",
+    "[16:45:23.111] Elasticsearch query constructed",
+    "[16:45:23.345] Search completed: 1247 results found",
+    "[16:45:23.367] Results sorted by relevance",
+    "[16:45:23.389] Inventory check: 20 products",
+    "[16:45:23.412] Pricing calculated with active promotions",
+    "[16:45:23.434] Facets aggregated: brands, prices, features",
+    "[16:45:23.456] Product images CDN URLs generated",
+    "[16:45:23.478] Shipping estimates calculated",
+    "[16:45:23.500] Search suggestions computed",
+    "[16:45:23.522] Analytics event dispatched",
+    "[16:45:23.544] Response assembled"
+  ],
+  "_trace": {
+    "trace_id": "search-trace-xyz123abc456",
+    "span_id": "span-search-789",
+    "parent_span_id": null,
+    "sampled": true,
+    "user_id": "user-789012"
+  },
+  "_performance": {
+    "query_parse_ms": 22,
+    "elasticsearch_ms": 234,
+    "inventory_check_ms": 23,
+    "pricing_calc_ms": 12,
+    "facet_aggregation_ms": 44,
+    "total_ms": 267
+  },
+  "_metadata": {
+    "session_id": "session-def789ghi012",
+    "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)",
+    "client_ip": "198.51.100.234",
+    "ab_test_id": "search_relevance_2024_01"
+  }
+}

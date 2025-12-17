@@ -1,0 +1,106 @@
+{
+  "operation": "insert",
+  "file_path": "/workspace/src/main.py",
+  "success": true,
+  "line_number": 42,
+  "content_inserted": "    logger.info(f\"Processing batch {batch_id} with {len(items)} items\")\n",
+  "lines_modified": 1,
+  "file_size_before": 3456,
+  "file_size_after": 3523,
+  "file_hash_before": "sha256:abc123def456...",
+  "file_hash_after": "sha256:def789ghi012...",
+  "backup_created": true,
+  "backup_path": "/workspace/.backups/main.py.20240103_142250",
+  "file_info": {
+    "path": "/workspace/src/main.py",
+    "size_bytes": 3523,
+    "lines": 128,
+    "encoding": "utf-8",
+    "mime_type": "text/x-python",
+    "language": "python",
+    "last_modified": "2024-01-03T14:22:50Z",
+    "permissions": "rw-r--r--",
+    "owner": "user",
+    "group": "user"
+  },
+  "syntax_check": {
+    "valid": true,
+    "errors": [],
+    "warnings": [],
+    "language": "python",
+    "version": "3.11"
+  },
+  "git_status": {
+    "tracked": true,
+    "modified": true,
+    "staged": false,
+    "branch": "feature/logging-improvements",
+    "uncommitted_changes": 1
+  },
+  "context": {
+    "lines_before": [
+      "def process_batch(batch_id: int, items: List[Item]) -> BatchResult:",
+      "    \"\"\"Process a batch of items with error handling.\"\"\"",
+      "    results = []"
+    ],
+    "line_modified": "    logger.info(f\"Processing batch {batch_id} with {len(items)} items\")",
+    "lines_after": [
+      "    for item in items:",
+      "        try:",
+      "            result = process_item(item)"
+    ]
+  },
+  "debug_info": {
+    "request_id": "editor-req-xyz678abc901",
+    "api_version": "v1.0",
+    "processing_time_ms": 234,
+    "editor_engine": "text_editor_v2",
+    "workspace_id": "ws-def456",
+    "operation_id": "op-789012",
+    "concurrent_edits": 0,
+    "lock_acquired": true,
+    "lock_duration_ms": 187,
+    "file_watcher_notified": true,
+    "lsp_server_updated": true,
+    "datacenter": "us-east-1",
+    "server": "editor-api-23"
+  },
+  "logs": [
+    "[14:22:50.001] Text editor operation request received",
+    "[14:22:50.023] Operation: insert at line 42",
+    "[14:22:50.045] File validation: /workspace/src/main.py exists",
+    "[14:22:50.067] File lock acquired",
+    "[14:22:50.089] Backup created: .backups/main.py.20240103_142250",
+    "[14:22:50.111] File read (3456 bytes)",
+    "[14:22:50.133] Content inserted at line 42",
+    "[14:22:50.155] Syntax validation: Python 3.11 - valid",
+    "[14:22:50.177] File written (3523 bytes)",
+    "[14:22:50.199] File hash computed: sha256:def789ghi012...",
+    "[14:22:50.221] Git status updated: modified",
+    "[14:22:50.234] File lock released",
+    "[14:22:50.256] LSP server notified of changes",
+    "[14:22:50.278] File watcher triggered",
+    "[14:22:50.300] Operation completed successfully"
+  ],
+  "_trace": {
+    "trace_id": "editor-trace-bcd234efg567",
+    "span_id": "span-editor-890",
+    "parent_span_id": null,
+    "sampled": true,
+    "workspace_id": "ws-def456"
+  },
+  "_performance": {
+    "lock_acquisition_ms": 22,
+    "file_read_ms": 44,
+    "operation_ms": 66,
+    "syntax_check_ms": 44,
+    "file_write_ms": 44,
+    "total_ms": 234
+  },
+  "_metadata": {
+    "editor_version": "2.5.0",
+    "client": "vscode-extension/1.2.3",
+    "user_id": "user-123",
+    "session_id": "session-abc789"
+  }
+}

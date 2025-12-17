@@ -1,0 +1,22 @@
+{
+  "type": "function",
+  "function": {
+    "name": "get_current_weather",
+    "description": "Get the current weather in a given location. This function retrieves real-time weather information including temperature, humidity, wind speed, and conditions for any specified location worldwide. You can specify the location by city name, coordinates, or zip code. The function returns detailed weather data that can be used to provide accurate weather forecasts and current conditions to users.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "type": "string",
+          "description": "The city and state, for example: San Francisco, CA. You can also provide city and country for international locations, such as Paris, France or Tokyo, Japan. For more precise results, you can include zip codes or coordinates."
+        },
+        "unit": {
+          "type": "string",
+          "enum": ["celsius", "fahrenheit"],
+          "description": "The temperature unit to use for the weather data. Choose 'celsius' for metric measurements (used in most countries) or 'fahrenheit' for imperial measurements (primarily used in the United States). Defaults to celsius if not specified."
+        }
+      },
+      "required": ["location"]
+    }
+  }
+}

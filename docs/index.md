@@ -1,22 +1,25 @@
 # Prompt Refiner
 
-A lightweight Python library for building production LLM applications. Save 10-20% on API costs and manage context windows intelligently.
+A lightweight Python library for building production LLM applications. **Save 5-70% on API costs** - from function calling optimization to RAG context management.
 
 ## Overview
 
-Prompt Refiner solves two core problems for production LLM applications:
+Prompt Refiner solves three core problems for production LLM applications:
 
-1. **Token Optimization** - Clean dirty inputs (HTML, whitespace, PII) to reduce API costs by 10-20%
-2. **Context Management** - Pack system prompts, RAG docs, and chat history into token budgets with smart priority-based selection
+1. **Function Calling Optimization** - Compress tool schemas by **57% on average** with 100% lossless compression
+2. **Token Optimization** - Clean dirty inputs (HTML, whitespace, PII) to reduce API costs by 5-15%
+3. **Context Management** - Pack system prompts, RAG docs, and chat history with smart priority-based selection
 
-Perfect for RAG applications, chatbots, and any production system that needs to manage LLM context windows efficiently.
+Perfect for AI agents, RAG applications, chatbots, and any production system that uses function calling or needs to manage LLM context windows efficiently.
 
 !!! success "Proven Effectiveness"
-    Benchmarked on 30 real-world test cases, Prompt Refiner achieves **4-15% token reduction** while maintaining 96-99% quality. Aggressive optimization can save up to **~$54/month** on GPT-4 at scale (1M tokens/month).
+    **Function Calling**: Tested on 20 real-world API schemas (Stripe, Salesforce, HubSpot, Slack), achieving **56.9% average token reduction** with 100% protocol field preservation and **100% callable (20/20 validated)** with OpenAI function calling. Enterprise APIs see **70%+ reduction**. A medium agent (10 tools, 500 calls/day) saves **$541/month** on GPT-4.
 
-    Processing overhead is **< 0.5ms per 1k tokens** - negligible compared to network and LLM latency.
+    **RAG & Text**: Benchmarked on 30 real-world test cases, achieving **5-15% token reduction** while maintaining 96-99% quality.
 
-    [See benchmark results →](benchmark.md)
+    **Performance**: Processing overhead is **< 0.5ms per 1k tokens** - negligible compared to network and LLM latency.
+
+    [See comprehensive benchmark results →](benchmark.md)
 
 ## Quick Start
 
@@ -65,9 +68,9 @@ clean_prompt = pipeline.run(raw_input)
     pipeline = Refiner().pipe(StripHTML()).pipe(NormalizeWhitespace())
     ```
 
-## 5 Core Modules
+## 6 Core Modules
 
-Prompt Refiner is organized into 5 specialized modules:
+Prompt Refiner is organized into 6 specialized modules:
 
 ### Text Processing Operations
 
@@ -91,9 +94,44 @@ Prompt Refiner is organized into 5 specialized modules:
 
 [Learn more about Scrubber →](modules/scrubber.md){ .md-button }
 
+### AI Agent & Function Calling
+
+#### 4. Tools - Function Calling Optimization (v0.1.6+)
+
+Dramatically reduce token costs for AI agents by compressing tool schemas and responses:
+
+- **SchemaCompressor()** - Compress tool/function schemas by **57% on average**
+    - 100% lossless - all protocol fields preserved
+    - Works with OpenAI and Anthropic function calling
+    - Enterprise APIs: 70%+ reduction
+- **ResponseCompressor()** - Compress verbose API responses by 30-70%
+    - Removes debug/trace/logs fields
+    - Truncates long strings and lists
+    - Preserves essential data structure
+
+```python
+from prompt_refiner import SchemaCompressor, ResponseCompressor
+from pydantic import BaseModel
+
+# Compress tool schema (saves tokens on every request)
+class SearchInput(BaseModel):
+    query: str
+    max_results: int = 10
+
+tool_schema = pydantic_function_tool(SearchInput, name="search")
+compressed = SchemaCompressor().process(tool_schema)
+# Use compressed schema in OpenAI/Anthropic function calling
+
+# Compress tool responses (saves tokens on responses)
+verbose_response = {"results": [...], "debug_info": {...}}
+compact = ResponseCompressor().process(verbose_response)
+```
+
+[Learn more about Tools →](modules/tools.md){ .md-button }
+
 ### Context Budget Management
 
-#### 4. Packer - Intelligent Context Packing (v0.1.3+)
+#### 5. Packer - Intelligent Context Packing (v0.1.3+)
 
 For RAG applications and chatbots, the Packer module manages context budgets with priority-based selection:
 
