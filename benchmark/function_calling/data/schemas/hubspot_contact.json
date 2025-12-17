@@ -1,0 +1,58 @@
+{
+  "type": "function",
+  "function": {
+    "name": "create_hubspot_contact",
+    "description": "Create a new contact in HubSpot CRM. Contacts represent individual people - leads, prospects, customers, partners - that your business interacts with. This function creates a comprehensive contact record with personal information, contact details, company association, lifecycle stage, lead source, and custom properties specific to your HubSpot portal. Contacts are the foundation of HubSpot's relationship management - they can be associated with companies, deals, tickets, activities, and marketing campaigns. Creating accurate contact records enables personalized marketing, sales follow-up tracking, customer service, email marketing, workflow automation, and reporting. The function validates email addresses, checks for duplicates, enriches data when possible, assigns contacts to appropriate owners, and triggers configured automation. HubSpot automatically tracks all interactions with contacts including emails, calls, meetings, website visits, form submissions, and content downloads, providing a complete relationship history.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "The contact's primary email address (required and must be unique). Email is the primary identifier in HubSpot - each contact must have a unique email address, and HubSpot uses email to deduplicate records. Use a valid, active email address where the person can actually be reached. Format: standard email format 'user@example.com'. This email is used for sending marketing emails, tracking email engagement (opens, clicks), email-based workflows, and email communications from sales reps. HubSpot validates email format on input and checks for existing contacts with the same email to prevent duplicates. If a contact with this email already exists, the operation may update that contact instead of creating a new one (depending on settings). Maximum length is 100 characters. Do not use role-based emails (info@, sales@) for individual contacts - use personal email addresses for better deliverability and tracking."
+        },
+        "firstname": {
+          "type": "string",
+          "description": "The contact's first name or given name. This personalizes communications and appears in personalization tokens in emails (e.g., 'Hi {{firstname}}'). Use the proper capitalization ('John' not 'JOHN' or 'john') and the name the person prefers to be called, which may not be their legal first name. For cultures where family name comes first, still use this field for the given name. The first name is prominently displayed in contact lists, search results, and throughout the HubSpot interface. Maximum length is 100 characters. Required for meaningful personalization and professional communication. When combined with lastname, it forms the contact's full name used in reports, emails, and formal communications."
+        },
+        "lastname": {
+          "type": "string",
+          "description": "The contact's last name, family name, or surname. Used with firstname to create the full name of the contact. Use proper capitalization and the correct surname format for the person's culture (some cultures use compound surnames like 'García López'). The last name helps distinguish between contacts with the same first name and enables sorting by surname in lists and reports. Maximum length is 100 characters. This field is important for professional communications, formal salutations, and accurate record keeping. In HubSpot, firstname + lastname are often combined to display as the contact's full name throughout the system, in email signatures, and in reports."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The contact's primary phone number, typically their business or mobile number. Use a consistent format for data quality - recommended: international format with country code like '+1-555-555-5555' or E.164 format '+15555555555'. Including country codes enables global calling and click-to-call functionality within HubSpot. This phone number is used for sales calls (HubSpot integrates with calling tools), SMS communications if enabled, contact verification, and appears in contact records for easy reference. For contacts with multiple numbers (office, mobile, home), store the primary/preferred number here and use custom properties for additional numbers. Maximum length is 40 characters which accommodates extensions. HubSpot's calling features can automatically log calls made to this number."
+        },
+        "company": {
+          "type": "string",
+          "description": "The name of the company where this contact works. This is used to associate the contact with a Company record in HubSpot (HubSpot will create the company if it doesn't exist, or associate with an existing company). Use the official company name for consistency. Examples: 'Acme Corporation', 'TechStart Inc', 'Smith Consulting'. The company association enables viewing all contacts at a company together, rolling up activities, tracking company-level deals and interactions, and company-based reporting. In B2B contexts, the company is often as important as the individual contact. Maximum length is 255 characters. HubSpot uses this field along with domain information to deduplicate and associate contacts with the correct company. For self-employed individuals or those without a company, you can leave this blank or use 'Self-Employed' or similar."
+        },
+        "website": {
+          "type": "string",
+          "description": "The contact's personal website or the company website. Include the full URL with protocol: 'https://www.example.com'. For B2B contacts, this is typically their company website (which helps HubSpot associate them with the correct company). For consultants, freelancers, or personal brands, this might be their personal portfolio or LinkedIn profile. The website helps with contact enrichment - HubSpot can sometimes pull additional information from the website. It also provides context for sales reps doing research. If the contact doesn't have a personal website and you're entering the company site, it may be better to leave this blank and let HubSpot populate it from the associated company record. Maximum length is 255 characters."
+        },
+        "lifecyclestage": {
+          "type": "string",
+          "enum": ["subscriber", "lead", "marketingqualifiedlead", "salesqualifiedlead", "opportunity", "customer", "evangelist", "other"],
+          "description": "The stage of the contact in your customer lifecycle, representing their journey from unknown visitor to customer and beyond. 'subscriber' is someone who subscribed to your content (blog, newsletter) but hasn't shown buying intent. 'lead' is someone who expressed interest beyond subscribing (downloaded content, filled a form). 'marketingqualifiedlead' (MQL) is a lead deemed ready for sales outreach based on engagement and fit. 'salesqualifiedlead' (SQL) is an MQL that sales has accepted and is actively pursuing. 'opportunity' is a SQL with an associated deal in your pipeline. 'customer' is someone who has purchased. 'evangelist' is a customer actively promoting your brand. 'other' is for contacts not fitting standard stages. This field is critical for segmentation, automation, reporting, and aligning marketing and sales. It should reflect the contact's current status in your relationship. HubSpot workflows can automatically update lifecycle stage based on actions."
+        },
+        "lead_source": {
+          "type": "string",
+          "description": "How this contact originally found or was found by your company - their original attribution source. This tracks the first touchpoint in the customer journey for marketing attribution and ROI analysis. Common values: 'Organic Search' (found you via Google/Bing), 'Paid Search' (clicked a search ad), 'Social Media' (Facebook, LinkedIn, Twitter), 'Referral' (came from another website), 'Direct Traffic' (typed your URL directly), 'Email' (clicked a link in an email), 'Trade Show' (met at an event), 'Partner Referral' (referred by a partner), 'Cold Outreach' (sales prospecting), 'Website' (filled a form on your site), 'Content Download' (downloaded a resource). Use consistent values for reliable attribution reporting. This should be the original source - it doesn't change as the contact engages through multiple channels. Maximum length is 255 characters. Accurate lead source tracking enables marketing ROI analysis and informs budget allocation."
+        },
+        "job_title": {
+          "type": "string",
+          "description": "The contact's professional title or role at their company. Be specific and use the title they use professionally. Examples: 'Chief Technology Officer', 'Senior Marketing Manager', 'Sales Representative', 'Software Engineer', 'VP of Operations', 'Account Executive'. Job title is important for segmentation, personalization, and determining decision-making authority. In B2B sales, understanding if someone is a decision-maker (C-level, VP), influencer (Manager, Director), or user (IC roles) is crucial for sales approach. Job titles help with territory and lead assignment - some companies route based on title. Maximum length is 255 characters. Use the exact title when possible rather than generic roles. This information is often enriched automatically by HubSpot if the contact's LinkedIn is known."
+        },
+        "industry": {
+          "type": "string",
+          "description": "The industry of the company where this contact works (not the contact's personal background). This helps with market segmentation and industry-specific sales approaches. Use standardized industry classifications: 'Technology', 'Financial Services', 'Healthcare', 'Manufacturing', 'Retail', 'Education', 'Real Estate', 'Professional Services', 'Media', 'Telecommunications', 'Energy', 'Government', 'Nonprofit', etc. More specific is better (e.g., 'SaaS Technology', 'Investment Banking' rather than just 'Technology' or 'Finance'). Industry information informs which pain points to emphasize, which solutions to pitch, and helps with segmentation for targeted marketing campaigns. Often this is populated from the associated company record. Maximum length is 255 characters."
+        },
+        "owner_id": {
+          "type": "string",
+          "description": "The HubSpot User ID of the contact owner - the sales rep or team member responsible for this contact. The owner receives notifications about the contact's activities, is responsible for follow-up, and the contact counts toward their metrics and quotas. The format is a numeric ID. The owner is displayed prominently in the contact record and is used for task assignment, workflow routing, and reporting. Contact ownership affects record access and visibility. Assign to the appropriate team member based on territory, lead source, company size, or round-robin assignment. If you're using HubSpot's assignment rules or workflows, you might omit this on creation and let automation assign the owner. The owner can be changed later as contacts are transferred or reassigned. Default is usually the user creating the record."
+        }
+      },
+      "required": ["email"]
+    }
+  }
+}

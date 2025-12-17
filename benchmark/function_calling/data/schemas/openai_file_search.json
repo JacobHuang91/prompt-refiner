@@ -1,0 +1,56 @@
+{
+  "type": "function",
+  "function": {
+    "name": "search_files",
+    "description": "Search for files and folders in a file system or cloud storage service. This function provides comprehensive file discovery capabilities, allowing you to find files based on name patterns, content, metadata, creation/modification dates, file types, sizes, and locations. It searches recursively through directory structures, supports glob patterns and regular expressions, can filter by multiple criteria simultaneously, and returns detailed file information including paths, sizes, timestamps, permissions, and attributes. Perfect for file management applications, backup systems, content discovery, duplicate file detection, organizational cleanup, media library management, document management systems, and any scenario requiring programmatic file discovery across large directory structures. The function works with local filesystems, network drives, and cloud storage providers with appropriate permissions and access credentials.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "search_path": {
+          "type": "string",
+          "description": "The root directory path where the search should begin. This can be an absolute path (e.g., '/home/user/documents', 'C:\\Users\\User\\Documents') or a relative path from the current working directory (e.g., './data', '../projects'). The search will include this directory and all subdirectories recursively unless depth is limited. Use forward slashes for cross-platform compatibility - they work on Windows, macOS, and Linux. For searching the entire filesystem, use '/' on Unix-like systems or 'C:\\' on Windows, but be aware this may take a long time and require elevated permissions. For cloud storage, use the provider-specific path format. Common starting points: user home directory, specific project folders, document folders, media libraries. Always verify you have read permissions for the path and all subdirectories."
+        },
+        "pattern": {
+          "type": "string",
+          "description": "The search pattern to match against filenames. This can be a simple string to find (case-insensitive substring match), a glob pattern with wildcards (e.g., '*.pdf' for all PDFs, 'report-*.docx' for reports, '**/*.jpg' for all JPEGs recursively), or a regular expression for complex matching (use 'regex:' prefix like 'regex:^[A-Z].*\\.txt$'). Wildcards: * matches any characters, ? matches single character, [abc] matches any character in brackets, [!abc] excludes those characters. Examples: '*.log' finds log files, 'IMG_????.jpg' finds images with 4-digit numbers, '[Rr]eport*.pdf' finds reports with different capitalizations. If omitted, all files are matched. The pattern applies to the filename only, not the full path."
+        },
+        "content_search": {
+          "type": "string",
+          "description": "Search for files containing this text string within their content. This performs a full-text search inside files (not just filenames), opening and scanning text-based files for the specified string or pattern. Content search works with text files (.txt, .md, .log), code files (.py, .js, .java, .html, .css), configuration files (.json, .yaml, .xml, .conf), and documents that can be parsed as text. Binary files are skipped unless they contain ASCII text. The search is case-insensitive by default. Use this for finding documents mentioning specific terms, locating configuration with certain settings, finding code with specific functions or variables, or discovering log entries. Warning: Content search is slower than filename search, especially for large files or many files. Consider combining with file type filters to improve performance."
+        },
+        "file_type": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Filter results to include only files with these extensions. Provide an array of file extensions without the leading dot (e.g., ['pdf', 'docx', 'txt'] not ['.pdf', '.docx', '.txt']). This is faster and more reliable than pattern matching for filtering by type. Common use cases: ['jpg', 'png', 'gif'] for images, ['mp4', 'avi', 'mov'] for videos, ['doc', 'docx', 'pdf'] for documents, ['py', 'js', 'java'] for code files, ['mp3', 'wav', 'flac'] for audio. The match is case-insensitive. Use this instead of pattern when you want files of specific types regardless of name. If you need files with any extension, omit this parameter. Combine with other filters for precise targeting like 'PDFs created in the last month'."
+        },
+        "min_size": {
+          "type": "integer",
+          "description": "Filter to include only files with size greater than or equal to this value in bytes. Useful for finding large files, filtering out tiny files, or size-based cleanup. Values are in bytes: 1024 = 1 KB, 1048576 = 1 MB, 1073741824 = 1 GB. Examples: Set to 104857600 (100 MB) to find large files consuming disk space, set to 1024 to exclude empty or nearly empty files, set to 1073741824 (1 GB) to find very large media files or database backups. Combine with max_size to find files in a specific size range. If omitted, no minimum size restriction is applied. This is efficient as file sizes are read from filesystem metadata without opening files."
+        },
+        "max_size": {
+          "type": "integer",
+          "description": "Filter to include only files with size less than or equal to this value in bytes. Useful for finding small files, filtering out large files, or targeting specific size ranges. Values are in bytes: 1024 = 1 KB, 1048576 = 1 MB. Examples: Set to 1048576 (1 MB) to find small files for quick processing, set to 10240 (10 KB) to find configuration files (usually small), combine with min_size like min_size=1048576 and max_size=104857600 to find files between 1-100 MB. If omitted, no maximum size restriction is applied. This helps avoid processing huge files when you're looking for smaller ones."
+        },
+        "modified_after": {
+          "type": "string",
+          "description": "Filter to include only files modified after this date/time. Format as ISO 8601 datetime string: 'YYYY-MM-DD' for date only (e.g., '2024-01-01') or 'YYYY-MM-DDTHH:MM:SS' for specific time (e.g., '2024-01-01T00:00:00'). Use UTC timezone or specify offset (e.g., '2024-01-01T00:00:00-08:00' for PST). This is essential for finding recently modified files, changed files since a backup, or tracking work done in a time period. Examples: '2024-01-01' finds files modified in 2024, '2024-12-01' finds files modified this month. Combine with modified_before to create date ranges like 'files modified in Q1 2024'. The comparison uses the file's last modified timestamp from filesystem metadata, which is efficient. Useful for incremental backups, change detection, or finding recent work."
+        },
+        "modified_before": {
+          "type": "string",
+          "description": "Filter to include only files modified before this date/time. Same format as modified_after: ISO 8601 datetime string. Use this to find old files that haven't been touched recently, identify stale content, locate files from a specific historical period, or find candidates for archival. Examples: '2020-01-01' finds files not modified since before 2020 (files 4+ years old), '2024-01-01' finds files last modified in 2023 or earlier. Combine with modified_after to create precise date ranges: modified_after='2024-01-01' and modified_before='2024-04-01' finds files modified in Q1 2024. Useful for cleanup operations, archiving old files, or historical analysis."
+        },
+        "include_folders": {
+          "type": "boolean",
+          "description": "Whether to include folders/directories in the search results, in addition to files. When set to true, both files and folders matching the search criteria will be returned. When set to false (default), only files are included. Set to true when you need to: list directory structures, find empty folders, organize folder hierarchies, or discover folders matching certain names (like all '.git' or 'node_modules' folders). Folders have their own metadata (creation date, size calculated from contents) and can be filtered by the same criteria as files. Including folders can significantly increase result count for large directory trees. Most file operations focus on files, so false is the sensible default."
+        },
+        "max_depth": {
+          "type": "integer",
+          "description": "The maximum depth of subdirectories to search recursively, where 1 means only the search_path directory itself (no subdirectories), 2 means the search_path and its immediate children (one level deep), 3 means two levels deep, etc. If omitted or set to 0, the search recurses through all subdirectories with no depth limit. Use depth limits to improve performance when you only need files near the root, to avoid searching irrelevant deep nested folders, or to limit scope. Examples: max_depth=1 searches only the specified folder with no recursion (fast), max_depth=2 searches the folder and its immediate subfolders, unlimited depth searches the entire tree (thorough but slower for large hierarchies). Most searches use unlimited depth to be comprehensive, but limiting depth is useful for very large filesystem or when you know the target files' approximate location."
+        }
+      },
+      "required": ["search_path"]
+    }
+  }
+}

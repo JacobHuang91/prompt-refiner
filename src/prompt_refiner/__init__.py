@@ -1,6 +1,6 @@
 """Prompt Refiner - A lightweight library for optimizing LLM inputs."""
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 # Import all operations for convenience
 from .analyzer import (

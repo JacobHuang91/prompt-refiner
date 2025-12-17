@@ -1,0 +1,135 @@
+{
+  "message_id": "msg_abc123xyz789def456ghi012",
+  "status": "queued",
+  "from": {
+    "email": "noreply@example.com",
+    "name": "Example Team"
+  },
+  "subject": "Welcome to Our Platform!",
+  "personalizations": [
+    {
+      "to": [
+        {
+          "email": "user@example.com",
+          "name": "John Doe"
+        }
+      ],
+      "subject": "Welcome to Our Platform!",
+      "substitutions": {
+        "{{name}}": "John",
+        "{{activation_link}}": "https://example.com/activate/abc123"
+      }
+    }
+  ],
+  "content": [
+    {
+      "type": "text/plain",
+      "value": "Welcome John! Click the link to activate your account."
+    },
+    {
+      "type": "text/html",
+      "value": "<html><body><h1>Welcome John!</h1><p>Click <a href='https://example.com/activate/abc123'>here</a> to activate.</p></body></html>"
+    }
+  ],
+  "reply_to": {
+    "email": "support@example.com",
+    "name": "Support Team"
+  },
+  "attachments": [],
+  "categories": [
+    "onboarding",
+    "activation"
+  ],
+  "send_at": null,
+  "batch_id": null,
+  "asm": {
+    "group_id": 12345,
+    "groups_to_display": [
+      12345,
+      12346
+    ]
+  },
+  "ip_pool_name": "marketing",
+  "mail_settings": {
+    "bypass_list_management": {
+      "enable": false
+    },
+    "footer": {
+      "enable": false
+    },
+    "sandbox_mode": {
+      "enable": false
+    }
+  },
+  "tracking_settings": {
+    "click_tracking": {
+      "enable": true,
+      "enable_text": true
+    },
+    "open_tracking": {
+      "enable": true,
+      "substitution_tag": "%open-track%"
+    },
+    "subscription_tracking": {
+      "enable": true
+    },
+    "ganalytics": {
+      "enable": false
+    }
+  },
+  "debug_info": {
+    "request_id": "sendgrid-req-jkl012mno345",
+    "api_version": "v3",
+    "processing_time_ms": 198,
+    "validation_time_ms": 45,
+    "template_rendering_ms": 67,
+    "queue_time_ms": 23,
+    "spam_check_ms": 38,
+    "server": "sendgrid-api-west-07",
+    "datacenter": "us-west-1",
+    "ip_address": "167.89.123.45",
+    "rate_limit": {
+      "limit": 10000,
+      "remaining": 9847,
+      "reset": 1704297600
+    },
+    "account_type": "pro",
+    "sender_reputation": 95.7,
+    "domain_reputation": 98.2
+  },
+  "logs": [
+    "[15:42:18.001] Email send request received",
+    "[15:42:18.023] API authentication validated",
+    "[15:42:18.046] Sender verification: noreply@example.com verified",
+    "[15:42:18.068] Recipient validation: user@example.com valid",
+    "[15:42:18.091] Email content validation: passed",
+    "[15:42:18.113] Template substitutions applied: {{name}}, {{activation_link}}",
+    "[15:42:18.135] HTML content rendered successfully",
+    "[15:42:18.158] Spam score check: 2.3/10 (good)",
+    "[15:42:18.180] DKIM signature generated",
+    "[15:42:18.198] Email queued to marketing IP pool",
+    "[15:42:18.220] Tracking pixels embedded",
+    "[15:42:18.242] Unsubscribe links validated",
+    "[15:42:18.264] List-Unsubscribe header added",
+    "[15:42:18.286] Message handed to SMTP relay",
+    "[15:42:18.308] Billing event recorded"
+  ],
+  "_trace": {
+    "trace_id": "sg-trace-pqr678stu901",
+    "span_id": "span-sg-234",
+    "parent_span_id": null,
+    "flags": "01"
+  },
+  "_performance": {
+    "validation_ms": 45,
+    "rendering_ms": 67,
+    "spam_check_ms": 38,
+    "queue_ms": 23,
+    "total_ms": 198
+  },
+  "_metadata": {
+    "sdk_version": "python-sendgrid/6.10.0",
+    "user_agent": "sendgrid-python/6.10.0",
+    "client_ip": "203.0.113.78"
+  }
+}

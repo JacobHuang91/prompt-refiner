@@ -1,0 +1,35 @@
+{
+  "type": "function",
+  "function": {
+    "name": "web_search",
+    "description": "Search the web for information using a powerful search engine API. This function allows you to find relevant web pages, articles, news, images, and other online content based on your search query. It returns a list of search results with titles, URLs, snippets, and relevance scores. The search engine indexes billions of web pages and uses advanced ranking algorithms to return the most relevant and authoritative results for your query. You can use this function to research topics, find current information, verify facts, discover new content, or gather data from the internet. The results include metadata like publication dates, source domains, and content types to help you evaluate the credibility and relevance of each result. Perfect for research tasks, fact-checking, staying updated on current events, competitive analysis, content discovery, and any scenario where you need to access information from the broader internet beyond your training data.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query string to use for finding relevant web pages and content. This should be a natural language query describing what you're looking for, similar to what you'd type into Google or Bing. You can use keywords, phrases, questions, or combinations thereof. For better results, be specific and include relevant context terms. Examples: 'latest iPhone 15 specifications and reviews', 'how to implement OAuth2 in Python', 'climate change impact on agriculture 2024', 'best practices for React hooks'. The search engine supports boolean operators (AND, OR, NOT), quoted phrases for exact matches, and advanced search syntax like site:example.com to search within specific domains."
+        },
+        "num_results": {
+          "type": "integer",
+          "description": "The number of search results to return. More results provide broader coverage but take longer to process and may include less relevant items. Fewer results are faster and more focused but might miss important information. Recommended: 5-10 for quick lookups, 20-30 for comprehensive research, 50+ for data gathering and analysis tasks. Default is 10 if not specified. Maximum allowed is 100 results per query."
+        },
+        "time_range": {
+          "type": "string",
+          "enum": ["any", "past_hour", "past_24h", "past_week", "past_month", "past_year"],
+          "description": "Filter results by publication date to get more recent or time-specific content. Use 'any' to search all indexed content regardless of age (useful for historical research or evergreen topics). Use 'past_hour' for breaking news and real-time events. Use 'past_24h' for very recent news and updates. Use 'past_week' for current events and trending topics. Use 'past_month' for recent developments and monthly updates. Use 'past_year' for annual reports, yearly trends, and relatively recent content while filtering out outdated information. Default is 'any' if not specified."
+        },
+        "search_type": {
+          "type": "string",
+          "enum": ["general", "news", "images", "videos", "academic"],
+          "description": "The type of content to search for. 'general' searches all web content including articles, blogs, documentation, forums, and general web pages - this is the default and most versatile option. 'news' searches news articles from recognized news sources, great for current events and journalism. 'images' returns image results with thumbnails, dimensions, and source URLs. 'videos' searches video content from platforms like YouTube, Vimeo, etc. 'academic' searches scholarly articles, research papers, and academic publications from databases like Google Scholar, PubMed, arXiv, etc. Choose the type that best matches your information needs."
+        },
+        "safe_search": {
+          "type": "boolean",
+          "description": "Whether to enable safe search filtering to exclude adult content, explicit material, and potentially offensive results. When set to true, the search engine will filter out inappropriate content to provide family-friendly results suitable for all audiences. This is recommended for general use, educational contexts, or when you want to avoid potentially problematic content. When set to false, all indexed content will be searchable without filtering (use with caution). Default is true if not specified."
+        }
+      },
+      "required": ["query"]
+    }
+  }
+}

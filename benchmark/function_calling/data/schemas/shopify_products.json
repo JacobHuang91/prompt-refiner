@@ -1,0 +1,58 @@
+{
+  "type": "function",
+  "function": {
+    "name": "search_products",
+    "description": "Search for products in a Shopify store. This function provides comprehensive product search capabilities across your Shopify store's catalog, allowing you to find products by title, description, tags, SKU, type, vendor, and various other criteria. Returns detailed product information including titles, descriptions, pricing, variants (size, color, etc.), images, inventory levels, tags, and metadata. Perfect for building custom storefronts, product recommendation systems, inventory management tools, comparison features, search experiences, catalog exports, and any integration that needs to discover and work with product data. The search supports both simple keyword queries and complex multi-criteria filtering, with support for sorting and pagination to handle large catalogs efficiently.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query string to find matching products. This can be a simple keyword (e.g., 'shoes'), a product title or partial title (e.g., 'Nike Air'), a SKU, a tag, or any text that might appear in product titles, descriptions, or metadata. The search is case-insensitive and matches partial words. For more precise searching, use quotes for exact phrase matching or use the advanced filter parameter instead. Examples: 'leather jacket' finds products with both words, '\"red shoes\"' finds products with that exact phrase, 'SKU123' finds products with that SKU. If omitted or empty, all products are returned (subject to filters and pagination limits)."
+        },
+        "product_type": {
+          "type": "string",
+          "description": "Filter results to only include products of a specific type. Product type is a taxonomical category you define in Shopify to organize your catalog (e.g., 'T-Shirts', 'Shoes', 'Accessories', 'Electronics', 'Books'). This is different from vendor - it's about what the product is, not who makes it. Filtering by product type is useful for category-specific searches or when building category pages. The value must exactly match a product type that exists in your store. If omitted, products of all types are included. You can get a list of available product types from your Shopify admin or through the API."
+        },
+        "vendor": {
+          "type": "string",
+          "description": "Filter results to only include products from a specific vendor or brand. The vendor field in Shopify represents the manufacturer or brand of the product (e.g., 'Nike', 'Apple', 'Generic', 'House Brand'). This is useful for brand-specific searches, vendor performance analysis, or building vendor-specific product pages. The value must exactly match a vendor name that exists in your store. Case sensitivity depends on your Shopify configuration. If omitted, products from all vendors are included. Common use cases: 'Show me all Nike products', 'Compare pricing across vendors', 'Find products we need to reorder from Vendor X'."
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Filter results to only include products that have ALL of the specified tags. Tags are free-form labels you assign to products in Shopify for organization, filtering, and discoverability (e.g., 'sale', 'new-arrival', 'best-seller', 'summer-2024', 'featured', 'eco-friendly'). This filter uses AND logic - a product must have every tag in the array to be included. For example, ['sale', 'summer-2024'] returns only products tagged with both. Tags are case-insensitive. If you need OR logic (products with any of several tags), make multiple requests or use the query parameter. If omitted, no tag filtering is applied."
+        },
+        "min_price": {
+          "type": "number",
+          "description": "Filter results to only include products with a price greater than or equal to this value. The price is compared against the product's base price (or minimum variant price if the product has variants). Useful for filtering by price range, implementing 'premium products' sections, or budget-based shopping experiences. The value should be a decimal number in the store's currency (e.g., 49.99 for $49.99). Combine with max_price to create price ranges. If omitted, no minimum price filter is applied."
+        },
+        "max_price": {
+          "type": "number",
+          "description": "Filter results to only include products with a price less than or equal to this value. The price is compared against the product's base price (or maximum variant price if the product has variants). Essential for budget-conscious shoppers, sale sections, or price-range filtering. The value should be a decimal number in the store's currency (e.g., 99.99 for $99.99). Combine with min_price to create price ranges like $50-$100. If omitted, no maximum price filter is applied."
+        },
+        "published_status": {
+          "type": "string",
+          "enum": ["published", "unpublished", "any"],
+          "description": "Filter results based on product publication status. 'published' returns only products currently visible in your online store and available for sale. 'unpublished' returns only draft or hidden products not visible to customers (useful for inventory management or preparing upcoming launches). 'any' returns all products regardless of publication status (useful for administrative tasks or complete catalog exports). Default is 'published' if omitted, as most use cases only care about products customers can actually buy. Unpublished products might be seasonal items, products being edited, or future releases."
+        },
+        "sort_by": {
+          "type": "string",
+          "enum": ["title", "price_low_to_high", "price_high_to_low", "created_date", "updated_date", "best_selling"],
+          "description": "Specify how to sort the search results. 'title' sorts alphabetically by product title (A-Z). 'price_low_to_high' shows cheapest products first (great for budget shoppers). 'price_high_to_low' shows most expensive first (luxury shopping or reverse price comparison). 'created_date' shows newest products first based on when they were added to Shopify (great for 'new arrivals' sections). 'updated_date' shows recently modified products first (useful for finding products you just edited). 'best_selling' shows top sellers first based on sales data (requires Shopify sales tracking). If omitted, results are sorted by relevance score relative to the query. For browsing without a query, use 'title' or 'created_date' for predictable ordering."
+        },
+        "limit": {
+          "type": "integer",
+          "description": "The maximum number of products to return in a single response. Useful for pagination and controlling response size. Minimum value is 1, maximum is typically 250 (check your Shopify API plan limits). Default is 50 if not specified. Smaller limits result in faster responses and less data transfer, better for mobile apps or UI lists. Larger limits reduce the number of API calls needed to retrieve many products, better for data exports or analytics. For standard product listing pages, 20-50 is typical. For infinite scroll, use smaller limits (10-20) with pagination."
+        },
+        "page": {
+          "type": "integer",
+          "description": "The page number for pagination. Use with the 'limit' parameter to retrieve results in chunks. Page numbering starts at 1. For example, with limit=50 and page=2, you get results 51-100. This is essential for handling large product catalogs efficiently - fetching all products in one request would be slow and wasteful. Calculate total pages as: total_products / limit (rounded up). For modern UIs, consider cursor-based pagination instead of page numbers for better performance. If omitted, defaults to page 1. Page numbers beyond the available results return empty arrays."
+        }
+      },
+      "required": ["query"]
+    }
+  }
+}

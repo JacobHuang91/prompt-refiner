@@ -1,0 +1,64 @@
+{
+  "id": "0015g00000ABCD1EFG",
+  "success": true,
+  "errors": [],
+  "attributes": {
+    "type": "Account",
+    "url": "/services/data/v59.0/sobjects/Account/0015g00000ABCD1EFG"
+  },
+  "Name": "Acme Corporation",
+  "Type": "Customer",
+  "Industry": "Technology",
+  "Website": "https://www.acme-corp.com",
+  "Phone": "(555) 123-4567",
+  "BillingStreet": "123 Main Street Suite 400",
+  "BillingCity": "San Francisco",
+  "BillingState": "CA",
+  "BillingPostalCode": "94105",
+  "BillingCountry": "United States",
+  "OwnerId": "0055g00000ABCDEFGH",
+  "CreatedDate": "2024-01-03T10:30:45.000+0000",
+  "CreatedById": "0055g00000ABCDEFGH",
+  "LastModifiedDate": "2024-01-03T10:30:45.000+0000",
+  "LastModifiedById": "0055g00000ABCDEFGH",
+  "SystemModstamp": "2024-01-03T10:30:45.000+0000",
+  "debug_info": {
+    "request_id": "sf-req-xyz789",
+    "api_version": "v59.0",
+    "query_time_ms": 156,
+    "cache_status": "miss",
+    "org_id": "00D5g000003abcdefg",
+    "pod": "NA152",
+    "database_queries": 3,
+    "cpu_time_ms": 89,
+    "total_processing_time_ms": 156
+  },
+  "logs": [
+    "[10:30:45.001] SOQL query executed: SELECT Id, Name FROM Account WHERE Id = '0015g00000ABCD1EFG'",
+    "[10:30:45.045] Validation rules executed: 2 passed",
+    "[10:30:45.089] Workflow rules evaluated: 0 triggered",
+    "[10:30:45.123] Field history tracking updated",
+    "[10:30:45.156] Record committed to database",
+    "[10:30:45.178] Audit trail updated",
+    "[10:30:45.201] Cache invalidation triggered"
+  ],
+  "_trace": {
+    "trace_id": "00D5g000003abcdefg-trace-12345",
+    "parent_span_id": "span-abc123",
+    "flags": "01"
+  },
+  "_performance_metrics": {
+    "db_total_time": 67,
+    "db_cpu_time": 45,
+    "db_blocks": 234,
+    "db_rows": 1,
+    "soql_queries": 1,
+    "dml_statements": 1,
+    "callouts": 0,
+    "email_invocations": 0,
+    "future_calls": 0,
+    "heap_size": 2048,
+    "cpu_time": 89,
+    "run_time": 156
+  }
+}

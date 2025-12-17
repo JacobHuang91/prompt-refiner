@@ -327,18 +327,30 @@ examples/
 
 benchmark/
 ├── README.md            # Index of all benchmarks
-├── latency/             # Latency/performance benchmark
-│   ├── benchmark.py     # Performance measurement script
-│   └── README.md        # Latency benchmark documentation
-└── custom/              # Quality/cost A/B testing benchmark
-    ├── benchmark.py     # Main orchestrator
-    ├── datasets.py      # Test data loader
-    ├── evaluators.py    # Quality metrics (cosine + LLM judge)
-    ├── visualizer.py    # Matplotlib plots
-    ├── data/            # 30 curated test cases
-    │   ├── squad_samples.json
-    │   └── rag_scenarios.json
-    └── README.md        # Full benchmark documentation
+├── function_calling/    # Function calling optimization (⭐ primary benchmark)
+│   ├── benchmark_schemas.py              # SchemaCompressor benchmark
+│   ├── benchmark_responses.py            # ResponseCompressor benchmark
+│   ├── test_functional_equivalence.py    # Validates compressed schemas work with OpenAI (20 schemas)
+│   ├── visualize_results.py              # Generate charts
+│   ├── data/
+│   │   ├── schemas/                      # 20 tool schemas (JSON)
+│   │   └── responses/                    # 20 API responses (JSON)
+│   └── results/                          # Generated results (CSV, MD, PNG)
+├── packer/              # MessagesPacker & TextPacker validation
+│   ├── benchmark.py     # Comprehensive packer benchmark (5 tests)
+│   └── results/         # Generated results (CSV)
+├── rag_quality/         # Quality/cost A/B testing benchmark
+│   ├── benchmark.py     # Main orchestrator
+│   ├── datasets.py      # Test data loader
+│   ├── evaluators.py    # Quality metrics (cosine + LLM judge)
+│   ├── visualizer.py    # Matplotlib plots
+│   ├── data/            # 30 curated test cases
+│   │   ├── squad_samples.json
+│   │   └── rag_scenarios.json
+│   └── results/         # Generated results (CSV, MD, PNG)
+└── latency/             # Latency/performance benchmark
+    ├── benchmark.py     # Performance measurement script
+    └── README.md        # Latency benchmark documentation
 ```
 
 ## Testing & Benchmarking
@@ -349,8 +361,10 @@ benchmark/
 - Tests are separated by module for better organization
 
 ### Benchmarks
+- **Function Calling Benchmark**: SchemaCompressor/ResponseCompressor on 20 real-world APIs (56.9% avg reduction, 100% callable validated)
+- **Packer Benchmark**: MessagesPacker/TextPacker functionality validation (5 comprehensive tests, all passing)
+- **RAG Quality Benchmark**: Measures token reduction (4-15%) and response quality (96-99%)
 - **Latency Benchmark**: Measures processing overhead (< 0.5ms per 1k tokens)
-- **Quality/Cost Benchmark**: Measures token reduction (4-15%) and response quality (96-99%)
 
 ## Future Vision
 

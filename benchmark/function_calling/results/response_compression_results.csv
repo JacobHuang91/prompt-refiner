@@ -1,0 +1,21 @@
+response,category,tokens_original,tokens_compressed,tokens_saved,reduction_percent,droppable_fields_removed,has_data,valid_json,size_reduced,all_checks_passed
+anthropic_bash_command_response,Complex,812,572,240,29.6,True,True,True,True,True
+anthropic_computer_use_response,Very Verbose,1227,910,317,25.8,True,True,True,True,True
+anthropic_document_analyzer_response,Very Verbose,1520,1224,296,19.5,True,True,True,True,True
+anthropic_text_editor_response,Complex,913,647,266,29.1,True,True,True,True,True
+anthropic_web_search_response,Very Verbose,1202,1031,171,14.2,True,True,True,True,True
+ecommerce_search_products_response,Very Verbose,1540,1285,255,16.6,True,True,True,True,True
+github_create_issue_response,Very Verbose,1639,1301,338,20.6,True,True,True,True,True
+google_calendar_event_response,Very Verbose,1118,828,290,25.9,True,True,True,True,True
+hubspot_contact_response,Complex,638,450,188,29.5,True,True,True,True,True
+notion_database_query_response,Very Verbose,1561,1215,346,22.2,True,True,True,True,True
+openai_calculator_response,Complex,521,347,174,33.4,True,True,True,True,True
+openai_database_query_response,Very Verbose,1089,882,207,19.0,True,True,True,True,True
+openai_file_search_response,Very Verbose,1219,988,231,18.9,True,True,True,True,True
+openai_weather_response,Complex,877,683,194,22.1,True,True,True,True,True
+salesforce_account_response,Complex,609,477,132,21.7,True,True,True,True,True
+sendgrid_email_response,Complex,883,622,261,29.6,True,True,True,True,True
+shopify_products_response,Very Verbose,1511,1211,300,19.9,True,True,True,True,True
+slack_send_message_response,Complex,608,396,212,34.9,True,True,True,True,True
+stripe_payment_response,Complex,923,437,486,52.7,True,True,True,True,True
+twilio_sms_response,Complex,847,579,268,31.6,True,True,True,True,True

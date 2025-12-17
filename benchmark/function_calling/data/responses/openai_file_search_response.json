@@ -1,0 +1,160 @@
+{
+  "query": "machine learning documentation",
+  "search_type": "full_text",
+  "total_results": 47,
+  "results_returned": 10,
+  "search_time_ms": 156,
+  "results": [
+    {
+      "file_id": "file_abc123xyz789",
+      "filename": "ml_training_guide.pdf",
+      "path": "/documents/ai/training/ml_training_guide.pdf",
+      "size_bytes": 2457600,
+      "created_at": "2023-11-15T10:30:00Z",
+      "modified_at": "2023-12-20T14:22:00Z",
+      "mime_type": "application/pdf",
+      "score": 0.923,
+      "snippet": "...comprehensive <em>machine learning</em> training guide covers supervised and unsupervised learning techniques. This <em>documentation</em> provides step-by-step instructions...",
+      "matched_terms": [
+        "machine learning",
+        "documentation"
+      ],
+      "page_number": 1,
+      "metadata": {
+        "author": "AI Research Team",
+        "department": "Engineering",
+        "tags": [
+          "machine-learning",
+          "training",
+          "tutorial"
+        ]
+      }
+    },
+    {
+      "file_id": "file_def456uvw012",
+      "filename": "neural_networks_overview.docx",
+      "path": "/documents/ai/research/neural_networks_overview.docx",
+      "size_bytes": 1245000,
+      "created_at": "2023-10-01T09:00:00Z",
+      "modified_at": "2024-01-02T16:45:00Z",
+      "mime_type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "score": 0.887,
+      "snippet": "Neural networks are a fundamental concept in <em>machine learning</em>. This <em>documentation</em> explores various architectures including CNNs, RNNs, and Transformers...",
+      "matched_terms": [
+        "machine learning",
+        "documentation"
+      ],
+      "page_number": null,
+      "metadata": {
+        "author": "John Smith",
+        "department": "Research",
+        "tags": [
+          "neural-networks",
+          "deep-learning"
+        ]
+      }
+    },
+    {
+      "file_id": "file_ghi789mno345",
+      "filename": "README.md",
+      "path": "/projects/ml-toolkit/README.md",
+      "size_bytes": 15600,
+      "created_at": "2023-09-12T11:20:00Z",
+      "modified_at": "2023-12-28T10:15:00Z",
+      "mime_type": "text/markdown",
+      "score": 0.845,
+      "snippet": "# ML Toolkit\n\nComprehensive <em>machine learning</em> library with tools for data preprocessing, model training, and evaluation. See <em>documentation</em> at docs.ml-toolkit.com...",
+      "matched_terms": [
+        "machine learning",
+        "documentation"
+      ],
+      "page_number": null,
+      "metadata": {
+        "repository": "ml-toolkit",
+        "language": "Python",
+        "tags": [
+          "library",
+          "toolkit"
+        ]
+      }
+    }
+  ],
+  "facets": {
+    "file_type": {
+      "pdf": 18,
+      "docx": 12,
+      "md": 8,
+      "txt": 9
+    },
+    "department": {
+      "Engineering": 23,
+      "Research": 15,
+      "Data Science": 9
+    },
+    "date_range": {
+      "last_week": 3,
+      "last_month": 12,
+      "last_quarter": 28,
+      "last_year": 47
+    }
+  },
+  "suggestions": [
+    "deep learning documentation",
+    "machine learning tutorials",
+    "ml training guides"
+  ],
+  "debug_info": {
+    "request_id": "search-req-nop890qrs123",
+    "api_version": "v2.0",
+    "processing_time_ms": 189,
+    "search_engine": "Elasticsearch 8.11.0",
+    "cluster": "search-prod-cluster-01",
+    "shard_count": 5,
+    "query_type": "multi_match",
+    "analyzer": "standard",
+    "index_name": "files_v3",
+    "total_shards": 5,
+    "successful_shards": 5,
+    "failed_shards": 0,
+    "cache_hit": false,
+    "query_cache_size_bytes": 4096,
+    "took_ms": 156,
+    "max_score": 0.923,
+    "timed_out": false,
+    "hits": {
+      "total": {
+        "value": 47,
+        "relation": "eq"
+      }
+    },
+    "aggregations_time_ms": 12
+  },
+  "logs": [
+    "[10:45:12.001] File search request received",
+    "[10:45:12.023] Query parsing: 'machine learning documentation'",
+    "[10:45:12.045] Stop words removed: 0 words",
+    "[10:45:12.067] Stemming applied: machine → machin, learning → learn, documentation → document",
+    "[10:45:12.089] Elasticsearch query constructed (multi_match)",
+    "[10:45:12.111] Query sent to 5 shards",
+    "[10:45:12.156] Shard responses collected (5/5 successful)",
+    "[10:45:12.178] Results sorted by relevance score",
+    "[10:45:12.189] Facets aggregated (3 categories)",
+    "[10:45:12.201] Snippets generated with highlighting",
+    "[10:45:12.223] Search suggestions computed",
+    "[10:45:12.245] Response assembled (10 results)"
+  ],
+  "_trace": {
+    "trace_id": "search-trace-tuv456wxy789",
+    "span_id": "span-search-012",
+    "parent_span_id": null,
+    "sampled": true,
+    "index": "files_v3"
+  },
+  "_performance": {
+    "query_parse_ms": 44,
+    "elasticsearch_query_ms": 156,
+    "facet_aggregation_ms": 12,
+    "snippet_generation_ms": 22,
+    "total_ms": 189
+  }
+}

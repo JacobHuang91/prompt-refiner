@@ -1,9 +1,9 @@
 """Visualization tools for benchmark results."""
 
-from typing import Dict, Any, List
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 from pathlib import Path
+from typing import Dict
+
+import matplotlib.pyplot as plt
 import pandas as pd
 
 

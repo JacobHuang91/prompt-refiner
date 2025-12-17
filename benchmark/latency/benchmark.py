@@ -9,14 +9,14 @@ Usage:
     python benchmark/latency_benchmark.py
 """
 
-import time
 import statistics
-from typing import Dict, List, Tuple
+import time
+from typing import Tuple
 
 from prompt_refiner import Refiner
 from prompt_refiner.cleaner.html import StripHTML
-from prompt_refiner.cleaner.whitespace import NormalizeWhitespace
 from prompt_refiner.cleaner.unicode import FixUnicode
+from prompt_refiner.cleaner.whitespace import NormalizeWhitespace
 from prompt_refiner.compressor.deduplicate import Deduplicate
 from prompt_refiner.compressor.truncate import TruncateTokens
 
@@ -184,7 +184,7 @@ def run_benchmark():
     standard_10k = results.get(("Standard (+ Deduplication)", 10_000))
     if standard_10k:
         mean_ms, median_ms, p95_ms = standard_10k
-        print(f"✅ Standard strategy (recommended) @ 10k tokens:")
+        print("✅ Standard strategy (recommended) @ 10k tokens:")
         print(f"   Average: {mean_ms:.2f}ms  |  Median: {median_ms:.2f}ms  |  P95: {p95_ms:.2f}ms")
         print()
 

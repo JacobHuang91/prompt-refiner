@@ -1,0 +1,59 @@
+{
+  "operation": "multiply",
+  "operands": [
+    23.5,
+    18.7
+  ],
+  "result": 439.45,
+  "result_formatted": "439.45",
+  "precision": 2,
+  "expression": "23.5 × 18.7",
+  "expression_latex": "23.5 \\times 18.7 = 439.45",
+  "alternative_representations": {
+    "scientific": "4.3945 × 10²",
+    "fraction": "43945/100",
+    "percentage": "43945%"
+  },
+  "metadata": {
+    "calculation_time_ms": 0.234,
+    "precision_used": "double",
+    "rounding_mode": "half_up"
+  },
+  "debug_info": {
+    "request_id": "calc-req-rst678uvw901",
+    "api_version": "v1.0",
+    "processing_time_ms": 12,
+    "server": "calculator-api-03",
+    "datacenter": "us-central1",
+    "parser_version": "2.1.0",
+    "expression_complexity": "simple",
+    "validation_checks": 5,
+    "optimization_applied": false,
+    "memory_used_bytes": 2048,
+    "cpu_time_ms": 0.5
+  },
+  "logs": [
+    "[16:15:22.001] Calculation request received",
+    "[16:15:22.003] Expression parsed: multiply(23.5, 18.7)",
+    "[16:15:22.005] Operand validation: 2 operands, both numeric",
+    "[16:15:22.007] Type checking: float × float",
+    "[16:15:22.009] Overflow check: within safe range",
+    "[16:15:22.011] Calculation executed: 23.5 × 18.7 = 439.45",
+    "[16:15:22.012] Result formatted with precision 2",
+    "[16:15:22.013] Alternative representations generated",
+    "[16:15:22.014] Response assembled"
+  ],
+  "_trace": {
+    "trace_id": "calc-trace-xyz234abc567",
+    "span_id": "span-calc-890",
+    "parent_span_id": null,
+    "sampled": true
+  },
+  "_performance": {
+    "parse_time_ms": 2.1,
+    "validation_ms": 4.2,
+    "calculation_ms": 0.234,
+    "formatting_ms": 3.8,
+    "total_ms": 12.0
+  }
+}

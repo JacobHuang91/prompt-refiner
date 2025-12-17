@@ -1,0 +1,6 @@
+test,tracked_raw,actual_raw,raw_accuracy_pct,tracked_refined,actual_refined,refined_accuracy_pct,tracked_saved,actual_saved,saved_accuracy_pct,passed,num_messages,system_html_removed,system_whitespace_normalized,context_html_removed,context_whitespace_normalized,context_deduplicated,has_instructions,has_context,has_input,correct_order,token_savings_pct,has_all_components,html_cleaned,duplicates_removed,raw_tokens,refined_tokens,saved_tokens,savings_pct
+token_tracking_accuracy,41.0,59.0,30.51,27.0,43.0,37.21,14.0,16.0,12.5,True,,,,,,,,,,,,,,,,,,
+priority_ordering,,,,,,,,,,True,6.0,,,,,,,,,,,,,,,,,
+default_refining_strategies,,,,,,,,,,True,,True,True,True,True,True,,,,,,,,,,,,
+text_packer_markdown,,,,,,,,,,True,,,,,,,True,True,True,True,0.0%,,,,,,,
+real_world_rag,,,,,,,,,,True,,,,,,,,,,,,True,True,True,237.0,95.0,142.0,59.9%

@@ -1,0 +1,46 @@
+{
+  "type": "function",
+  "function": {
+    "name": "computer_control",
+    "description": "Control a computer by simulating mouse movements, clicks, keyboard input, and screen interactions. This powerful function provides programmatic access to computer desktop automation, allowing you to interact with any application, click buttons, type text, navigate interfaces, fill forms, capture screenshots, and perform any action a human user could do with a mouse and keyboard. The function operates at the operating system level, independent of application APIs, making it universally compatible with any software. It uses computer vision to locate UI elements, simulate precise mouse movements and clicks at pixel coordinates, generate keyboard events with proper timing, handle multiple monitors, and provide visual feedback through screenshots. Perfect for UI automation, testing desktop applications, robotic process automation (RPA), accessibility tools, demonstration videos, and any scenario requiring programmatic interaction with graphical user interfaces. Works across Windows, macOS, and Linux with appropriate system permissions.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["mouse_move", "click", "double_click", "right_click", "drag", "type", "key_press", "screenshot", "wait"],
+          "description": "The type of computer control action to perform. 'mouse_move' moves the cursor to specific screen coordinates without clicking. 'click' performs a left mouse button click at the current cursor position or specified coordinates. 'double_click' performs two rapid clicks (for opening files, selecting words, etc.). 'right_click' opens context menus at the specified position. 'drag' clicks and drags from one position to another (for moving windows, selecting text, drawing, etc.). 'type' simulates keyboard typing to enter text into focused input fields. 'key_press' sends specific keyboard keys or combinations (Enter, Tab, Ctrl+C, Alt+F4, etc.). 'screenshot' captures the current screen content for visual verification. 'wait' pauses execution for UI elements to load or animations to complete. Choose the action that matches your automation need."
+        },
+        "x": {
+          "type": "integer",
+          "description": "The X coordinate (horizontal position) on the screen in pixels, measured from the left edge of the primary monitor. Screen coordinates start at (0, 0) in the top-left corner. The maximum X value depends on your screen resolution (e.g., 1920 for a 1920×1080 display, 3840 for 4K). This parameter is required for mouse-based actions (mouse_move, click, double_click, right_click, and as the starting point for drag). Use screenshot action first to identify the correct pixel coordinates of UI elements you want to interact with. For multi-monitor setups, coordinates extend beyond the primary display - a second monitor to the right of a 1920px wide primary monitor starts at x=1920. Always verify coordinates are within screen bounds."
+        },
+        "y": {
+          "type": "integer",
+          "description": "The Y coordinate (vertical position) on the screen in pixels, measured from the top edge of the primary monitor. Screen coordinates start at (0, 0) in the top-left corner. The maximum Y value depends on your screen resolution (e.g., 1080 for a 1920×1080 display, 2160 for 4K). This parameter is required for mouse-based actions along with X coordinate. Use screenshot and image analysis to determine the correct Y position. UI elements can shift based on window size, scrolling, and screen resolution, so coordinates may need adjustment. For multi-monitor setups with vertically arranged displays, Y coordinates extend beyond the primary display height. Combine X and Y to precisely target buttons, text fields, menu items, and other UI elements."
+        },
+        "dest_x": {
+          "type": "integer",
+          "description": "The destination X coordinate for drag operations. When performing a 'drag' action, the mouse will click at (x, y), hold the button down, move to (dest_x, dest_y), and then release. This is essential for drag-and-drop operations, moving windows, selecting text ranges, resizing elements, or any interaction requiring a continuous mouse motion with the button held. The destination coordinates should be where you want the dragged element to end up. Ensure dest_x is within screen bounds. This parameter is only used with the 'drag' action and is required for that action along with dest_y."
+        },
+        "dest_y": {
+          "type": "integer",
+          "description": "The destination Y coordinate for drag operations. Works with dest_x to specify where the drag action should end. The mouse cursor will move from (x, y) to (dest_x, dest_y) while holding the mouse button down, simulating a human drag gesture. The movement can be horizontal, vertical, or diagonal. Use this for moving files to folders, reordering list items, selecting text, drawing in graphics applications, or resizing windows by dragging edges or corners. This parameter is only used with the 'drag' action and is required for that action. The drag path is animated with realistic mouse movement timing."
+        },
+        "text": {
+          "type": "string",
+          "description": "The text string to type when using the 'type' action. This text will be entered character-by-character as if typed on a physical keyboard, including appropriate delays between keystrokes to simulate human typing. The text can include any Unicode characters, numbers, symbols, spaces, and will be typed into whatever input field or application currently has keyboard focus. Make sure the correct input field is focused (often by clicking it first) before typing. Special characters may require specific keyboard combinations depending on the keyboard layout. For entering passwords or sensitive data, ensure you're in the right field. The typing speed is realistic but can be adjusted. Maximum recommended length is 1000 characters for reliability."
+        },
+        "key": {
+          "type": "string",
+          "description": "The keyboard key or key combination to press when using the 'key_press' action. This can be a single key name like 'enter', 'tab', 'escape', 'space', 'backspace', 'delete', arrow keys ('up', 'down', 'left', 'right'), function keys ('f1' through 'f12'), or key combinations using '+' to separate modifiers and keys. Examples: 'enter' (press Enter), 'ctrl+c' (copy), 'ctrl+v' (paste), 'ctrl+s' (save), 'alt+tab' (switch windows), 'ctrl+shift+t' (reopen tab), 'cmd+c' (copy on Mac), 'win+r' (Windows Run dialog). Use lowercase for key names. Modifier keys: 'ctrl', 'alt', 'shift', 'win' (Windows), 'cmd' (Mac). This provides programmatic access to keyboard shortcuts and special keys that can't be typed as text."
+        },
+        "duration": {
+          "type": "number",
+          "description": "The duration in seconds for wait operations or the speed/timing for movement operations. For 'wait' actions, this is how long to pause execution before continuing (useful for waiting for pages to load, animations to complete, or dialogs to appear). Typical values: 0.5-1 second for fast UI updates, 2-3 seconds for network operations, 5-10 seconds for slow page loads. For 'drag' operations, this controls how long the drag movement takes (longer durations create slower, more human-like movements). For 'mouse_move', controls movement speed. Default values are used if omitted: 0.5 seconds for movements, no default for wait (must specify). Use appropriate durations to ensure reliability - too fast may miss UI updates, too slow wastes time."
+        }
+      },
+      "required": ["action"]
+    }
+  }
+}

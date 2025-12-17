@@ -1,0 +1,77 @@
+{
+  "ok": true,
+  "channel": "C05ABCD1234",
+  "ts": "1704294936.123456",
+  "message": {
+    "type": "message",
+    "subtype": null,
+    "text": "Hello team! This is an important update about the project.",
+    "user": "U05XYZ7890",
+    "ts": "1704294936.123456",
+    "team": "T024BE7LD",
+    "blocks": [
+      {
+        "type": "section",
+        "block_id": "Blk01",
+        "text": {
+          "type": "mrkdwn",
+          "text": "Hello team! This is an important update about the project.",
+          "verbatim": false
+        }
+      }
+    ]
+  },
+  "response_metadata": {
+    "scopes": [
+      "chat:write",
+      "chat:write.public"
+    ],
+    "acceptedScopes": [
+      "chat:write"
+    ]
+  },
+  "debug_info": {
+    "request_id": "slack-req-uvw123xyz",
+    "api_tier": "tier_1",
+    "processing_time_ms": 142,
+    "retry_count": 0,
+    "rate_limit_tier": "standard",
+    "rate_limit_remaining": 19,
+    "rate_limit_reset_seconds": 60,
+    "server": "slack-prod-v2-012",
+    "datacenter": "us-west-2",
+    "build_number": "20240103.1",
+    "query_trace": {
+      "auth_check_ms": 12,
+      "permission_check_ms": 18,
+      "message_validation_ms": 24,
+      "delivery_ms": 88
+    }
+  },
+  "logs": [
+    "[10:15:36.000] Message POST received",
+    "[10:15:36.012] Authentication validated for user U05XYZ7890",
+    "[10:15:36.030] Channel permissions verified for C05ABCD1234",
+    "[10:15:36.054] Message content validated (length: 58 chars)",
+    "[10:15:36.078] Blocks structure validated",
+    "[10:15:36.092] Unfurling check: no URLs detected",
+    "[10:15:36.106] Message queued for delivery",
+    "[10:15:36.130] Delivery to channel members initiated (12 members)",
+    "[10:15:36.142] Push notifications dispatched (8 online, 4 offline)",
+    "[10:15:36.156] Message indexed for search",
+    "[10:15:36.170] Analytics event recorded",
+    "[10:15:36.184] Message delivery confirmed"
+  ],
+  "_trace_context": {
+    "trace_id": "slack-trace-abc987def",
+    "span_id": "span-slack-456",
+    "parent_span_id": null,
+    "baggage": "workspace=T024BE7LD,channel=C05ABCD1234"
+  },
+  "_infrastructure": {
+    "cluster": "prod-primary",
+    "zone": "us-west-2a",
+    "pod": "message-api-42",
+    "version": "2024.01.03-142857"
+  }
+}

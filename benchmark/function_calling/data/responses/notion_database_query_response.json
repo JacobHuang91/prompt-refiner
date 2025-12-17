@@ -1,0 +1,254 @@
+{
+  "object": "list",
+  "results": [
+    {
+      "object": "page",
+      "id": "abc12345-6789-4def-ghij-klmnopqrstuv",
+      "created_time": "2024-01-02T09:30:00.000Z",
+      "last_edited_time": "2024-01-03T11:22:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "user-123-abc"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "user-456-def"
+      },
+      "cover": null,
+      "icon": {
+        "type": "emoji",
+        "emoji": "📋"
+      },
+      "parent": {
+        "type": "database_id",
+        "database_id": "db-789-xyz"
+      },
+      "archived": false,
+      "properties": {
+        "Name": {
+          "id": "title",
+          "type": "title",
+          "title": [
+            {
+              "type": "text",
+              "text": {
+                "content": "Q1 Product Roadmap",
+                "link": null
+              },
+              "annotations": {
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "Q1 Product Roadmap",
+              "href": null
+            }
+          ]
+        },
+        "Status": {
+          "id": "stat",
+          "type": "select",
+          "select": {
+            "id": "in-progress-id",
+            "name": "In Progress",
+            "color": "yellow"
+          }
+        },
+        "Priority": {
+          "id": "prio",
+          "type": "select",
+          "select": {
+            "id": "high-id",
+            "name": "High",
+            "color": "red"
+          }
+        },
+        "Due Date": {
+          "id": "due",
+          "type": "date",
+          "date": {
+            "start": "2024-03-31",
+            "end": null,
+            "time_zone": null
+          }
+        },
+        "Tags": {
+          "id": "tags",
+          "type": "multi_select",
+          "multi_select": [
+            {
+              "id": "tag-1",
+              "name": "Planning",
+              "color": "blue"
+            },
+            {
+              "id": "tag-2",
+              "name": "Product",
+              "color": "purple"
+            }
+          ]
+        }
+      },
+      "url": "https://www.notion.so/Q1-Product-Roadmap-abc123456789"
+    },
+    {
+      "object": "page",
+      "id": "xyz98765-4321-4abc-defg-hijklmnopqrs",
+      "created_time": "2024-01-01T14:00:00.000Z",
+      "last_edited_time": "2024-01-03T10:15:00.000Z",
+      "created_by": {
+        "object": "user",
+        "id": "user-789-ghi"
+      },
+      "last_edited_by": {
+        "object": "user",
+        "id": "user-789-ghi"
+      },
+      "cover": null,
+      "icon": {
+        "type": "emoji",
+        "emoji": "🚀"
+      },
+      "parent": {
+        "type": "database_id",
+        "database_id": "db-789-xyz"
+      },
+      "archived": false,
+      "properties": {
+        "Name": {
+          "id": "title",
+          "type": "title",
+          "title": [
+            {
+              "type": "text",
+              "text": {
+                "content": "New Feature Launch",
+                "link": null
+              },
+              "annotations": {
+                "bold": false,
+                "italic": false,
+                "strikethrough": false,
+                "underline": false,
+                "code": false,
+                "color": "default"
+              },
+              "plain_text": "New Feature Launch",
+              "href": null
+            }
+          ]
+        },
+        "Status": {
+          "id": "stat",
+          "type": "select",
+          "select": {
+            "id": "done-id",
+            "name": "Done",
+            "color": "green"
+          }
+        },
+        "Priority": {
+          "id": "prio",
+          "type": "select",
+          "select": {
+            "id": "medium-id",
+            "name": "Medium",
+            "color": "yellow"
+          }
+        },
+        "Due Date": {
+          "id": "due",
+          "type": "date",
+          "date": {
+            "start": "2024-01-03",
+            "end": null,
+            "time_zone": null
+          }
+        },
+        "Tags": {
+          "id": "tags",
+          "type": "multi_select",
+          "multi_select": [
+            {
+              "id": "tag-3",
+              "name": "Launch",
+              "color": "green"
+            }
+          ]
+        }
+      },
+      "url": "https://www.notion.so/New-Feature-Launch-xyz9876543"
+    }
+  ],
+  "next_cursor": null,
+  "has_more": false,
+  "type": "page",
+  "page": {},
+  "request_id": "notion-req-hij678klm901",
+  "debug_info": {
+    "request_id": "notion-req-hij678klm901",
+    "api_version": "2022-06-28",
+    "processing_time_ms": 312,
+    "database_id": "db-789-xyz",
+    "query_filter_complexity": "medium",
+    "query_sort_count": 2,
+    "result_count": 2,
+    "cache_status": "miss",
+    "datacenter": "us-west-2",
+    "server": "notion-api-34",
+    "rate_limit": {
+      "limit": 3,
+      "remaining": 2,
+      "reset_seconds": 1
+    },
+    "workspace_id": "ws-abc123",
+    "user_id": "user-456-def",
+    "pagination": {
+      "page_size": 100,
+      "total_results": 2,
+      "has_more": false
+    }
+  },
+  "logs": [
+    "[11:45:23.001] Database query request received",
+    "[11:45:23.034] API authentication validated (Bearer token)",
+    "[11:45:23.067] Workspace permissions verified",
+    "[11:45:23.100] Database access check: read permission granted",
+    "[11:45:23.133] Query filter parsing: 3 conditions",
+    "[11:45:23.166] Query sort parsing: 2 sort criteria",
+    "[11:45:23.199] Database schema loaded from cache",
+    "[11:45:23.232] Query execution initiated",
+    "[11:45:23.278] Database scan: 47 pages evaluated",
+    "[11:45:23.312] Filter applied: 2 pages matched",
+    "[11:45:23.345] Sort applied: priority DESC, due_date ASC",
+    "[11:45:23.378] Property values resolved for 2 pages",
+    "[11:45:23.411] Rich text rendering: 4 text objects",
+    "[11:45:23.444] User object resolution: 3 unique users",
+    "[11:45:23.477] Page URLs generated",
+    "[11:45:23.510] Result serialization completed",
+    "[11:45:23.543] Response ready (2 results, no pagination needed)"
+  ],
+  "_trace": {
+    "trace_id": "notion-trace-nop234qrs567",
+    "span_id": "span-notion-890",
+    "parent_span_id": null,
+    "sampled": true,
+    "workspace_id": "ws-abc123"
+  },
+  "_performance": {
+    "auth_time_ms": 33,
+    "permission_check_ms": 33,
+    "query_parse_ms": 66,
+    "database_scan_ms": 146,
+    "result_serialization_ms": 34,
+    "total_time_ms": 312
+  },
+  "_metadata": {
+    "sdk": "notion-sdk-js/2.2.3",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+    "client_ip": "198.51.100.123"
+  }
+}

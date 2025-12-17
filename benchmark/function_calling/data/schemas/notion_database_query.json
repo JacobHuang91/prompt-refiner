@@ -1,0 +1,45 @@
+{
+  "type": "function",
+  "function": {
+    "name": "query_notion_database",
+    "description": "Query a Notion database to retrieve pages (rows) that match specific criteria. Notion databases are flexible, structured collections of pages that can represent tasks, projects, contacts, inventory, articles, or any other structured data. This function allows you to search and filter database entries based on properties, sort results, and retrieve the data you need programmatically. Perfect for building custom views, creating reports, integrating Notion with other tools, automating workflows based on database content, syncing data to external systems, and building applications on top of Notion databases. The function returns page objects with all their properties (text, numbers, dates, people, relations, etc.) in a structured format ready for processing.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "database_id": {
+          "type": "string",
+          "description": "The unique identifier of the Notion database you want to query. This is a 32-character hexadecimal string (technically a UUID without hyphens) that uniquely identifies a database in Notion. You can find the database ID in the database's URL - it's the part after your workspace name and before the question mark. For example, in 'https://notion.so/myworkspace/a1b2c3d4e5f6...?v=...', the database_id is 'a1b2c3d4e5f6...'. The database must be shared with your Notion integration, or the API will return a permission error. You can get database IDs programmatically using the Search API if needed."
+        },
+        "filter": {
+          "type": "object",
+          "description": "An optional filter object that specifies which pages to include in the results based on their property values. Filters use a structured query language with conditions, operators, and values. You can filter by any database property type: text (contains, equals, starts with, ends with), number (equals, greater than, less than), checkbox (equals true/false), date (before, after, on), person (contains specific user), status (equals specific status), and more. Combine multiple conditions using 'and' or 'or' logical operators. Example: {\"and\": [{\"property\": \"Status\", \"status\": {\"equals\": \"In Progress\"}}, {\"property\": \"Priority\", \"select\": {\"equals\": \"High\"}}]}. If omitted, all pages in the database are returned (up to pagination limits). Use filters to reduce data transfer and focus on relevant entries."
+        },
+        "sorts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "property": {
+                "type": "string"
+              },
+              "direction": {
+                "type": "string",
+                "enum": ["ascending", "descending"]
+              }
+            }
+          },
+          "description": "An optional array of sort objects that specify the order in which pages should be returned. Each sort object has a 'property' field (the name of the database property to sort by, like 'Priority', 'Due Date', 'Name', 'Created Time') and a 'direction' field ('ascending' for A-Z, oldest-first, lowest-highest, or 'descending' for Z-A, newest-first, highest-lowest). You can specify multiple sort criteria - results will be sorted by the first property, then by the second for ties, and so on. Example: [{\"property\": \"Priority\", \"direction\": \"descending\"}, {\"property\": \"Due Date\", \"direction\": \"ascending\"}] would show high priority items first, with earliest due dates within each priority level. If omitted, pages are returned in Notion's default order."
+        },
+        "start_cursor": {
+          "type": "string",
+          "description": "A pagination cursor for retrieving the next page of results. Notion API responses are paginated with a maximum of 100 results per request. When a response has more than 100 matching pages, the API returns a 'next_cursor' value which you can pass as 'start_cursor' in your next request to get the next batch of results. Think of it like a bookmark that lets you continue where you left off. To retrieve all matching pages, keep making requests with the returned 'next_cursor' value until the response indicates 'has_more: false'. If omitted or null, the query starts from the beginning. The cursor value is opaque (don't try to construct it manually) and is only valid for the same filter and sort configuration."
+        },
+        "page_size": {
+          "type": "integer",
+          "description": "The number of pages to return in a single request. This allows you to control the size of each paginated response. Minimum value is 1, maximum is 100. Default is 100 if not specified. Smaller page sizes result in more API calls but less data per request (useful if you're processing results incrementally or have memory constraints). Larger page sizes are more efficient if you need to retrieve many pages. For most use cases, the default of 100 is optimal - it maximizes efficiency while staying within API rate limits. If you only need a few results, set a smaller page_size to reduce data transfer."
+        }
+      },
+      "required": ["database_id"]
+    }
+  }
+}

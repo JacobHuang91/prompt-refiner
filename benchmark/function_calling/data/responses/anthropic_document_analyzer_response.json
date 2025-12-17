@@ -1,0 +1,229 @@
+{
+  "document_id": "doc_abc123xyz789",
+  "filename": "quarterly_report_q4_2023.pdf",
+  "file_size_bytes": 3456000,
+  "pages": 47,
+  "analysis_type": "comprehensive",
+  "processing_time_seconds": 12.456,
+  "analysis": {
+    "summary": "Comprehensive financial report for Q4 2023 showing 23% revenue growth year-over-year. Key highlights include expansion into European markets, successful product launches, and improved profit margins. Report includes detailed financial statements, market analysis, and future projections for 2024.",
+    "key_topics": [
+      {
+        "topic": "Financial Performance",
+        "confidence": 0.95,
+        "page_numbers": [
+          3,
+          4,
+          5,
+          12,
+          13
+        ],
+        "summary": "Revenue increased 23% YoY to $456M, with gross margin improvement of 3.2 percentage points"
+      },
+      {
+        "topic": "Market Expansion",
+        "confidence": 0.89,
+        "page_numbers": [
+          18,
+          19,
+          20,
+          21
+        ],
+        "summary": "Successfully launched operations in UK, Germany, and France with €12M revenue in first quarter"
+      },
+      {
+        "topic": "Product Development",
+        "confidence": 0.87,
+        "page_numbers": [
+          25,
+          26,
+          27
+        ],
+        "summary": "Three new product lines launched, contributing $34M in revenue"
+      }
+    ],
+    "entities_extracted": {
+      "organizations": [
+        "Acme Corporation",
+        "TechVentures LLC",
+        "Global Partners Inc"
+      ],
+      "people": [
+        "Jane Smith (CEO)",
+        "John Doe (CFO)",
+        "Alice Johnson (COO)"
+      ],
+      "locations": [
+        "United States",
+        "United Kingdom",
+        "Germany",
+        "France"
+      ],
+      "dates": [
+        "Q4 2023",
+        "October 2023",
+        "December 31, 2023"
+      ],
+      "monetary_values": [
+        "$456M revenue",
+        "$34M new product revenue",
+        "€12M European revenue"
+      ]
+    },
+    "sentiment_analysis": {
+      "overall_sentiment": "positive",
+      "confidence": 0.91,
+      "positive_indicators": [
+        "Strong revenue growth",
+        "Market expansion success",
+        "Improved margins"
+      ],
+      "concerns": [
+        "Supply chain challenges mentioned",
+        "Currency fluctuation risks"
+      ]
+    },
+    "document_structure": {
+      "sections": [
+        {
+          "title": "Executive Summary",
+          "pages": "1-2",
+          "word_count": 847
+        },
+        {
+          "title": "Financial Statements",
+          "pages": "3-15",
+          "word_count": 5234
+        },
+        {
+          "title": "Market Analysis",
+          "pages": "16-24",
+          "word_count": 3456
+        },
+        {
+          "title": "Operations Review",
+          "pages": "25-35",
+          "word_count": 4123
+        },
+        {
+          "title": "Future Outlook",
+          "pages": "36-42",
+          "word_count": 2789
+        },
+        {
+          "title": "Appendices",
+          "pages": "43-47",
+          "word_count": 1567
+        }
+      ],
+      "total_words": 18016,
+      "tables": 23,
+      "charts": 15,
+      "images": 8
+    },
+    "language_detection": {
+      "primary_language": "English (US)",
+      "confidence": 0.98,
+      "other_languages_detected": []
+    }
+  },
+  "extracted_data": {
+    "financial_metrics": [
+      {
+        "metric": "Revenue",
+        "value": "$456M",
+        "period": "Q4 2023",
+        "growth": "+23% YoY"
+      },
+      {
+        "metric": "Gross Margin",
+        "value": "67.3%",
+        "period": "Q4 2023",
+        "growth": "+3.2pp"
+      },
+      {
+        "metric": "Operating Income",
+        "value": "$123M",
+        "period": "Q4 2023",
+        "growth": "+28% YoY"
+      }
+    ],
+    "key_dates": [
+      {
+        "date": "2024-02-15",
+        "event": "Earnings call scheduled"
+      },
+      {
+        "date": "2024-03-01",
+        "event": "Annual shareholder meeting"
+      }
+    ]
+  },
+  "quality_metrics": {
+    "text_extraction_confidence": 0.97,
+    "ocr_quality": "excellent",
+    "layout_analysis_confidence": 0.95,
+    "entity_extraction_accuracy": 0.89
+  },
+  "debug_info": {
+    "request_id": "doc-analyzer-req-tuv345wxy678",
+    "api_version": "v2.0",
+    "processing_time_ms": 12523,
+    "analysis_engine": "document_ai_v3",
+    "model_version": "claude-3-opus-20240229",
+    "pdf_processor": "pdfplumber-0.10.3",
+    "ocr_engine": "tesseract-5.3.0",
+    "nlp_model": "en_core_web_lg-3.7.0",
+    "pages_processed": 47,
+    "text_extracted_chars": 98456,
+    "images_extracted": 8,
+    "tables_detected": 23,
+    "charts_detected": 15,
+    "memory_used_mb": 512,
+    "gpu_used": true,
+    "gpu_time_seconds": 8.234,
+    "datacenter": "us-east-1",
+    "server": "document-analyzer-08"
+  },
+  "logs": [
+    "[15:10:23.001] Document analysis request received",
+    "[15:10:23.034] File validation: quarterly_report_q4_2023.pdf (3.3 MB, 47 pages)",
+    "[15:10:23.067] PDF parsing initiated",
+    "[15:10:25.123] Text extraction complete: 98,456 characters",
+    "[15:10:25.234] Layout analysis: 6 sections detected",
+    "[15:10:25.456] Table extraction: 23 tables found",
+    "[15:10:25.678] Chart detection: 15 charts identified",
+    "[15:10:25.890] Image extraction: 8 images saved",
+    "[15:10:26.123] Entity extraction started",
+    "[15:10:28.456] Named entities extracted: 45 organizations, 23 people, 18 locations",
+    "[15:10:28.789] Topic modeling: 3 primary topics identified",
+    "[15:10:31.234] Sentiment analysis: overall positive (0.91 confidence)",
+    "[15:10:32.567] Financial metric extraction: 24 metrics found",
+    "[15:10:34.123] Summary generation complete",
+    "[15:10:35.456] Quality metrics calculated",
+    "[15:10:35.523] Analysis complete"
+  ],
+  "_trace": {
+    "trace_id": "doc-trace-zab901cde234",
+    "span_id": "span-doc-567",
+    "parent_span_id": null,
+    "sampled": true,
+    "document_id": "doc_abc123xyz789"
+  },
+  "_performance": {
+    "pdf_parsing_ms": 2056,
+    "text_extraction_ms": 2111,
+    "layout_analysis_ms": 778,
+    "entity_extraction_ms": 3333,
+    "topic_modeling_ms": 2445,
+    "sentiment_analysis_ms": 1778,
+    "summary_generation_ms": 2889,
+    "total_ms": 12523
+  },
+  "_metadata": {
+    "client": "document-analyzer-sdk/2.1.0",
+    "user_id": "user-789",
+    "organization_id": "org-123",
+    "analysis_credits_used": 47
+  }
+}

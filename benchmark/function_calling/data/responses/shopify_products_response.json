@@ -1,0 +1,182 @@
+{
+  "products": [
+    {
+      "id": 7891234567890,
+      "title": "Classic Cotton T-Shirt",
+      "body_html": "<p>Comfortable 100% cotton t-shirt in various colors.</p>",
+      "vendor": "Fashion Brand Co",
+      "product_type": "Apparel",
+      "created_at": "2023-12-15T10:30:00-05:00",
+      "handle": "classic-cotton-t-shirt",
+      "updated_at": "2024-01-03T14:22:00-05:00",
+      "published_at": "2023-12-20T09:00:00-05:00",
+      "template_suffix": null,
+      "published_scope": "web",
+      "tags": "cotton, basics, bestseller",
+      "status": "active",
+      "admin_graphql_api_id": "gid://shopify/Product/7891234567890",
+      "variants": [
+        {
+          "id": 42123456789012,
+          "product_id": 7891234567890,
+          "title": "Small / Blue",
+          "price": "24.99",
+          "sku": "TSHIRT-BLU-SM",
+          "position": 1,
+          "inventory_policy": "deny",
+          "compare_at_price": "29.99",
+          "fulfillment_service": "manual",
+          "inventory_management": "shopify",
+          "option1": "Small",
+          "option2": "Blue",
+          "option3": null,
+          "created_at": "2023-12-15T10:30:00-05:00",
+          "updated_at": "2024-01-03T14:22:00-05:00",
+          "taxable": true,
+          "barcode": "123456789012",
+          "grams": 180,
+          "weight": 0.18,
+          "weight_unit": "kg",
+          "inventory_item_id": 44123456789012,
+          "inventory_quantity": 247,
+          "old_inventory_quantity": 247,
+          "requires_shipping": true
+        },
+        {
+          "id": 42123456789013,
+          "product_id": 7891234567890,
+          "title": "Medium / Blue",
+          "price": "24.99",
+          "sku": "TSHIRT-BLU-MD",
+          "position": 2,
+          "inventory_policy": "deny",
+          "compare_at_price": "29.99",
+          "fulfillment_service": "manual",
+          "inventory_management": "shopify",
+          "option1": "Medium",
+          "option2": "Blue",
+          "option3": null,
+          "created_at": "2023-12-15T10:30:00-05:00",
+          "updated_at": "2024-01-03T14:22:00-05:00",
+          "taxable": true,
+          "barcode": "123456789013",
+          "grams": 200,
+          "weight": 0.2,
+          "weight_unit": "kg",
+          "inventory_item_id": 44123456789013,
+          "inventory_quantity": 315,
+          "old_inventory_quantity": 315,
+          "requires_shipping": true
+        }
+      ],
+      "options": [
+        {
+          "id": 9812345678901,
+          "product_id": 7891234567890,
+          "name": "Size",
+          "position": 1,
+          "values": [
+            "Small",
+            "Medium",
+            "Large",
+            "XL"
+          ]
+        },
+        {
+          "id": 9812345678902,
+          "product_id": 7891234567890,
+          "name": "Color",
+          "position": 2,
+          "values": [
+            "Blue",
+            "Black",
+            "White",
+            "Red"
+          ]
+        }
+      ],
+      "images": [
+        {
+          "id": 31234567890123,
+          "product_id": 7891234567890,
+          "position": 1,
+          "created_at": "2023-12-15T10:30:00-05:00",
+          "updated_at": "2023-12-15T10:30:00-05:00",
+          "width": 2048,
+          "height": 2048,
+          "src": "https://cdn.shopify.com/s/files/1/0123/4567/8901/products/tshirt-blue.jpg",
+          "variant_ids": []
+        }
+      ],
+      "image": {
+        "id": 31234567890123,
+        "product_id": 7891234567890,
+        "position": 1,
+        "created_at": "2023-12-15T10:30:00-05:00",
+        "updated_at": "2023-12-15T10:30:00-05:00",
+        "width": 2048,
+        "height": 2048,
+        "src": "https://cdn.shopify.com/s/files/1/0123/4567/8901/products/tshirt-blue.jpg",
+        "variant_ids": []
+      }
+    }
+  ],
+  "debug_info": {
+    "request_id": "shopify-req-tuv890wxy123",
+    "api_version": "2024-01",
+    "processing_time_ms": 289,
+    "shop_id": 12345678901,
+    "shop_domain": "example-store.myshopify.com",
+    "rate_limit": {
+      "bucket_size": 40,
+      "current_level": 37,
+      "restore_rate": 2
+    },
+    "query_cost": {
+      "requested_query_cost": 3,
+      "actual_query_cost": 3,
+      "throttle_status": {
+        "maximum_available": 1000,
+        "currently_available": 997,
+        "restore_rate": 50
+      }
+    },
+    "datacenter": "us-east-1",
+    "server": "shopify-api-prod-089",
+    "cache_status": "miss",
+    "database_queries": 8,
+    "index_hits": 12
+  },
+  "logs": [
+    "[14:22:33.001] Product list request received",
+    "[14:22:33.034] OAuth token validated for shop 12345678901",
+    "[14:22:33.067] API scopes verified: read_products",
+    "[14:22:33.100] Query parameters parsed: limit=50, status=active",
+    "[14:22:33.133] Rate limit check: 37/40 available",
+    "[14:22:33.166] Database query: product index scan",
+    "[14:22:33.199] Products fetched: 1 results",
+    "[14:22:33.232] Variants loaded: 2 variants",
+    "[14:22:33.265] Options loaded: 2 options with 8 values",
+    "[14:22:33.298] Images loaded: 1 images",
+    "[14:22:33.331] Inventory levels queried: 2 items",
+    "[14:22:33.364] GraphQL API IDs generated",
+    "[14:22:33.397] Response serialized to JSON",
+    "[14:22:33.430] CDN URLs signed",
+    "[14:22:33.463] Rate limit headers calculated",
+    "[14:22:33.496] Response ready"
+  ],
+  "_trace": {
+    "trace_id": "shopify-trace-zab345cde678",
+    "span_id": "span-shop-012",
+    "parent_span_id": null,
+    "sampled": true,
+    "shop_id": 12345678901
+  },
+  "_performance": {
+    "auth_time_ms": 33,
+    "query_parse_ms": 33,
+    "database_time_ms": 198,
+    "serialization_ms": 25,
+    "total_time_ms": 289
+  }
+}

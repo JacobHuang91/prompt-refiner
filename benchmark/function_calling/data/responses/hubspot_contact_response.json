@@ -1,0 +1,69 @@
+{
+  "id": "151",
+  "properties": {
+    "createdate": "2024-01-03T14:22:15.345Z",
+    "email": "jane.smith@example.com",
+    "firstname": "Jane",
+    "lastname": "Smith",
+    "phone": "(555) 234-5678",
+    "company": "Tech Innovations Inc",
+    "website": "https://techinnovations.example.com",
+    "jobtitle": "Marketing Director",
+    "lifecyclestage": "lead",
+    "hs_lead_status": "NEW",
+    "address": "456 Innovation Drive",
+    "city": "Austin",
+    "state": "TX",
+    "zip": "78701",
+    "country": "United States"
+  },
+  "createdAt": "2024-01-03T14:22:15.345Z",
+  "updatedAt": "2024-01-03T14:22:15.345Z",
+  "archived": false,
+  "debug_info": {
+    "request_id": "hubspot-req-abc123xyz",
+    "api_version": "v3",
+    "processing_time_ms": 187,
+    "cache_status": "miss",
+    "portal_id": "12345678",
+    "hub_id": "987654321",
+    "server_region": "us-east-1",
+    "rate_limit_remaining": 9847,
+    "rate_limit_reset": "2024-01-03T14:23:00.000Z",
+    "database_queries": 4,
+    "validation_checks": 12,
+    "enrichment_calls": 2
+  },
+  "logs": [
+    "[14:22:15.100] Contact creation initiated",
+    "[14:22:15.125] Email validation: passed",
+    "[14:22:15.150] Duplicate check: no duplicates found",
+    "[14:22:15.175] Required fields validation: passed",
+    "[14:22:15.200] Data enrichment: company lookup initiated",
+    "[14:22:15.245] Data enrichment: industry detected - Technology",
+    "[14:22:15.270] Lifecycle stage assignment: lead",
+    "[14:22:15.295] Workflow enrollment check: 3 workflows eligible",
+    "[14:22:15.320] Property history recorded",
+    "[14:22:15.345] Contact created successfully",
+    "[14:22:15.370] Notification triggers: 2 active",
+    "[14:22:15.395] Sync to connected apps: Salesforce, Slack"
+  ],
+  "_trace": {
+    "trace_id": "hubspot-trace-def456ghi",
+    "parent_span_id": "span-hub-789",
+    "sampling_decision": "sampled",
+    "flags": "01"
+  },
+  "_performance": {
+    "validation_time_ms": 75,
+    "enrichment_time_ms": 70,
+    "database_time_ms": 42,
+    "total_time_ms": 187
+  },
+  "_metadata": {
+    "api_client": "HubSpot Python SDK v8.2.1",
+    "user_agent": "python-requests/2.31.0",
+    "ip_address": "198.51.100.42",
+    "authentication_method": "API_KEY"
+  }
+}
