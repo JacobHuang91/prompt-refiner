@@ -13,23 +13,37 @@ pinned: false
 
 Live demonstration of [prompt-refiner](https://github.com/JacobHuang91/prompt-refiner) library capabilities.
 
-Stop paying for invisible tokens. Optimize your LLM inputs to save costs, improve context usage, and enhance security.
+**Stop paying for invisible tokens.** Optimize your LLM inputs with benchmark-tested strategies to save 5-70% on API costs.
 
 ## ✨ Features
 
-- 🎯 **Interactive Playground** - Experiment with different optimization strategies
-- 💰 **Real-time Token Savings** - See exactly how many tokens and dollars you save
-- 🔧 **Configurable Operations** - Toggle between 7 different operations
-- 📊 **Visual Metrics** - Cost analysis and performance tracking
-- 🎭 **Preset Examples** - 6 real-world scenarios (e-commerce, support, docs, RAG, etc.)
-- ⚡ **Quick Presets** - Minimal, Standard, Aggressive, or Custom strategies
+### 📝 Tab 1: Text Optimization
+- **3 Preset Strategies** - Minimal, Standard, Aggressive (benchmark-tested)
+- **Real-time Token Savings** - See exactly how many tokens and dollars you save
+- **3 Real-world Examples** - E-commerce RAG, support tickets, technical docs
+- **Visual Metrics** - Cost analysis and performance tracking
+- **Proven Results** - 4-15% token reduction, 96-99% quality maintained
+
+### 🔧 Tab 2: Function Calling Optimization
+- **Schema Compression** - Compress OpenAI/Anthropic tool schemas by 57% on average
+- **100% Lossless** - Protocol fields preserved, 100% callable validation
+- **3 Schema Examples** - Simple, complex, and very verbose APIs
+- **Cost Calculator** - See savings for small, medium, and large AI agents
+- **Production Ready** - Tested on 20 real-world APIs
 
 ## 🚀 Quick Start
 
-1. **Choose a preset example** from the dropdown (or enter your own text)
-2. **Select a strategy** in the sidebar (Minimal, Standard, Aggressive, or Custom)
-3. **Configure operations** to match your use case
-4. **See results** with real-time token counting and cost savings
+### Text Optimization
+1. **Select Tab 1** - Text Optimization
+2. **Choose an example** - E-commerce, support ticket, or docs
+3. **Pick a strategy** - Minimal, Standard, or Aggressive
+4. **See results** - Real-time token counting and cost savings
+
+### Function Calling Compression
+1. **Select Tab 2** - Function Calling
+2. **Choose a schema** - Weather API, Stripe Payment, or HubSpot
+3. **View compression** - See before/after token counts
+4. **Calculate ROI** - Cost savings for your agent workload
 
 ## 📦 Installation
 
@@ -41,21 +55,35 @@ pip install llm-prompt-refiner
 
 ## 💻 Example Usage
 
+### Text Optimization with Preset Strategies
 ```python
-from prompt_refiner import (
-    StripHTML,
-    NormalizeWhitespace,
-    TruncateTokens
-)
+from prompt_refiner import StandardStrategy
 
-# Use pipe operator to chain operations
-pipeline = (
-    StripHTML()
-    | NormalizeWhitespace()
-    | TruncateTokens(max_tokens=1000)
-)
+# Use benchmark-tested preset strategies
+strategy = StandardStrategy()
+cleaned = strategy.run(dirty_text)
+```
 
-cleaned = pipeline.run(dirty_text)
+### Function Calling Schema Compression
+```python
+from prompt_refiner import SchemaCompressor
+
+# Compress tool schema (57% average reduction)
+compressor = SchemaCompressor()
+compressed_schema = compressor.process(tool_schema)
+```
+
+### Smart Context Packing
+```python
+from prompt_refiner import MessagesPacker
+
+# Pack messages with automatic refining
+packer = MessagesPacker(
+    system="You are a helpful assistant.",
+    context=(["<div>Doc 1</div>", "Doc 2"], StripHTML() | NormalizeWhitespace()),
+    query="Search for Python books"
+)
+messages = packer.pack()
 ```
 
 ## 🔗 Links
@@ -63,31 +91,40 @@ cleaned = pipeline.run(dirty_text)
 - 📖 [Documentation](https://jacobhuang91.github.io/prompt-refiner/)
 - 💻 [GitHub Repository](https://github.com/JacobHuang91/prompt-refiner)
 - 📦 [PyPI Package](https://pypi.org/project/llm-prompt-refiner/)
+- 📊 [Benchmark Results](https://github.com/JacobHuang91/prompt-refiner/tree/main/benchmark)
 
-## 📊 Proven Effectiveness
+## 📊 Benchmark Results
 
-Benchmarked on 30 real-world test cases:
-- **4-15% token reduction** on average
-- **96-99% quality maintained** (verified)
-- **Up to ~$54/month saved** at scale (1M tokens/month, GPT-4)
+**Function Calling (Primary Focus):**
+- **57% average token reduction** on tool schemas
+- **100% callable validation** with OpenAI
+- Tested on **20 real-world APIs**
 
-## 🛠️ Operations Available
+**Text Optimization:**
+- **4-15% token reduction** on RAG contexts
+- **96-99% quality maintained** (cosine similarity + LLM judge)
+- Tested on **30 real-world test cases**
 
-### 🧼 Cleaner
-- Strip HTML tags
-- Normalize whitespace
-- Fix Unicode issues
+**Cost Savings:**
+- Medium agent (10 tools, 500 calls/day): **~$128/month saved**
+- RAG app (1M tokens/month): **~$54/month saved**
 
-### 🗜️ Compressor
-- Deduplicate similar content
-- Truncate to token limits
+## 🛠️ What's Inside
 
-### 🔒 Scrubber
-- Redact PII (email, phone, IP, credit cards, SSN, URLs)
+### Preset Strategies
+- **MinimalStrategy** - Light cleaning (4.3% reduction, 98.7% quality)
+- **StandardStrategy** - Balanced optimization (4.8% reduction, 98.4% quality)
+- **AggressiveStrategy** - Maximum compression (15.0% reduction, 96.4% quality)
 
-### 📊 Analyzer
-- Count tokens
-- Calculate cost savings
+### Tools Module
+- **SchemaCompressor** - Compress OpenAI/Anthropic tool schemas
+- **ResponseCompressor** - Compress verbose API/tool responses
+
+### Core Operations
+- **Cleaner** - Strip HTML, normalize whitespace, fix Unicode
+- **Compressor** - Deduplicate content, truncate to token limits
+- **Scrubber** - Redact PII (email, phone, SSN, credit cards)
+- **Packer** - Smart context management with priority-based ordering
 
 ---
 

@@ -2,6 +2,14 @@
 
 Get up and running with Prompt Refiner in minutes.
 
+!!! info "Try Before You Install"
+    Want to see Prompt Refiner in action first? Try our **[interactive demo on Hugging Face Spaces](https://huggingface.co/spaces/Xinghao91/prompt-refiner)** with:
+
+    - **Text Optimization** - 3 preset strategies with real examples
+    - **Function Calling Compression** - Compress OpenAI/Anthropic tool schemas
+    - Real-time token counting and cost analysis
+    - No installation required!
+
 ## Installation
 
 === "Default (Lightweight)"
