@@ -65,3 +65,6 @@ benchmark/custom/*.csv
 benchmark/custom/*.png
 benchmark/custom/*.md
 !benchmark/custom/README.md
+
+# Marketing materials (not part of codebase)
+marketing/

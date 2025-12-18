@@ -2,6 +2,11 @@
 
 A lightweight Python library for building production LLM applications. **Save 5-70% on API costs** - from function calling optimization to RAG context management.
 
+!!! tip "🎮 Try Interactive Demo"
+    **[Launch the live demo on Hugging Face Spaces →](https://huggingface.co/spaces/Xinghao91/prompt-refiner)**
+
+    Experiment with text optimization and function calling compression in your browser - no installation required!
+
 ## Overview
 
 Prompt Refiner solves three core problems for production LLM applications:

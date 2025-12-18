@@ -56,11 +56,6 @@ tool_response = search_books(**json.loads(tool_call.function.arguments))
 compressed_response = ResponseCompressor().process(tool_response)
 ```
 
-**Default refining strategies:**
-- `system`/`query`: MinimalStrategy (StripHTML + NormalizeWhitespace)
-- `context`/`history`: StandardStrategy (StripHTML + NormalizeWhitespace + Deduplicate)
-- Override with tuple: `context=(docs, StripHTML() | NormalizeWhitespace())`
-
 > 💡 Run `python examples/quickstart.py` to see the complete workflow with real OpenAI API verification.
 
 **Key benefits:**
