@@ -15,6 +15,20 @@
 
 </div>
 
+---
+
+## ⚠️ PROJECT ARCHIVED (April 2026)
+
+**This project is no longer maintained.** Token optimization is less critical now due to:
+- Token costs dropped 12x (GPT-4: $2.50/M tokens)
+- Context windows expanded to 200K-1M tokens  
+- Better alternatives: caching (90%+ savings), ML compression (20x), model routing
+
+**Still useful for:** HTML cleaning, PII redaction, high-volume production, tool compression.  
+**See [ARCHIVED.md](ARCHIVED.md) for details and alternatives.**
+
+---
+
 > 🚀 **Lightweight Python library for AI Agents, RAG apps, and chatbots with smart context management and automatic token optimization.**
 > **Save 5-70% on API costs** - 57% average reduction on function calling, 5-15% on RAG contexts.
 
