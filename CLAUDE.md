@@ -1,5 +1,23 @@
 # Prompt Refiner - Project Context
 
+---
+
+## ⚠️ PROJECT ARCHIVED (April 2026)
+
+This project is no longer maintained. See [ARCHIVED.md](ARCHIVED.md) for details.
+
+**Why archived:**
+- Token costs dropped 12x (GPT-4: $30/M → $2.50/M)
+- Context windows expanded 20-200x (now 200K-1M tokens)
+- Better alternatives emerged (caching: 90%+ savings, ML compression: 20x)
+- Rule-based optimization ceiling reached (5-15% is the limit)
+
+**Key learning:** Rule-based token optimization has fundamental limits. Caching, ML-based compression, and model routing are more effective in 2026.
+
+This documentation remains for reference.
+
+---
+
 This document provides context for Claude Code and developers working on this project.
 
 ## Project Purpose
